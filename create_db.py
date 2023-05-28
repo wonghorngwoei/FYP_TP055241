@@ -9,3 +9,8 @@ mydb = mysql.connector.connect(
 my_cursor = mydb.cursor()
 
 my_cursor.execute("CREATE DATABASE LDPMS")
+
+my_cursor.execute("SHOW DATABASES")
+
+for db in my_cursor:
+    print(db)
