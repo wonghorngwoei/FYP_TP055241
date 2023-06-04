@@ -12,3 +12,13 @@ body{
     background-size: cover;
     position: relative;
 }
+
+.limit-lines {
+    max-height: 5.4em; /* Adjust the height to accommodate the desired number of lines */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* Adjust the line clamp value to fit the desired number of lines */
+    -webkit-box-orient: vertical;
+  }
+  
