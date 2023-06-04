@@ -13,7 +13,7 @@ body{
 }
 
 .limit-lines {
-    max-height: 5.4em; /* Adjust the height to accommodate the desired number of lines */
+    max-height: 6em; /* Adjust the height to accommodate the desired number of lines */
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
