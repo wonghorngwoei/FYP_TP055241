@@ -28,34 +28,102 @@
                 }
             }
         </script>
+
+        <style>
+            .header-collapse {
+            display: none;
+            }
+
+            .header-collapsed {
+            display: block;
+            }
+        </style>
     </head>
     <body>
-        <header class="bg-primary text-white text-center py-5">
-          <h1 class="display-4">Lifestyle Disease Prediction System</h1>
-          <p class="lead">Predicting and managing lifestyle diseases</p>
-        </header>
-      
-        <div class="container mt-5">
-          <div class="row">
-            <div class="col-md-6">
-              <h2>About Us</h2>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur euismod metus sed erat efficitur, sed tincidunt arcu laoreet.</p>
-              <p>Phasellus convallis tempor ex, id gravida est faucibus eu. Nullam vitae nunc fermentum, rhoncus leo sit amet, auctor arcu.</p>
-              <a href="#" class="btn btn-primary">Learn More</a>
+        <!-- <header class="bg-primary text-white text-center py-5">
+            <button class="btn btn-primary" data-toggle="collapse" data-target="#headerCollapse">Toggle</button>
+            <div id="headerCollapse" class="header-collapse collapse">
+              <h1 class="display-4">Lifestyle Disease Prediction System</h1>
+              <p class="lead">Predicting and managing lifestyle diseases</p>
             </div>
-            <div class="col-md-6">
-              <h2>Get Started</h2>
-              <p>Sign up to access our lifestyle disease prediction system and take control of your health.</p>
-              <a href="#" class="btn btn-success">Sign Up</a>
+          </header> -->
+      <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+            <a class="navbar-brand" href="#">Lifestyle Disease Prediction</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+                </ul>
             </div>
-          </div>
-        </div>
-      
-        <footer class="bg-dark text-white text-center py-3 mt-5">
-          <p>&copy; 2023 Lifestyle Disease Prediction System. All rights reserved.</p>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero bg-primary text-white text-center py-5">
+            <div class="container">
+            <h1 class="display-4">Lifestyle Disease Prediction System</h1>
+            <p class="lead">Empowering you to take control of your health</p>
+            <a href="#" class="btn btn-light btn-lg">Get Started</a>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features py-5">
+            <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                <div class="card mb-3">
+                    <img src="image1.jpg" class="card-img-top" alt="Feature 1">
+                    <div class="card-body">
+                    <h5 class="card-title">Feature 1</h5>
+                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque aliquet consectetur tristique.</p>
+                    </div>
+                </div>
+                </div>
+                <div class="col-md-4">
+                <div class="card mb-3">
+                    <img src="image2.jpg" class="card-img-top" alt="Feature 2">
+                    <div class="card-body">
+                    <h5 class="card-title">Feature 2</h5>
+                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque aliquet consectetur tristique.</p>
+                    </div>
+                </div>
+                </div>
+                <div class="col-md-4">
+                <div class="card mb-3">
+                    <img src="image3.jpg" class="card-img-top" alt="Feature 3">
+                    <div class="card-body">
+                    <h5 class="card-title">Feature 3</h5>
+                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque aliquet consectetur tristique.</p>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-dark text-white text-center py-3">
+            <div class="container">
+            <p>&copy; 2023 Your Company. All rights reserved.</p>
+            </div>
         </footer>
-      
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
       </body>
       </html>
 
