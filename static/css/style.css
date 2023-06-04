@@ -4,8 +4,7 @@ body{
 }
 
 .hero-image {
-    background-image: url("FYP_TP055241/images/health.jpg");
-    background-color: #cccccc;
+    background-image: url("images/health.jpg");
     height: 500px;
     background-position: center;
     background-repeat: no-repeat;
