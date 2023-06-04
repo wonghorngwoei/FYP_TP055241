@@ -3,7 +3,12 @@ body{
     font-family: 'Times New Roman', Times, serif;
 }
 
-.container{
-    background-color: #92ffec;
-    color: #92ffec;
+.hero-image {
+    background-image: url("images/health.jpg");
+    background-color: #cccccc;
+    height: 500px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
 }
