@@ -20,4 +20,31 @@ body{
     -webkit-line-clamp: 4; /* Adjust the line clamp value to fit the desired number of lines */
     -webkit-box-orient: vertical;
   }
-  
+
+.feature {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.feature-title {
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.feature-description {
+    font-size: 18px;
+}
+
+.about-section {
+    margin-top: 50px;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.about-reason {
+    font-style: italic;
+}
