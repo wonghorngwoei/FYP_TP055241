@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+</head>
+<body>
+    <h1>Search Results</h1>
+    {% for hospital in hospitals %}
+        <h3>{{ hospital.name }}</h3>
+        <p>{{ hospital.address }}</p>
+    {% endfor %}
+</body>
+</html>
