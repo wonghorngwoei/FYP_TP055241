@@ -12,6 +12,33 @@ body{
     position: relative;
 }
 
+.predict-image {
+    background-image: url("images/AIPredict.jpg");
+    height: 500px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    position: relative;
+}
+
+.manageHealth-image {
+    background-image: url("images/ManageHealthTilt.jpg");
+    height: 500px;
+    /* background-position: center; */
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+}
+
+.hospital-image {
+    background-image: url("images/FindNearbyHospital.jpg");
+    height: 500px;
+    /* background-position: center; */
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+}
+
 .limit-lines {
     max-height: 6em; /* Adjust the height to accommodate the desired number of lines */
     overflow: hidden;
