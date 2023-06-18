@@ -30,6 +30,26 @@
         
     </head>
     <body>
+        <!-- Include the modals -->
+        {% include 'login.html' %}
+        {% include 'signup.html' %}
+        {% include 'resetpw.html' %}
+
+        <!-- Pop up messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="container">
+                    {% for message in messages %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
         <!-- Navigation bar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="#">Lifestyle Disease Prediction & Management System</a>
@@ -65,9 +85,9 @@
           
 
         <!-- Feature 1: Predict Lifestyle Diseases -->
-        <div class="container feature m-0" style="height: 500px;" data-aos="fade-left" data-aos-once="true">
+        <div class="container-fluid feature" style="height: 500px;" data-aos="fade-left" data-aos-once="true">
             <div class="row">
-                <div class="col-md-6 predict-image img-fluid">
+                <div class="col-md-6 predict-image">
                 </div>
                 <div class="col-md-6">
                     <h2 class="feature-title">Predict Lifestyle Diseases</h2>
@@ -77,21 +97,21 @@
         </div>
 
         <!-- Feature 2: Manage Your Health -->
-        <div class="container feature" style="height: 500px;" data-aos="fade-right">
+        <div class="container-fluid feature" style="height: 500px;" data-aos="fade-right">
             <div class="row">
                 <div class="col-md-6">
                     <h2 class="feature-title">Manage Your Health</h2>
                     <p class="feature-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean efficitur purus id gravida pellentesque.</p>
                 </div>
-                <div class="col-md-6 manageHealth-image img-fluid">
+                <div class="col-md-6 manageHealth-image">
                 </div>
             </div>
         </div>
 
         <!-- Feature 3: Find Nearby Hospitals -->
-        <div class="container feature" style="height: 500px;" data-aos="fade-left">
+        <div class="container-fluid feature" style="height: 500px;" data-aos="fade-left">
             <div class="row">
-                <div class="col-md-6 hospital-image img-fluid">
+                <div class="col-md-6 hospital-image">
                 </div>
                 <div class="col-md-6">
                     <h2 class="feature-title">Find Nearby Hospitals</h2>
@@ -119,7 +139,7 @@
         </div> <br><br>
 
         <!-- Login Modal -->
-        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <!-- <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -152,10 +172,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Registration Modal -->
-        <div class="modal fade" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
+        <!-- <div class="modal fade" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -214,7 +234,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Footer -->
         <footer class="bg-dark text-white text-center py-3">

@@ -1,12 +1,16 @@
 from website import create_app
 from flask import Flask
+# from flask_sqlalchemy import SQLAlchemy
 # , render_template, url_for, request
 # import requests
 
+# import mysql.connector
+
+# db = SQLAlchemy()
 app = create_app()
 
 #MySQL DB
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:tp055241@localhost/ldpms'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:tp055241@localhost/ldpms'
 
 if __name__ == '__main__':
     app.run(debug=True)
@@ -39,3 +43,4 @@ if __name__ == '__main__':
 #         hospitals.append({'name': name, 'address': address})
 
 #     return render_template('results.html', hospitals=hospitals)
+
