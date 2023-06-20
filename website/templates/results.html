@@ -4,10 +4,34 @@
     <title>Search Results</title>
 </head>
 <body>
-    <h1>Search Results</h1>
-    {% for hospital in hospitals %}
-        <h3>{{ hospital.name }}</h3>
-        <p>{{ hospital.address }}</p>
-    {% endfor %}
+    <div class="container">
+        <h1 class="mt-4">Search Results</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Phone Numbers</th>
+                    <th>Operating Hours</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for hospital in hospitals %}
+                    <tr>
+                        <td>{{ hospital.name }}</td>
+                        <td>{{ hospital.address }}</td>
+                        <td>{{ hospital.phone_numbers }}</td>
+                        <td>
+                            <ul>
+                                {% for hour in hospital.opening_hours %}
+                                    <li>{{ hour }}</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

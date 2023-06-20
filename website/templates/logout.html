@@ -9,7 +9,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="${pageContext.request.contextPath}/Logout" method="POST">
+                <form action="{{ url_for('auth.logout') }}" method="POST">
                     <p>Are you sure you want to log out?</p>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>

@@ -1,6 +1,5 @@
 body{
-    font-style: italic;
-    font-family: 'Times New Roman', Times, serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 .hero-image {
@@ -10,6 +9,13 @@ body{
     background-repeat: no-repeat;
     background-size: cover;
     position: relative;
+}
+
+.health-image {
+    background-image: url("images/health.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
 }
 
 .predict-image {

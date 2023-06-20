@@ -1,0 +1,147 @@
+<!-- Diabetes Prediction Content-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction</title>
+</head>
+<body>
+    <br><br>
+    <div class="container">
+        <h1 class="text-center">Diabetes Prediction</h1>
+
+        <form>
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" class="form-control" id="age" name="age" required>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select class="form-control" id="gender" name="gender" required>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="highChol">High Cholesterol:</label>
+                <select class="form-control" id="highChol" name="highChol" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="cholCheck">Cholesterol Check in 5 Years:</label>
+                <select class="form-control" id="cholCheck" name="cholCheck" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bmi">BMI:</label>
+                <input type="number" class="form-control" id="bmi" name="bmi" required>
+            </div>
+
+            <div class="form-group">
+                <label for="smoker">Have you smoked at least 100 cigarettes in your entire life?</label>
+                <select class="form-control" id="smoker" name="smoker" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="heartDisease">Heart Disease:</label>
+                <select class="form-control" id="heartDisease" name="heartDisease" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="physicalActivity">Physical Activity in Past 30 Days:</label>
+                <select class="form-control" id="physicalActivity" name="physicalActivity" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="fruits">Consume Fruit 1 or more times per day:</label>
+                <select class="form-control" id="fruits" name="fruits" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="veggies">Consume Vegetables 1 or more times per day:</label>
+                <select class="form-control" id="veggies" name="veggies" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="heavyAlcohol">Heavy Alcohol Consumption:</label>
+                <select class="form-control" id="heavyAlcohol" name="heavyAlcohol" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="generalHealth">General Health:</label>
+                <select class="form-control" id="generalHealth" name="generalHealth" required>
+                    <option value="1">Excellent</option>
+                    <option value="2">Very Good</option>
+                    <option value="3">Good</option>
+                    <option value="4">Fair</option>
+                    <option value="5">Poor</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="mentalHealth">Days of Poor Mental Health (1-30):</label>
+                <input type="number" class="form-control" id="mentalHealth" name="mentalHealth" min="1" max="30" required>
+            </div>
+
+            <div class="form-group">
+                <label for="physicalHealth">Physical Illness or Injury Days in Past 30 Days (1-30):</label>
+                <input type="number" class="form-control" id="physicalHealth" name="physicalHealth" min="1" max="30" required>
+            </div>
+
+            <div class="form-group">
+                <label for="difficultyWalking">Do you have serious difficulty walking or climbing stairs?</label>
+                <select class="form-control" id="difficultyWalking" name="difficultyWalking" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="stroke">Have you ever had a stroke?</label>
+                <select class="form-control" id="stroke" name="stroke" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="highBloodPressure">High Blood Pressure:</label>
+                <select class="form-control" id="highBloodPressure" name="highBloodPressure" required>
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Predict</button>
+        </form>
+    </div>
+</body>
+
+</html>
