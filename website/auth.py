@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, flash, request, redirect, url_for, session
-from .models import User
+from .models import User, Admin
 from flask_mail import Message
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
@@ -11,22 +11,31 @@ auth = Blueprint('auth', __name__)
 @auth.route('/Login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
-        u_username = request.form.get('username')
-        u_password = request.form.get('password')
+        username = request.form.get('username')
+        password = request.form.get('password')
 
-        user = User.query.filter_by(u_username=u_username).first()
+        user = User.query.filter_by(u_username=username).first()
+        print(user)
         if user:
-            if check_password_hash(user.u_password, u_password):
+            if check_password_hash(user.u_password, password):
                 flash('Logged in successfully!', category='success')
                 # Store user information in the session
                 session['u_id'] = user.u_id
                 session['username'] = user.u_username
                 return redirect(url_for('views.userdashboard'))
-            else:
-                flash('Incorrect password, try again.', category='error')
-        else:
-            flash('Email does not exist.', category='error')
-    
+                
+        admin = Admin.query.filter_by(a_username=username).first()
+        print(admin)
+        if admin:
+            if admin.a_password == password:
+                flash('Logged in successfully as admin!', category='success')
+                session['a_id'] = admin.a_id
+                session['username'] = admin.a_username
+                return redirect(url_for('views.admindashboard'))
+
+        flash('Invalid username or password, try again.', category='error')
+        return render_template("homepage.html")
+
     return render_template("homepage.html")
 
 
@@ -167,3 +176,37 @@ def send_password_reset_email(user, token):
     msg = Message(subject, sender=sender, recipients=[recipient])
     msg.body = message
     mail.send_message(msg)
+
+
+@auth.route('/adminReg', methods=['GET','POST'])
+def admin_reg():
+    if request.method == 'POST':
+        a_username = request.form.get('a_username')
+        a_password= request.form.get('a_password')
+        a_fname = request.form.get('a_fname')
+        a_lname = request.form.get('a_lname')
+        a_email = request.form.get('a_email')
+        a_hpnumber = request.form.get('a_hpnumber')
+        a_usertype = "Admin"
+
+        # Check if the information already exists
+        chk_username = check_username_exists(a_username)
+        chk_email = check_email_exists(a_email)
+
+        if chk_username:
+            flash('Username already exists', category='error')
+            return redirect(url_for('views.homepage'))
+        elif chk_email:
+            flash('Email already exists', category='error')
+            return redirect(url_for('views.homepage'))
+
+        newAdmin = Admin(a_username=a_username,a_password=a_password, a_fname=a_fname,a_lname=a_lname,
+                         a_email=a_email,a_hpnumber=a_hpnumber,a_usertype=a_usertype)
+        
+        db.session.add(newAdmin)
+        db.session.commit()
+        flash('Successfully created an account!', 'success')  # Flash success message
+        print("Successfully Registered An Account!")
+        return redirect(url_for('views.homepage'))
+
+    return render_template("homepage.html")

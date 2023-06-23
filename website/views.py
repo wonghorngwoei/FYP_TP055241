@@ -1,5 +1,5 @@
 from flask import Flask, Blueprint, render_template, redirect, url_for, request, session, flash
-from .models import User, Feedback
+from .models import User, Feedback, Admin
 from . import db
 import requests
 
@@ -17,11 +17,20 @@ def userdashboard():
 
     # Fetch the user's data from the database
     user = User.query.get(userID)
-    return render_template('userdashboard.html', user = user)
+    return render_template('userDashboard.html', user = user)
+
+@views.route('/admindashboard', methods=['GET','POST'])
+def admindashboard():
+    # Retrieve the user ID from the session or wherever it's stored
+    adminID = session.get('a_id')
+
+    # Fetch the user's data from the database
+    admin = Admin.query.get(adminID)
+    return render_template('adminDashboard.html', admin = admin)
 
 def index():
     active_tab = request.args.get('active_tab', 'home')
-    return render_template('userdashboard.html', active_tab=active_tab)
+    return render_template('userDashboard.html', active_tab=active_tab)
 
 @views.route('/search', methods=['POST'])
 def search():
@@ -37,43 +46,42 @@ def search():
     hospitals = []
 
     for result in results:
-        name = result['name']
-        address = result['formatted_address']
-
-        # Make a details request for each hospital to get phone numbers and operating hours
         place_id = result['place_id']
-        details_url = f'https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&key={api_key}'
-
+        details_url = f'https://maps.googleapis.com/maps/api/place/details/json?place_id={place_id}&fields=name,formatted_address,formatted_phone_number,opening_hours&key={api_key}'
         details_response = requests.get(details_url)
         details_data = details_response.json()
 
-        # Extract the phone numbers and operating hours from the details response
         if 'result' in details_data:
-            result_details = details_data['result']
-            phone_numbers = result_details.get('formatted_phone_number', 'Phone number not available')
-            opening_hours = result_details.get('opening_hours', {}).get('weekday_text', [])
+            details_result = details_data['result']
+            name = details_result['name']
+            address = details_result['formatted_address']
+            phone_number = details_result.get('formatted_phone_number', 'N/A')
 
-            hospitals.append({
-                'name': name,
-                'address': address,
-                'phone_numbers': phone_numbers,
-                'opening_hours': opening_hours
-            })
-        else:
-            hospitals.append({
-                'name': name,
-                'address': address,
-                'phone_numbers': 'Phone number not available',
-                'opening_hours': []
-            })
+            if 'opening_hours' in details_result and 'weekday_text' in details_result['opening_hours']:
+                opening_hours = details_result['opening_hours']['weekday_text']
+                opening_hours_formatted = format_opening_hours(opening_hours)
+            else:
+                opening_hours_formatted = 'N/A'
 
-
-    # for result in results:
-    #     name = result['name']
-    #     address = result['formatted_address']
-    #     hospitals.append({'name': name, 'address': address})
+            hospitals.append({'name': name, 'address': address, 'phone_number': phone_number, 'opening_hours': opening_hours_formatted})
 
     return render_template('results.html', hospitals=hospitals)
+
+def format_opening_hours(opening_hours):
+    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    opening_hours_formatted = []
+
+    for day in days:
+        for hours in opening_hours:
+            if day in hours:
+                opening_hours_formatted.append(f'{day}: {hours.split(": ")[1]}')
+                break
+        else:
+            opening_hours_formatted.append(f'{day}: Closed')
+
+    opening_hours_formatted_final = '\n'.join(opening_hours_formatted)
+    return opening_hours_formatted_final
+
 
 
 # Route for the edit profile page
@@ -97,7 +105,30 @@ def editprofile(u_id):
             return "Error 404: Could not update user"
     
     else:
-        return render_template('userdashboard.html', user=user)
+        return render_template('userDashboard.html', user=user)
+
+# Route for the edit profile page
+@views.route('/edit-aprofile/<int:a_id>', methods=['GET', 'POST'])
+def editadminprofile(a_id):
+    admin = Admin.query.get_or_404(a_id)
+    if request.method == 'POST':
+        # Get the form data
+        admin.a_fname = request.form['a_fname']
+        admin.a_lname = request.form['a_lname']
+        admin.a_age = request.form['a_age']
+        admin.a_hpnumber = request.form['a_hpnumber']
+        admin.a_address = request.form['a_address']
+        admin.a_gender = request.form['a_gender']
+
+        try:
+            db.session.commit()
+            print("Updated admin profile!")
+            return redirect(url_for('views.admindashboard'))
+        except:
+            return "Error 404: Could not update admin profile"
+    
+    else:
+        return render_template('adminDashboard.html', admin=admin)
     
 @views.route('/Feedback', methods=["POST"])
 def feedback():
@@ -116,4 +147,4 @@ def feedback():
             flash('Note added!', category='success')
             return redirect(url_for('views.userdashboard'))
         
-    return render_template('userdashboard.html')
+    return render_template('userDashboard.html')

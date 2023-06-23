@@ -69,6 +69,9 @@
                         <a class="nav-link" href="#">Contact</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link"  href="#" data-toggle="modal" data-target="#adminRegModal">Admin Register</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link"  href="#" data-toggle="modal" data-target="#loginModal">Login</a>
                     </li>
                 </ul>
@@ -139,103 +142,51 @@
             </form>
         </div> <br><br>
 
-        <!-- Login Modal -->
-        <!-- <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="loginModalLabel">Login</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="Login" method="POST">
-                            <div class="form-group">
-                                <label for="text">Username</label>
-                                <input type="text" class="form-control" id="username" name="x" placeholder="Enter Username" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="password" name="y" placeholder="Enter Password" required>
-                                    <span class="input-group-append">
-                                        <span class="input-group-text">
-                                            <input type="checkbox" onclick="togglePassword()"> Show
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
-                            <p><input type="submit" class="btn btn-primary" value="Login"></p>
-                            <br>
-                            <p>Don't have an account? <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#registrationModal">Register</a></p>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-
         <!-- Registration Modal -->
-        <!-- <div class="modal fade" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal fade" id="adminRegModal" tabindex="-1" role="dialog" aria-labelledby="adminRegModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="registrationModalLabel">Create an Account</h5>
+                        <h5 class="modal-title" id="adminRegModalLabel">Create an Account</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="Register" method="POST">
+                        <form action="adminReg" method="POST">
                             <div class="form-group">
-                                <label for="id">Username</label>
-                                <input type="text" class="form-control" id="id" name="x1" placeholder="Enter Username" required >
+                                <label for="a_username">Username</label>
+                                <input type="text" class="form-control" id="a_username" name="a_username" placeholder="Enter Username" required >
                             </div>
                             <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" class="form-control" id="password" name="x2" placeholder="Enter Password" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s:])([^\s]){8,}$">
-                                <small>Password must be at least 8 characters long, contain at least 1 uppercase letter, 1 lowercase letter, 1 numeric number, and 1 special character.</small>
+                                <label for="a_password">Password</label>
+                                <input type="password" class="form-control" id="a_password" name="a_password" placeholder="Enter Password" required>
                             </div>
                             <div class="form-group">
-                                <label for="email">Email address</label>
-                                <input type="email" class="form-control" id="email" name="x3" aria-describedby="emailHelp" placeholder="Enter email" required>
+                                <label for="a_fname">First Name</label>
+                                <input type="text" class="form-control" id="a_fname" name="a_fname" placeholder="Enter First Name" required pattern="[A-Za-z ]+">
+                                <small>First Name must be in alphabets only.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="a_lname">Last Name</label>
+                                <input type="text" class="form-control" id="a_lname" name="a_lname" placeholder="Enter Last Name" required pattern="[A-Za-z ]+">
+                                <small>Last Name must be in alphabets only.</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="a_email">Email address</label>
+                                <input type="email" class="form-control" id="a_email" name="a_email" aria-describedby="emailHelp" placeholder="Enter email" required>
                                 <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                             </div>
                             <div class="form-group">
-                                <label for="name">Full Name</label>
-                                <input type="text" class="form-control" id="name" name="x4" placeholder="Enter Full Name" required pattern="[A-Za-z ]+">
-                                <small>Full Name must be in alphabets only.</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="age">Age</label>
-                                <input type="number" class="form-control" id="age" name="x5" placeholder="Enter Age" min="18" max="100" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="hpnumber">Phone Number</label>
-                                <input type="number" class="form-control" id="hpnumber" name="x6" placeholder="Enter phone number" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="gender">Gender: </label>
-                                <select id="gender" name="x7" required>
-                                    <option value="" disabled selected>Select gender</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="userType">User Type: </label>
-                                <select id="userType" name="x8" required>
-                                    <option value="" disabled selected>Select user type</option>
-                                    <option value="salesman">Salesman</option>
-                                    <option value="customer">Customer</option>
-                                </select>
+                                <label for="a_hpnumber">Phone Number</label>
+                                <input type="number" class="form-control" id="a_hpnumber" name="a_hpnumber" placeholder="Enter phone number" required>
                             </div>
                             <p><input type="submit" class="btn btn-primary" value="Register"></p>
                         </form>
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>
 
         <!-- Footer -->
         <footer class="bg-dark text-white text-center py-3">

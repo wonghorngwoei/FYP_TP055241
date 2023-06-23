@@ -31,3 +31,16 @@ class Feedback(db.Model):
     f_userID = db.Column(db.Integer, db.ForeignKey('User.u_id'), nullable=False)
     f_feedback = db.Column(db.String(10000))
     f_date = db.Column(db.DateTime(timezone=True), default=func.now())
+
+class Admin(db.Model, UserMixin):
+    __tablename__ = 'Admin'
+
+    a_id = db.Column(db.Integer, primary_key=True)
+    a_username = db.Column(db.String(255), unique=True)
+    a_password = db.Column(db.String(255))
+    a_fname = db.Column(db.String(255))
+    a_lname = db.Column(db.String(255))
+    a_email = db.Column(db.String(255), unique=True)
+    a_hpnumber = db.Column(db.String(255))
+    a_usertype = db.Column(db.String(255))
+    
