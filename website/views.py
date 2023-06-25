@@ -17,16 +17,19 @@ def userdashboard():
 
     # Fetch the user's data from the database
     user = User.query.get(userID)
-    return render_template('userDashboard.html', user = user)
+    return render_template('userDashboard.html', user = user, )
 
 @views.route('/admindashboard', methods=['GET','POST'])
 def admindashboard():
     # Retrieve the user ID from the session or wherever it's stored
     adminID = session.get('a_id')
 
+    users_feedback_data = User.query.join(Feedback).all()
+    print(users_feedback_data)
+
     # Fetch the user's data from the database
     admin = Admin.query.get(adminID)
-    return render_template('adminDashboard.html', admin = admin)
+    return render_template('adminDashboard.html', admin = admin,data=users_feedback_data)
 
 def index():
     active_tab = request.args.get('active_tab', 'home')
