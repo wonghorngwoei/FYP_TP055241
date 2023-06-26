@@ -36,7 +36,7 @@ def index():
     return render_template('userDashboard.html', active_tab=active_tab)
 
 @views.route('/search', methods=['POST'])
-def search():
+def findNearbyHospital():
     query = request.form['query']
     api_key = 'AIzaSyDf-tSbLPvre8cFGB5IBGVK3PCwIAHxrJs'
     url = f'https://maps.googleapis.com/maps/api/place/textsearch/json?query=hospitals+near+{query}&key={api_key}'
@@ -89,7 +89,7 @@ def format_opening_hours(opening_hours):
 
 # Route for the edit profile page
 @views.route('/edit-profile/<int:u_id>', methods=['GET', 'POST'])
-def editprofile(u_id):
+def editProfile(u_id):
     user = User.query.get_or_404(u_id)
     if request.method == 'POST':
         # Get the form data
@@ -112,7 +112,7 @@ def editprofile(u_id):
 
 # Route for the edit profile page
 @views.route('/edit-aprofile/<int:a_id>', methods=['GET', 'POST'])
-def editadminprofile(a_id):
+def editAdminProfile(a_id):
     admin = Admin.query.get_or_404(a_id)
     if request.method == 'POST':
         # Get the form data
