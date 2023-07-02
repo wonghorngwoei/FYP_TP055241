@@ -1,77 +1,219 @@
 <!-- Asthma Prediction Content-->
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Asthma Prediction</title>
-</head>
-<body>
-    <br><br>
-    <div class="container">
-        <h1 style="text-align: center;">Asthma Prediction</h1>
-        <form>
-            <div class="form-group">
-                <label for="age">Age:</label>
-                <input type="number" class="form-control" id="age" placeholder="Enter age">
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Asthma Prediction</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <!-- Google supported fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+        <!-- Cascading Style Sheet -->
+        <link rel="stylesheet" type="text/css" href="static/css/style.css">
+        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    </head>
+    <body>
+        <!-- Include the modals -->
+        {% include 'logout.html' %}
+        <!-- Navigation bar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Lifestyle Disease Prediction and Management System</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#myProfileModal">My Profile</a>
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal" >Logout</a>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="gender">Gender:</label>
-                <select class="form-control" id="gender">
-                    <option value="" disabled selected>Select gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
+        </nav>
+
+        <!-- Side Bar -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-2" style="padding: 0;">
+                    <div class="nav flex-column nav-pills" aria-orientation="vertical">
+                        <a class="nav-link" href="{{ url_for('views.userdashboard') }}" aria-selected="true">Home</a>
+                        <a class="nav-link" href="{{ url_for('views.diabetesPredictionForm') }}"  aria-selected="false">Diabetes Prediction</a>
+                        <a class="nav-link" href="{{ url_for('views.strokePredictionForm') }}" aria-selected="false">Stroke Prediction</a>
+                        <a class="nav-link active" href="#" aria-selected="false" >Asthma Prediction</a>
+                        <a class="nav-link" href="#" aria-selected="false">Find Nearby Hospital</a>
+                        <a class="nav-link" href="{{ url_for('views.feedbackForm') }}" aria-selected="false">Feedback</a>
+                    </div>
+                </div>
+
+                <div class="col-sm-10">
+                    <div class="container">
+                        <h1 style="text-align: center;">Asthma Prediction</h1>
+                        <form method="POST" action="/asthmaPrediction">
+                            <div class="form-group">
+                                <label for="age">Age:</label>
+                                <input type="number" class="form-control" name="age" id="age" placeholder="Enter age" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sleeping">Sleeping Difficulty:</label>
+                                <select class="form-control" name="sleeping" id="sleeping" required>
+                                    <option value="" disabled selected>Do you have difficulty sleeping?</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="breath">Shortness of Breath:</label>
+                                <select class="form-control" name="breath" id="breath" required>
+                                    <option value="" disabled selected>Do you often feel shortness of breath?</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="cough">Cough:</label>
+                                <select class="form-control" name="cough" id="cough" required>
+                                    <option value="" disabled selected>Do you have cough?</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="allergy">Allergies:</label>
+                                <select class="form-control" name="allergy" id="allergy" required>
+                                    <option value="" disabled selected>Do you have allergy?</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="wheezing">Wheezing:</label>
+                                <select class="form-control" name="wheezing" id="wheezing" required>
+                                    <option value="" disabled selected>Do you have wheezing?</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Predict</button>
+                        </form>
+                        <br><br>
+                        {{result_text}}
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="sleeping">Sleeping Difficulty:</label>
-                <select class="form-control" id="sleeping">
-                    <option value="" disabled selected>Do you have difficulty sleeping?</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                </select>
+        </div>
+
+        <!-- My Profile Modal -->
+        <div class="modal fade" id="myProfileModal" tabindex="-1" role="dialog" aria-labelledby="myProfileModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myProfileModalLabel">My Profile</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary" id="editProfileBtn" data-toggle="modal" data-target="#editProfileModal" data-dismiss="modal">Edit Profile</button>
+                            <button type="button" class="btn btn-primary" id="changePasswordBtn">Change Password</button>
+                        </div>
+                        <form>
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" value="{{ user.u_username }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" class="form-control" id="firstName" value="{{ user.u_fname }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" value="{{ user.u_lname }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" value="{{ user.u_email }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Age</label>
+                                <input type="number" class="form-control" id="age" value="{{ user.u_age }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <input type="text" class="form-control" id="gender" value="{{ user.u_gender }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="phoneNumber">Phone Number</label>
+                                <input type="tel" class="form-control" id="phoneNumber" value="{{ user.u_hpnumber }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <textarea class="form-control" id="address" rows="3" readonly>{{ user.u_address }}</textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="chesttight">Chest Tightness:</label>
-                <select class="form-control" id="chesttight">
-                    <option value="" disabled selected>Do you have chest tightness?</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                </select>
+        </div>
+
+        <!-- Edit Profile Modal -->
+        <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProfileModalLabel">Edit My Profile</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="/edit-profile/{{ user.u_id }}">
+                            <div class="form-group">
+                                <label for="u_fname">First Name</label>
+                                <input type="text" class="form-control" name="u_fname" id="u_fname" value="{{ user.u_fname }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_lname">Last Name</label>
+                                <input type="text" class="form-control" name="u_lname" id="u_lname" value="{{ user.u_lname }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_age">Age</label>
+                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_gender">Gender</label>
+                                <input type="text" class="form-control"  name="u_gender"id="u_gender" value="{{ user.u_gender }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_hpnumber">Phone Number</label>
+                                <input type="tel" class="form-control" name="u_hpnumber" id="u_hpnumber" value="{{ user.u_hpnumber }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_address">Address</label>
+                                <textarea class="form-control" name="u_address" id="u_address" rows="3">{{ user.u_address }}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <p><input type="submit" class="btn btn-primary" value="Update Profile"></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="breath">Shortness of Breath:</label>
-                <select class="form-control" id="breath">
-                    <option value="" disabled selected>Do you often feel shortness of breath?</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="cough">Cough:</label>
-                <select class="form-control" id="cough">
-                    <option value="" disabled selected>Do you have cough?</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="allergy">Allergies:</label>
-                <select class="form-control" id="allergy">
-                    <option value="" disabled selected>Do you have allergy?</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="wheezing">Wheezing:</label>
-                <select class="form-control" id="wheezing">
-                    <option value="" disabled selected>Do you have wheezing?</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Predict</button>
-        </form>
-    </div>
-</body>
+        </div>
+
+
+    
+
+
+
+
+
+    </body>
 </html>
 

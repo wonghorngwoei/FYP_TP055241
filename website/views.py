@@ -1,35 +1,39 @@
 from flask import Flask, Blueprint, render_template, redirect, url_for, request, session, flash
-from .models import User, Feedback, Admin
+from .models import User, Feedback, Admin, Asthma, Diabetes, Stroke
 from . import db
 import requests
+import pickle
+import numpy as np
+
 
 
 views = Blueprint('views', __name__)
+
+with open('notebook/xgbAsthmaModel.pkl', 'rb') as file:
+    asthmaModel = pickle.load(file)
+
+with open('notebook/xgbDiabetesModel.pkl', 'rb') as file:
+    diabetesModel = pickle.load(file)
+
+with open('notebook/xgbStrokeModel.pkl', 'rb') as file:
+    strokeModel = pickle.load(file)
+
 
 @views.route('/')
 def homepage():
     return render_template('homepage.html')
 
-@views.route('/userdashboard', methods=['GET','POST'])
+
+### User Dashboard Functions ###
+@views.route('/userDashboard', methods=['GET','POST'])
 def userdashboard():
     # Retrieve the user ID from the session or wherever it's stored
     userID = session.get('u_id')
 
     # Fetch the user's data from the database
     user = User.query.get(userID)
-    return render_template('userDashboard.html', user = user, )
 
-@views.route('/admindashboard', methods=['GET','POST'])
-def admindashboard():
-    # Retrieve the user ID from the session or wherever it's stored
-    adminID = session.get('a_id')
-
-    users_feedback_data = User.query.join(Feedback).all()
-    print(users_feedback_data)
-
-    # Fetch the user's data from the database
-    admin = Admin.query.get(adminID)
-    return render_template('adminDashboard.html', admin = admin,data=users_feedback_data)
+    return render_template('userdashboard.html', user = user)
 
 def index():
     active_tab = request.args.get('active_tab', 'home')
@@ -85,8 +89,6 @@ def format_opening_hours(opening_hours):
     opening_hours_formatted_final = '\n'.join(opening_hours_formatted)
     return opening_hours_formatted_final
 
-
-
 # Route for the edit profile page
 @views.route('/edit-profile/<int:u_id>', methods=['GET', 'POST'])
 def editProfile(u_id):
@@ -110,6 +112,51 @@ def editProfile(u_id):
     else:
         return render_template('userDashboard.html', user=user)
 
+##### User Feedback #####
+@views.route('/FeedbackForm', methods=['GET','POST'])
+def feedbackForm():
+    # Retrieve the user ID from the session or wherever it's stored
+    userID = session.get('u_id')
+
+    # Fetch the user's data from the database
+    user = User.query.get(userID)
+
+    return render_template('userfeedback.html', user=user)
+    
+@views.route('/Feedback', methods=["POST"])
+def feedback():
+    # Retrieve the user ID from the session or wherever it's stored
+    userID = session.get('u_id')
+
+    if request.method == "POST":
+        feedback = request.form.get('f_feedback')
+
+        if len(feedback) < 1:
+            flash('Note is too short!',category='error')
+        else:
+            new_feedback = Feedback(f_feedback=feedback, f_userID=userID)
+            db.session.add(new_feedback)
+            db.session.commit()
+            flash('Note added!', category='success')
+            return redirect(url_for('views.userdashboard'))
+        
+    return render_template('userDashboard.html')
+
+
+##### Admin Dashboard Functions #####
+@views.route('/admindashboard', methods=['GET','POST'])
+def admindashboard():
+    # Retrieve the user ID from the session or wherever it's stored
+    adminID = session.get('a_id')
+
+    users_feedback_data = User.query.join(Feedback).all()
+    print(users_feedback_data)
+
+    # Fetch the user's data from the database
+    admin = Admin.query.get(adminID)
+    return render_template('adminDashboard.html', admin = admin,data=users_feedback_data)
+
+
 # Route for the edit profile page
 @views.route('/edit-aprofile/<int:a_id>', methods=['GET', 'POST'])
 def editAdminProfile(a_id):
@@ -132,22 +179,316 @@ def editAdminProfile(a_id):
     
     else:
         return render_template('adminDashboard.html', admin=admin)
-    
-@views.route('/Feedback', methods=["POST"])
-def feedback():
+
+##### Asthma Prediction #####
+@views.route('/asthmaPredictionForm' , methods=['GET','POST'])
+def asthmaPredictionForm():
     # Retrieve the user ID from the session or wherever it's stored
     userID = session.get('u_id')
 
-    if request.method == "POST":
-        feedback = request.form.get('f_feedback')
+    # Fetch the user's data from the database
+    user = User.query.get(userID)
 
-        if len(feedback) < 1:
-            flash('Note is too short!',category='error')
+    return render_template('asthmaprediction.html', user=user)
+
+@views.route('/asthmaPrediction', methods=['GET','POST'])
+def predictAsthma():
+    if request.method == 'POST':
+        # Retrieve input from the request
+        age = request.form['age']
+
+        getSleeping = request.form['sleeping']
+        if getSleeping.lower() == 'yes':
+            sleeping = 1
+        elif getSleeping.lower() == 'no':
+            sleeping = 0
         else:
-            new_feedback = Feedback(f_feedback=feedback, f_userID=userID)
-            db.session.add(new_feedback)
-            db.session.commit()
-            flash('Note added!', category='success')
-            return redirect(url_for('views.userdashboard'))
+            print("Error Occured") 
+
+        getBreath = request.form['breath']
+        if getBreath.lower() == 'yes':
+            breath = 1
+        elif getBreath.lower() == 'no':
+            breath = 0
+        else:
+            print("Error Occured")
+
+        getCough = request.form['cough']
+        if getCough.lower() == 'yes':
+            cough = 1
+        elif getCough.lower() == 'no':
+            cough = 0
+        else:
+            print("Error Occured") 
+
+        getAllergy = request.form['allergy']
+        if getAllergy.lower() == 'yes':
+            allergy = 1
+        elif getAllergy.lower() == 'no':
+            allergy = 0
+        else:
+            print("Error Occured") 
+
+        getWheezing = request.form['wheezing']
+        if getWheezing.lower() == 'yes':
+            wheezing = 1
+        elif getWheezing.lower() == 'no':
+            wheezing = 0
+        else:
+            print("Error Occured") 
+
+        form_array = np.array([[age, sleeping, breath, cough, allergy, wheezing]]).astype(int)
+        print(form_array)
+        prediction = asthmaModel.predict(form_array)[0]
+        print(prediction)
+         # Retrieve the user ID from the session or wherever it's stored
+        userID = session.get('u_id')
+
+        # Fetch the user's data from the database
+        user = User.query.get(userID)
+
+        # Create a new Asthma object
+        asthma = Asthma(
+            am_userID=userID,
+            am_age=int(age),
+            am_sleeping=int(sleeping),
+            am_breath=int(breath),
+            am_cough=int(cough),
+            am_allergy=int(allergy),
+            am_wheezing=int(wheezing),
+            am_asthma=int(prediction),
+            am_feedback=None,  # Initialize feedback as None
+        )
+        # Add the Asthma object to the database session
+        db.session.add(asthma)
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        return redirect(url_for('views.asthmaResult', user=user, prediction=prediction))
         
+    return redirect(url_for('views.userdashboard'))
+
+@views.route('/asthmaResult' , methods=['GET','POST'])
+def asthmaResult():
+    # Retrieve the user ID from the session or wherever it's stored
+    userID = session.get('u_id')
+    # Retrieve the result from the query parameter
+    prediction = request.args.get('prediction')
+    # Fetch the user's data from the database
+    user = User.query.get(userID)
+
+    return render_template('asthmaResult.html', user=user, prediction=int(prediction))
+
+@views.route('/asthmaResultFeedback' , methods=['GET','POST'])
+def asthmaResultFeedback():
+    if request.method == 'POST':
+        # Retrieve the user ID from the session or wherever it's stored
+        userID = session.get('u_id')
+        
+        # Retrieve the feedback from the form
+        feedback = request.form['am_feedback']
+
+        # Fetch the user's data from the database
+        user = User.query.get(userID)
+
+        # Retrieve the latest Asthma record for the user
+        asthma = Asthma.query.filter_by(am_userID=userID).order_by(Asthma.am_id.desc()).first()
+        
+        # Update the Asthma record with the user's feedback
+        asthma.am_feedback = feedback
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        return redirect(url_for('views.userdashboard', user=user))  # Redirect to user dashboard after submitting feedback
+
+    return render_template('userDashboard.html')
+
+##### Diabetes Prediction #####
+@views.route('/diabetesPredictionForm' , methods=['GET','POST'])
+def diabetesPredictionForm():
+    # Retrieve the user ID from the session or wherever it's stored
+    userID = session.get('u_id')
+    # Retrieve the result from the query parameter
+    result = request.args.get('result')
+
+    # Fetch the user's data from the database
+    user = User.query.get(userID)
+
+    return render_template('diabetesprediction.html', user=user)
+
+@views.route('/diabetesPrediction', methods=['GET','POST'])
+def predictDiabetes():
+    if request.method == 'POST':
+        # Retrieve input from the request
+        age = request.form['age']
+        highChol = request.form['highChol']  
+        bmi = request.form['bmi']
+        generalHealth = request.form['generalHealth']       
+        physicalHealth = request.form['physicalHealth']
+        highBP = request.form['highBP']
+
+
+        form_array = np.array([[age, highChol, bmi, generalHealth, physicalHealth, highBP]]).astype(int)
+        print(form_array)
+        prediction = diabetesModel.predict(form_array)[0]
+        print(prediction)
+         # Retrieve the user ID from the session or wherever it's stored
+        userID = session.get('u_id')
+
+        # Fetch the user's data from the database
+        user = User.query.get(userID)
+
+        # Create a new Diabetes object
+        diabetes = Diabetes(
+            d_userID=userID,
+            d_age=int(age),
+            d_highchol=int(highChol),
+            d_BMI=int(bmi),
+            d_genhealth=int(generalHealth),
+            d_physhealth=int(physicalHealth),
+            d_highbp=int(highBP),
+            d_diabetes=int(prediction),
+            d_feedback=None,  # Initialize feedback as None
+        )
+        # Add the Diabetes object to the database session
+        db.session.add(diabetes)
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        return redirect(url_for('views.diabetesResult', user=user, prediction=prediction))
+        
+    return redirect(url_for('views.userdashboard'))
+
+@views.route('/diabetesResult' , methods=['GET','POST'])
+def diabetesResult():
+    # Retrieve the user ID from the session or wherever it's stored
+    userID = session.get('u_id')
+    # Retrieve the result from the query parameter
+    prediction = request.args.get('prediction')
+    # Fetch the user's data from the database
+    user = User.query.get(userID)
+
+    return render_template('diabetesResult.html', user=user, prediction=int(prediction))
+
+@views.route('/DiabetesResultFeedback' , methods=['GET','POST'])
+def diabetesResultFeedback():
+    if request.method == 'POST':
+        # Retrieve the user ID from the session or wherever it's stored
+        userID = session.get('u_id')
+        
+        # Retrieve the feedback from the form
+        feedback = request.form['d_feedback']
+
+        # Fetch the user's data from the database
+        user = User.query.get(userID)
+
+        # Retrieve the latest Diabetes record for the user
+        diabetes = Diabetes.query.filter_by(d_userID=userID).order_by(Diabetes.d_id.desc()).first()
+        
+        # Update the Diabetes record with the user's feedback
+        diabetes.d_feedback = feedback
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        return redirect(url_for('views.userdashboard', user=user))  # Redirect to user dashboard after submitting feedback
+
+    return render_template('userDashboard.html')
+
+##### Stroke Prediction #####
+@views.route('/strokePredictionForm' , methods=['GET','POST'])
+def strokePredictionForm():
+    # Retrieve the user ID from the session or wherever it's stored
+    userID = session.get('u_id')
+    # Retrieve the result from the query parameter
+    result = request.args.get('result')
+
+    # Fetch the user's data from the database
+    user = User.query.get(userID)
+
+    return render_template('strokeprediction.html', user=user)
+
+@views.route('/strokePrediction', methods=['GET','POST'])
+def predictStroke():
+    if request.method == 'POST':
+        # Retrieve input from the request
+        age = request.form['age']
+        hypertension = request.form['hypertension']  
+        heartdisease = request.form['heartdisease']
+        married = request.form['evermarried']       
+        worktype = request.form['worktype']
+        avgglucose = request.form['avgglucose']
+        bmi = request.form['bmi']
+
+
+        form_array = np.array([[age, hypertension, heartdisease, married, worktype, avgglucose, bmi]]).astype(float)
+        print(form_array)
+        prediction = strokeModel.predict(form_array)[0]
+        print(prediction)
+         # Retrieve the user ID from the session or wherever it's stored
+        userID = session.get('u_id')
+
+        # Fetch the user's data from the database
+        user = User.query.get(userID)
+
+        # Create a new Stroke object
+        stroke = Stroke(
+            s_userID=userID,
+            s_age=int(age),
+            s_hypertension=int(hypertension),
+            s_heartdisease=int(heartdisease),
+            s_married=int(married),
+            s_worktype=int(worktype),
+            s_avgglucose=float(avgglucose),
+            s_BMI=float(bmi),
+            s_stroke=int(prediction),
+            s_feedback=None  # Initialize feedback as None
+        )
+        # Add the Stroke object to the database session
+        db.session.add(stroke)
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        return redirect(url_for('views.strokeResult', user=user, prediction=prediction))
+        
+    return redirect(url_for('views.userdashboard'))
+
+@views.route('/strokeResult' , methods=['GET','POST'])
+def strokeResult():
+    # Retrieve the user ID from the session or wherever it's stored
+    userID = session.get('u_id')
+    # Retrieve the result from the query parameter
+    prediction = request.args.get('prediction')
+    # Fetch the user's data from the database
+    user = User.query.get(userID)
+
+    return render_template('strokeResult.html', user=user, prediction=int(prediction))
+
+@views.route('/StrokeResultFeedback' , methods=['GET','POST'])
+def strokeResultFeedback():
+    if request.method == 'POST':
+        # Retrieve the user ID from the session or wherever it's stored
+        userID = session.get('u_id')
+        
+        # Retrieve the feedback from the form
+        feedback = request.form['d_feedback']
+
+        # Fetch the user's data from the database
+        user = User.query.get(userID)
+
+        # Retrieve the latest Stroke record for the user
+        stroke = Stroke.query.filter_by(d_userID=userID).order_by(Stroke.d_id.desc()).first()
+        
+        # Update the stroke record with the user's feedback
+        stroke.s_feedback = feedback
+
+        # Commit the changes to the database
+        db.session.commit()
+
+        return redirect(url_for('views.userdashboard', user=user))  # Redirect to user dashboard after submitting feedback
+
     return render_template('userDashboard.html')
