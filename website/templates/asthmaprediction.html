@@ -57,52 +57,67 @@
                         <form method="POST" action="/asthmaPrediction">
                             <div class="form-group">
                                 <label for="age">Age:</label>
-                                <input type="number" class="form-control" name="age" id="age" placeholder="Enter age" required>
+                                <input type="number" class="form-control" name="age" id="age" placeholder="Enter your age" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sex">Gender:</label>
+                                <select class="form-control" name="sex" id="sex" required>
+                                    <option value="" disabled selected>Select your gender</option>
+                                    <option value="1">Male</option>
+                                    <option value="0">Female</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="sleeping">Sleeping Difficulty:</label>
                                 <select class="form-control" name="sleeping" id="sleeping" required>
                                     <option value="" disabled selected>Do you have difficulty sleeping?</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="chesttight">Chest Tightness:</label>
+                                <select class="form-control" name="chesttight" id="chesttight" required>
+                                    <option value="" disabled selected>Do you have chest tight?</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="breath">Shortness of Breath:</label>
                                 <select class="form-control" name="breath" id="breath" required>
                                     <option value="" disabled selected>Do you often feel shortness of breath?</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="cough">Cough:</label>
                                 <select class="form-control" name="cough" id="cough" required>
                                     <option value="" disabled selected>Do you have cough?</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="allergy">Allergies:</label>
                                 <select class="form-control" name="allergy" id="allergy" required>
                                     <option value="" disabled selected>Do you have allergy?</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="wheezing">Wheezing:</label>
                                 <select class="form-control" name="wheezing" id="wheezing" required>
                                     <option value="" disabled selected>Do you have wheezing?</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary">Predict</button>
                         </form>
                         <br><br>
-                        {{result_text}}
                     </div>
                 </div>
             </div>

@@ -9,6 +9,14 @@ import numpy as np
 
 views = Blueprint('views', __name__)
 
+# Load the scaler model from the pickle file
+with open('notebook/scStroke.pkl', 'rb') as file:
+    scStroke = pickle.load(file)
+
+# Load the scaler model from the pickle file
+with open('notebook/qtStroke.pkl', 'rb') as file:
+    qtStroke = pickle.load(file)
+
 with open('notebook/xgbAsthmaModel.pkl', 'rb') as file:
     asthmaModel = pickle.load(file)
 
@@ -196,49 +204,17 @@ def predictAsthma():
     if request.method == 'POST':
         # Retrieve input from the request
         age = request.form['age']
+        sex = request.form['sex']
+        sleeping = request.form['sleeping']
+        chesttight = request.form['chesttight']
+        breath = request.form['breath']
+        cough = request.form['cough']
+        allergy = request.form['allergy']
+        wheezing = request.form['wheezing']
 
-        getSleeping = request.form['sleeping']
-        if getSleeping.lower() == 'yes':
-            sleeping = 1
-        elif getSleeping.lower() == 'no':
-            sleeping = 0
-        else:
-            print("Error Occured") 
-
-        getBreath = request.form['breath']
-        if getBreath.lower() == 'yes':
-            breath = 1
-        elif getBreath.lower() == 'no':
-            breath = 0
-        else:
-            print("Error Occured")
-
-        getCough = request.form['cough']
-        if getCough.lower() == 'yes':
-            cough = 1
-        elif getCough.lower() == 'no':
-            cough = 0
-        else:
-            print("Error Occured") 
-
-        getAllergy = request.form['allergy']
-        if getAllergy.lower() == 'yes':
-            allergy = 1
-        elif getAllergy.lower() == 'no':
-            allergy = 0
-        else:
-            print("Error Occured") 
-
-        getWheezing = request.form['wheezing']
-        if getWheezing.lower() == 'yes':
-            wheezing = 1
-        elif getWheezing.lower() == 'no':
-            wheezing = 0
-        else:
-            print("Error Occured") 
-
-        form_array = np.array([[age, sleeping, breath, cough, allergy, wheezing]]).astype(int)
+        form_array = np.array([[age, sex, sleeping, breath, chesttight, cough, allergy, wheezing]]).astype(int)
         print(form_array)
+        # form_array = sc_model.transform(form_array)
         prediction = asthmaModel.predict(form_array)[0]
         print(prediction)
          # Retrieve the user ID from the session or wherever it's stored
@@ -251,7 +227,9 @@ def predictAsthma():
         asthma = Asthma(
             am_userID=userID,
             am_age=int(age),
+            am_sex=int(sex),
             am_sleeping=int(sleeping),
+            am_chesttight=int(chesttight),
             am_breath=int(breath),
             am_cough=int(cough),
             am_allergy=int(allergy),
@@ -415,6 +393,7 @@ def strokePredictionForm():
 def predictStroke():
     if request.method == 'POST':
         # Retrieve input from the request
+        sex = request.form['sex']
         age = request.form['age']
         hypertension = request.form['hypertension']  
         heartdisease = request.form['heartdisease']
@@ -422,12 +401,15 @@ def predictStroke():
         worktype = request.form['worktype']
         avgglucose = request.form['avgglucose']
         bmi = request.form['bmi']
+        smoking = request.form['smoking']
 
 
-        form_array = np.array([[age, hypertension, heartdisease, married, worktype, avgglucose, bmi]]).astype(float)
-        print(form_array)
-        prediction = strokeModel.predict(form_array)[0]
-        print(prediction)
+        form_array = np.array([[sex, age, hypertension, heartdisease, married, worktype, avgglucose, bmi, smoking]]).astype(float)
+        sc = scStroke.transform(form_array)
+
+        sc[0][6] = qtStroke[0].transform(sc[0][6].reshape(-1,1))
+        sc[0][7] = qtStroke[1].transform(sc[0][7].reshape(-1,1))
+        prediction = strokeModel.predict(sc)[0]
          # Retrieve the user ID from the session or wherever it's stored
         userID = session.get('u_id')
 
@@ -437,6 +419,7 @@ def predictStroke():
         # Create a new Stroke object
         stroke = Stroke(
             s_userID=userID,
+            s_sex=int(sex),
             s_age=int(age),
             s_hypertension=int(hypertension),
             s_heartdisease=int(heartdisease),
@@ -444,6 +427,7 @@ def predictStroke():
             s_worktype=int(worktype),
             s_avgglucose=float(avgglucose),
             s_BMI=float(bmi),
+            s_smoking=int(smoking),
             s_stroke=int(prediction),
             s_feedback=None  # Initialize feedback as None
         )
