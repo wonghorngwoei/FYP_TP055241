@@ -10,6 +10,18 @@ import numpy as np
 views = Blueprint('views', __name__)
 
 # Load the scaler model from the pickle file
+with open('notebook/scAsthma.pkl', 'rb') as file:
+    scAsthma = pickle.load(file)
+
+# # Load the scaler model from the pickle file
+# with open('notebook/scDiabetes.pkl', 'rb') as file:
+#     scDiabetes = pickle.load(file)
+
+# # Load the scaler model from the pickle file
+# with open('notebook/qtDiabetes.pkl', 'rb') as file:
+#     qtDiabetes = pickle.load(file)
+
+# Load the scaler model from the pickle file
 with open('notebook/scStroke.pkl', 'rb') as file:
     scStroke = pickle.load(file)
 
