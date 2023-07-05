@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, render_template, redirect, url_for, request, session, flash
+from flask import Flask, Blueprint, render_template, redirect, url_for, request, session, flash, jsonify
 from .models import User, Feedback, Admin, Asthma, Diabetes, Stroke
 from . import db
 import requests
@@ -59,8 +59,24 @@ def index():
     active_tab = request.args.get('active_tab', 'home')
     return render_template('userDashboard.html', active_tab=active_tab)
 
-@views.route('/search', methods=['POST'])
+
+# Find Nearby Hospital (User)
+@views.route('/findNearbyHospital', methods=['GET','POST'])
 def findNearbyHospital():
+    # Retrieve the user ID from the session or wherever it's stored
+    userID = session.get('u_id')
+    # Fetch the user's data from the database
+    user = User.query.get(userID)
+
+    return render_template('findNearbyHospital.html', user = user)
+
+
+@views.route('/search', methods=['POST'])
+def search():
+    # Retrieve the user ID from the session or wherever it's stored
+    userID = session.get('u_id')
+    # Fetch the user's data from the database
+    user = User.query.get(userID)
     query = request.form['query']
     api_key = 'AIzaSyDf-tSbLPvre8cFGB5IBGVK3PCwIAHxrJs'
     url = f'https://maps.googleapis.com/maps/api/place/textsearch/json?query=hospitals+near+{query}&key={api_key}'
@@ -92,7 +108,7 @@ def findNearbyHospital():
 
             hospitals.append({'name': name, 'address': address, 'phone_number': phone_number, 'opening_hours': opening_hours_formatted})
 
-    return render_template('results.html', hospitals=hospitals)
+    return render_template('findNearbyHospital.html', hospitals=hospitals, user = user)
 
 def format_opening_hours(opening_hours):
     days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -169,12 +185,9 @@ def admindashboard():
     # Retrieve the user ID from the session or wherever it's stored
     adminID = session.get('a_id')
 
-    users_feedback_data = User.query.join(Feedback).all()
-    print(users_feedback_data)
-
     # Fetch the user's data from the database
     admin = Admin.query.get(adminID)
-    return render_template('adminDashboard.html', admin = admin,data=users_feedback_data)
+    return render_template('adminDashboard.html', admin = admin)
 
 
 # Route for the edit profile page
@@ -199,6 +212,87 @@ def editAdminProfile(a_id):
     
     else:
         return render_template('adminDashboard.html', admin=admin)
+    
+# Manage User Account (Admin)
+@views.route('/manageUserAccount', methods=['GET','POST'])
+def getUserInfo():
+    # Retrieve the user ID from the session or wherever it's stored
+    adminID = session.get('a_id')
+
+    # Fetch the user's data from the database
+    user = User.query.all()
+    print(user)
+
+    # Fetch the user's data from the database
+    admin = Admin.query.get(adminID)
+    return render_template('manageUserAccount.html', admin = admin, user=user)
+
+@views.route('/delete_user/<int:u_id>', methods=['GET', 'POST'])
+def deleteUser(u_id):
+    # Retrieve the user ID from the session or wherever it's stored
+    adminID = session.get('a_id')
+    # Retrieve the user from the database based on the user_id
+    userdel = User.query.get_or_404(u_id)
+    # Retrieve all users from the database
+    user = User.query.all()
+    # Fetch the user's data from the database
+    admin = Admin.query.get(adminID)
+
+    try:
+        # Delete the user from the database
+        db.session.delete(userdel)
+        db.session.commit()
+        flash("User Deleted Successully.")
+
+        # Redirect to the user account page or any other desired page
+        return redirect(url_for('views.getUserInfo'))
+
+    except:
+        flash("Problem deleting the user account.")
+            # Redirect to the user account page or any other desired page
+        return redirect(url_for('views.getUserInfo'))
+
+
+# Route for the edit profile page
+@views.route('/edit_user/<int:u_id>', methods=['GET', 'POST'])
+def editUser(u_id):
+    # Retrieve the user from the database based on the user_id
+    user = User.query.get_or_404(u_id)
+
+    if request.method == 'POST':
+        # Update the user's information based on the form data
+        user.u_fname = request.form['u_fname']
+        user.u_lname = request.form['u_lname']
+        user.u_email = request.form['u_email']
+        user.u_age = request.form['u_age']
+        user.u_gender = request.form['u_gender']
+        user.u_hpnumber = request.form['u_hpnumber']
+        user.u_address = request.form['u_address']
+
+        # Save the changes to the database
+        db.session.commit()
+
+        # Redirect to the user account page or any other desired page
+        return redirect(url_for('views.getUserInfo'))
+
+    # Render the edit user form with the pre-filled user information
+    return render_template('manageUserAccount.html', user=user)
+
+# View Feedback (Admin)
+@views.route('/viewFeedback', methods=['GET'])
+def getUserFeedback():
+    # Retrieve the user ID from the session or wherever it's stored
+    adminID = session.get('a_id')
+
+    users_feedback_data = User.query.join(Feedback).all()
+    print(users_feedback_data)
+
+    # Fetch the user's data from the database
+    admin = Admin.query.get(adminID)
+    return render_template('viewFeedback.html', admin = admin,data=users_feedback_data)
+
+
+
 
 ##### Asthma Prediction #####
 @views.route('/asthmaPredictionForm' , methods=['GET','POST'])

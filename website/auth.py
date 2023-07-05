@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, flash, request, redirect, url_for, session
 from .models import User, Admin
+from website import mail
 from flask_mail import Message
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime, timedelta
 from . import db, mail
 import secrets
 
@@ -82,60 +82,64 @@ def sign_up():
 
     return render_template("homepage.html")
 
+def send_mail(user):
+    token=user.get_token()
+    msg=Message('Password Reset Request', recipients=[user.u_email], sender='noreply@ldpms.com')
+    msg.body=f'''
+    Hi {user.u_username},
+    
+    You have requested to reset your password. Please click on the following link to reset your password:
+    
+    {url_for('auth.reset_token', token=token, _external=True)}
+    
+    If you did not make this request, please ignore this email.
+    
+    Best regards,
+    Lifestyle Disease Prediction and Management System Team
+    '''
+    mail.send(msg)
+
 @auth.route('/ResetPW', methods=['GET', 'POST'])
 def reset_password():
     if request.method == 'POST':
         u_email = request.form.get('u_email')
         user = User.query.filter_by(u_email=u_email).first()
         print(user)
+        print(u_email)
         
         if user:
-            # Generate a reset token and set the expiration time
-            token = generate_reset_token()
-            expiration = datetime.utcnow() + timedelta(hours=1)
-            
-            # Update the user's reset token and expiration time
-            user.reset_token = token
-            user.reset_token_expiration = expiration
-            db.session.commit()
-            
-            # Send the password reset email with the token
-            send_password_reset_email(user, token)
-            flash('If an account with that email address exists, we have sent you an email with instructions to reset your password.')
+            send_mail(user)
+            flash('Reset Request Sent. Please Check Your Email.', 'success')
+            return redirect(url_for('views.homepage'))
         
-        else:
-            flash('User does not exist!')
-
-        return redirect(url_for('views.homepage'))
-    
     return render_template('homepage.html')
 
-@auth.route('/reset_password_confirm/<token>', methods=['GET', 'POST'])
-def reset_password_confirm(token):
-    user = User.query.filter_by(reset_token=token).first()
 
-    if not user or user.reset_token_expiration < datetime.utcnow():
-        flash('Invalid or expired reset token.')
-        return redirect(url_for('auth.reset_password'))
+@auth.route('/reset_password_confirm/<token>', methods=['GET', 'POST'])
+def reset_token(token):
+    user = User.verify_token(token)
+    
+    if user is None:
+        flash('Invalid or expired reset token.', 'warning')
+        return redirect(url_for('views.homepage'))
 
     if request.method == 'POST':
         password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
+        confirm_password = request.form.get('u_password')
 
         if password == confirm_password:
             # Update the user's password
-            user.u_password = generate_password_hash(password, method='sha256')
-            user.reset_token = None
-            user.reset_token_expiration = None
+            user.u_password = generate_password_hash(confirm_password, method='sha256')
             db.session.commit()
 
             flash('Your password has been successfully reset. You can now log in with your new password.')
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('views.homepage'))
         else:
             flash('Passwords do not match. Please try again.')
-            return redirect(url_for('auth.reset_password_confirm', token=token))
+        
 
-    return render_template('reset_password_confirm.html')
+    return render_template('confirmResetPW.html')
+
 
 def check_username_exists(u_username):
     # Query the User model to check if the username exists

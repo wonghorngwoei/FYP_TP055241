@@ -1,54 +1,164 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <!-- Google supported fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
-    <!-- Cascading Style Sheet -->
-    <link rel="stylesheet" type="text/css" href="static/css/style.css">
-    <title>Users Feedback</title>
-</head>
-<body>
-    <div class="container">
-        <h1>Users Feedback</h1>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>User First Name</th>
-                        <th>User Last Name</th>
-                        <th>User Email</th>
-                        <th>User Phone Number</th>
-                        <th>Feedback ID</th>
-                        <th>Feedback User ID</th>
-                        <th>Feedback</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for data_row in data %}
-                        {% for feedback in data_row.feedbacks %}
-                        <tr>
-                            <td>{{ data_row.u_fname }}</td>
-                            <td>{{ data_row.u_lname }}</td>
-                            <td>{{ data_row.u_email }}</td>
-                            <td>{{ data_row.u_hpnumber }}</td>
-                            <td>{{ feedback.f_id }}</td>
-                            <td>{{ feedback.f_userID }}</td>
-                            <td>{{ feedback.f_feedback }}</td>
-                            <td>{{ feedback.f_date }}</td>
-                        </tr>
-                        {% endfor %}
-                    {% endfor %}
-                </tbody>
-            </table>
-    </div>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Admin Dashboard</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <!-- Google supported fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+        <!-- Cascading Style Sheet -->
+        <link rel="stylesheet" type="text/css" href="static/css/style.css">
+        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    </head>
+    <body>
+        <!-- Include the modals -->
+        {% include 'logout.html' %}
+        <!-- Navigation bar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Lifestyle Disease Prediction and Management System</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#myProfileModal">My Profile</a>
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal" >Logout</a>
+                </form>
+            </div>
+        </nav>
+        
+        <!-- Side Bar -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-2" style="padding: 0;">
+                    <div class="nav flex-column nav-pills" aria-orientation="vertical">
+                        <a class="nav-link" href="{{ url_for('views.admindashboard') }}" aria-selected="true" style="margin-bottom: 15px;">Charts & Statistics</a>
+                        <a class="nav-link" href="{{ url_for('views.getUserInfo') }}"  aria-selected="false" style="margin-bottom: 15px;">Manage User Account</a>
+                        <a class="nav-link" href="#" aria-selected="false" style="margin-bottom: 15px;">View Prediction Report</a>
+                        <a class="nav-link active" href="{{ url_for('views.getUserFeedback') }}" aria-selected="false" style="margin-bottom: 15px;">View Feedback</a>
+                    </div>
+                </div>
+
+                <div class="col-sm-10">
+                    <div class="container">
+                        <h1>Users Feedback</h1>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>User First Name</th>
+                                        <th>User Last Name</th>
+                                        <th>User Email</th>
+                                        <th>User Phone Number</th>
+                                        <th>Feedback ID</th>
+                                        <th>Feedback User ID</th>
+                                        <th>Feedback</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for data_row in data %}
+                                        {% for feedback in data_row.feedbacks %}
+                                        <tr>
+                                            <td>{{ data_row.u_fname }}</td>
+                                            <td>{{ data_row.u_lname }}</td>
+                                            <td>{{ data_row.u_email }}</td>
+                                            <td>{{ data_row.u_hpnumber }}</td>
+                                            <td>{{ feedback.f_id }}</td>
+                                            <td>{{ feedback.f_userID }}</td>
+                                            <td>{{ feedback.f_feedback }}</td>
+                                            <td>{{ feedback.f_date }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+               <!-- My Profile Modal -->
+               <div class="modal fade" id="myProfileModal" tabindex="-1" role="dialog" aria-labelledby="myProfileModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="myProfileModalLabel">My Profile</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary" id="editProfileBtn" data-toggle="modal" data-target="#editProfileModal" data-dismiss="modal">Edit Profile</button>
+                                <button type="button" class="btn btn-primary" id="changePasswordBtn">Change Password</button>
+                            </div>
+                            <form>
+                                <div class="form-group">
+                                    <label for="a_username">Username</label>
+                                    <input type="text" class="form-control" id="a_username" value="{{ admin.a_username }}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="a_fname">First Name</label>
+                                    <input type="text" class="form-control" id="a_fname" value="{{ admin.a_fname }}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="a_lname">Last Name</label>
+                                    <input type="text" class="form-control" id="a_lname" value="{{ admin.a_lname }}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="a_email">Email</label>
+                                    <input type="email" class="form-control" id="a_email" value="{{ admin.a_email }}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="a_hpnumber">Phone Number</label>
+                                    <input type="tel" class="form-control" id="a_hpnumber" value="{{ admin.a_hpnumber }}" readonly>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Edit Profile Modal -->
+            <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editProfileModalLabel">Edit Admin Profile</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" action="/edit-aprofile/{{ admin.a_id }}">
+                                <div class="form-group">
+                                    <label for="a_fname">First Name</label>
+                                    <input type="text" class="form-control" name="a_fname" id="a_fname" value="{{ admin.a_fname }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="a_lname">Last Name</label>
+                                    <input type="text" class="form-control" name="a_lname" id="a_lname" value="{{ admin.a_lname }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="a_hpnumber">Phone Number</label>
+                                    <input type="tel" class="form-control" name="a_hpnumber" id="a_hpnumber" value="{{ admin.a_hpnumber }}">
+                                </div>
+                                <div class="form-group">
+                                    <p><input type="submit" class="btn btn-primary" value="Update Profile"></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
 </body>
 </html>

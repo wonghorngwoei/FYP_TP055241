@@ -1,7 +1,10 @@
 from . import db
+from website import app
 from flask_login import UserMixin
+from itsdangerous import TimedSerializer as Serializer, BadSignature
 from sqlalchemy.sql import func
 from datetime import datetime, timedelta
+import json
 
 class User(db.Model, UserMixin):
     __tablename__ = 'User'
@@ -20,9 +23,27 @@ class User(db.Model, UserMixin):
     feedbacks = db.relationship('Feedback', backref='user', lazy=True)
     asthma = db.relationship('Asthma', backref='user', lazy=True)
 
+    def get_token(self, expires_sec=300):
+        expires_at = datetime.utcnow() + timedelta(seconds=expires_sec)
+        serializer = Serializer(app.config['SECRET_KEY'])
+        token_data = {'u_id': self.u_id, 'expires_at': expires_at.strftime('%Y-%m-%d %H:%M:%S')}
+        token = serializer.dumps(token_data)
+        return token
+    
+    @staticmethod
+    def verify_token(token):
+        serial = Serializer(app.config['SECRET_KEY'])
+        try:
+            token_data = serial.loads(token)
+            user_id = token_data['u_id']
+            expires_at = datetime.strptime(token_data['expires_at'], '%Y-%m-%d %H:%M:%S')
+            if expires_at < datetime.utcnow():
+                return None
+            user = User.query.get(user_id)
+        except (BadSignature, KeyError):
+            return None
+        return user
 
-    reset_token = db.Column(db.String(150), nullable=True)
-    reset_token_expiration = db.Column(db.DateTime, nullable=True)
 
 
 
