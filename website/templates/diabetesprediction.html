@@ -60,7 +60,6 @@
                                 <label for="age">Age:</label>
                                 <input type="number" class="form-control" id="age" name="age" placeholder="Enter your age" required>
                             </div>
-
                             <div class="form-group">
                                 <label for="highChol">High Cholesterol:</label>
                                 <select class="form-control" id="highChol" name="highChol" required>
@@ -69,12 +68,58 @@
                                     <option value="1">Yes</option>
                                 </select>
                             </div>
-
                             <div class="form-group">
                                 <label for="bmi">BMI:</label>
                                 <input type="number" class="form-control" id="bmi" name="bmi" placeholder="Enter your body mass index" required>
                             </div>
-
+                            <div class="form-group">
+                                <label for="smoker">Smoker:</label>
+                                <select class="form-control" id="smoker" name="smoker" required>
+                                    <option value="" disabled selected>Have you smoked at least 100 cigarettes in your entire life? [Note: 5 packs = 100 cigarettes]</option>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="heartdisease">Heart Disease / Heart Attack:</label>
+                                <select class="form-control" id="heartdisease" name="heartdisease" required>
+                                    <option value="" disabled selected>Do you have coronary heart disease (CHD) or myocardial infarction (MI)</option>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="physactivity">Physical Activity:</label>
+                                <select class="form-control" id="physactivity" name="physactivity" required>
+                                    <option value="" disabled selected>Have you ever exercise in past 30 days?</option>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="fruits">Fruits:</label>
+                                <select class="form-control" id="fruits" name="fruits" required>
+                                    <option value="" disabled selected>Do you eat fruit everyday?</option>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="veggies">Veggies:</label>
+                                <select class="form-control" id="veggies" name="veggies" required>
+                                    <option value="" disabled selected>Do you eat vegetable everyday?</option>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="hvyalcoholconsump">Heavy Alcohol Consumption:</label>
+                                <select class="form-control" id="hvyalcoholconsump" name="hvyalcoholconsump" required>
+                                    <option value="" disabled selected>Are you heavy alcohol drinker? (adult men >=14 drinks per week and adult women>=7 drinks per week)</option>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
                             <div class="form-group">
                                 <label for="generalHealth">General Health:</label>
                                 <select class="form-control" id="generalHealth" name="generalHealth" required>
@@ -86,12 +131,22 @@
                                     <option value="5">Poor</option>
                                 </select>
                             </div>
-
                             <div class="form-group">
-                                <label for="physicalHealth">Physical Illness or Injury Days in Past 30 Days (1-30):</label>
-                                <input type="number" class="form-control" id="physicalHealth" name="physicalHealth" min="0" max="30" placeholder="How many days you have been injured in the past 30 days? If no injury, put 0." required>
+                                <label for="mentalHealth">Mental Health:</label>
+                                <input type="number" class="form-control" id="mentalHealth" name="mentalHealth" min="0" max="30" placeholder="Do you have poor mental health in the past 30 days? If no, put 0." required>
                             </div>
-
+                            <div class="form-group">
+                                <label for="physicalHealth">Physical Health:</label>
+                                <input type="number" class="form-control" id="physicalHealth" name="physicalHealth" min="0" max="30" placeholder="Do you have any physical illness or injuries in the past 30 days? If no, put 0." required>
+                            </div>
+                            <div class="form-group">
+                                <label for="stroke">Stroke:</label>
+                                <select class="form-control" id="stroke" name="stroke" required>
+                                    <option value="" disabled selected>Do you have stroke?</option>
+                                    <option value="0">No</option>
+                                    <option value="1">Yes</option>
+                                </select>
+                            </div>
                             <div class="form-group">
                                 <label for="highBP">High Blood Pressure:</label>
                                 <select class="form-control" id="highBP" name="highBP" required>

@@ -1,8 +1,10 @@
-from flask import Flask, Blueprint, render_template, redirect, url_for, request, session, flash, jsonify
+from flask import Blueprint, render_template, redirect, url_for, request, session, flash, Response
 from .models import User, Feedback, Admin, Asthma, Diabetes, Stroke
 from . import db
+from io import StringIO
 import requests
 import pickle
+import csv
 import numpy as np
 
 
@@ -13,13 +15,13 @@ views = Blueprint('views', __name__)
 with open('notebook/scAsthma.pkl', 'rb') as file:
     scAsthma = pickle.load(file)
 
-# # Load the scaler model from the pickle file
-# with open('notebook/scDiabetes.pkl', 'rb') as file:
-#     scDiabetes = pickle.load(file)
+# Load the scaler model from the pickle file
+with open('notebook/scDiabetes.pkl', 'rb') as file:
+    scDiabetes = pickle.load(file)
 
-# # Load the scaler model from the pickle file
-# with open('notebook/qtDiabetes.pkl', 'rb') as file:
-#     qtDiabetes = pickle.load(file)
+# Load the scaler model from the pickle file
+with open('notebook/qtDiabetes.pkl', 'rb') as file:
+    qtDiabetes = pickle.load(file)
 
 # Load the scaler model from the pickle file
 with open('notebook/scStroke.pkl', 'rb') as file:
@@ -291,7 +293,39 @@ def getUserFeedback():
     admin = Admin.query.get(adminID)
     return render_template('viewFeedback.html', admin = admin,data=users_feedback_data)
 
+# Export Feedback CSV
+@views.route('/exportFeedback', methods=['GET'])
+def exportFeedback():
+    # Get feedback data from the database
+    feedback_data = User.query.join(Feedback).all()
 
+    # Create a CSV string
+    csv_data = create_csv(feedback_data)
+
+    # Create a response with the CSV data
+    response = Response(csv_data, mimetype='text/csv')
+    response.headers.set('Content-Disposition', 'attachment', filename='feedback.csv')
+
+    return response
+
+def create_csv(feedback_data):
+    # Create a file-like object in memory
+    csv_data = StringIO()
+    csv_writer = csv.writer(csv_data)
+
+    # Write the header row
+    csv_writer.writerow(['User First Name', 'User Last Name', 'User Email', 'User Phone Number', 'Feedback ID', 'Feedback User ID', 'Feedback', 'Date'])
+
+    # Write the feedback data rows
+    for user in feedback_data:
+        for feedback in user.feedbacks:
+            csv_writer.writerow([user.u_fname, user.u_lname, user.u_email, user.u_hpnumber, feedback.f_id, feedback.f_userID, feedback.f_feedback, feedback.f_date])
+
+    # Get the CSV data as a string
+    csv_data.seek(0)
+    csv_string = csv_data.getvalue()
+
+    return csv_string
 
 
 ##### Asthma Prediction #####
@@ -409,12 +443,21 @@ def predictDiabetes():
         age = request.form['age']
         highChol = request.form['highChol']  
         bmi = request.form['bmi']
-        generalHealth = request.form['generalHealth']       
+        smoker = request.form['smoker']
+        heartdisease = request.form['heartdisease']
+        physactivity = request.form['physactivity']
+        fruits = request.form['fruits']
+        veggies = request.form['veggies']
+        hvyalcoholconsump = request.form['hvyalcoholconsump']
+        generalHealth = request.form['generalHealth']
+        mentalHealth = request.form['mentalHealth']
         physicalHealth = request.form['physicalHealth']
+        stroke = request.form['stroke']
         highBP = request.form['highBP']
 
 
-        form_array = np.array([[age, highChol, bmi, generalHealth, physicalHealth, highBP]]).astype(int)
+        form_array = np.array([[age, highChol, bmi, smoker, heartdisease, physactivity, fruits, veggies, 
+                                hvyalcoholconsump, generalHealth, mentalHealth, physicalHealth, stroke, highBP]]).astype(int)
         print(form_array)
         prediction = diabetesModel.predict(form_array)[0]
         print(prediction)
@@ -426,15 +469,23 @@ def predictDiabetes():
 
         # Create a new Diabetes object
         diabetes = Diabetes(
-            d_userID=userID,
-            d_age=int(age),
-            d_highchol=int(highChol),
-            d_BMI=int(bmi),
-            d_genhealth=int(generalHealth),
-            d_physhealth=int(physicalHealth),
-            d_highbp=int(highBP),
-            d_diabetes=int(prediction),
-            d_feedback=None,  # Initialize feedback as None
+            d_userID = userID,
+            d_age = int(age),
+            d_highchol = int(highChol),
+            d_BMI = int(bmi),
+            d_smoker = int(smoker),
+            d_heartdisease = int(heartdisease),
+            d_physactivity = int(physactivity),
+            d_fruits = int(fruits),
+            d_veggies = int(veggies),
+            d_hvyalcoholconsump = int(hvyalcoholconsump),
+            d_genhealth = int(generalHealth),
+            d_menthealth = int(mentalHealth),
+            d_physhealth = int(physicalHealth),
+            d_stroke = int(stroke),
+            d_highbp = int(highBP),
+            d_diabetes = int(prediction),
+            d_feedback = None,  # feedback as None as it will be updated by the user input after prediction result is out.
         )
         # Add the Diabetes object to the database session
         db.session.add(diabetes)
@@ -442,7 +493,7 @@ def predictDiabetes():
         # Commit the changes to the database
         db.session.commit()
 
-        return redirect(url_for('views.diabetesResult', user=user, prediction=prediction))
+        return redirect(url_for('views.diabetesResult', user=user, prediction=prediction, diabetes=diabetes))
         
     return redirect(url_for('views.userdashboard'))
 

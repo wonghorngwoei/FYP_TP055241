@@ -4,7 +4,6 @@ from flask_login import UserMixin
 from itsdangerous import TimedSerializer as Serializer, BadSignature
 from sqlalchemy.sql import func
 from datetime import datetime, timedelta
-import json
 
 class User(db.Model, UserMixin):
     __tablename__ = 'User'
@@ -43,8 +42,6 @@ class User(db.Model, UserMixin):
         except (BadSignature, KeyError):
             return None
         return user
-
-
 
 
 class Feedback(db.Model):
@@ -92,12 +89,21 @@ class Diabetes(db.Model):
     d_age = db.Column(db.Integer)
     d_highchol = db.Column(db.Integer)
     d_BMI = db.Column(db.Integer)
+    d_smoker = db.Column(db.Integer)
+    d_heartdisease = db.Column(db.Integer)
+    d_physactivity = db.Column(db.Integer)
+    d_fruits = db.Column(db.Integer)
+    d_veggies = db.Column(db.Integer)
+    d_hvyalcoholconsump = db.Column(db.Integer)
     d_genhealth = db.Column(db.Integer)
+    d_menthealth = db.Column(db.Integer)
     d_physhealth = db.Column(db.Integer)
+    d_stroke = db.Column(db.Integer)
     d_highbp = db.Column(db.Integer)
     d_diabetes = db.Column(db.Integer)
     d_feedback = db.Column(db.String(10000), nullable=True)
     d_date = db.Column(db.DateTime(timezone=True), default=func.now())
+
 
 class Stroke(db.Model):
     __tablename__ = 'Stroke'
