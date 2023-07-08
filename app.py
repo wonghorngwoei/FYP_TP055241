@@ -14,6 +14,7 @@ app = create_app()
 
 if __name__ == '__main__':
     app.run(debug=True)
+    session.clear()
 
 # @app.route('/')
 # def index():

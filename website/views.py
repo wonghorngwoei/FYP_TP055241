@@ -354,8 +354,9 @@ def predictAsthma():
 
         form_array = np.array([[age, sex, sleeping, breath, chesttight, cough, allergy, wheezing]]).astype(int)
         print(form_array)
-        # form_array = sc_model.transform(form_array)
-        prediction = asthmaModel.predict(form_array)[0]
+        sc_a = scAsthma.transform(form_array)
+        prediction = asthmaModel.predict(sc_a)[0]
+        prediction_percentage_true = asthmaModel.predict_proba(sc_a)[0,1]
         print(prediction)
          # Retrieve the user ID from the session or wherever it's stored
         userID = session.get('u_id')
@@ -383,7 +384,7 @@ def predictAsthma():
         # Commit the changes to the database
         db.session.commit()
 
-        return redirect(url_for('views.asthmaResult', user=user, prediction=prediction))
+        return redirect(url_for('views.asthmaResult', user=user, prediction=prediction, prediction_percentage_true=prediction_percentage_true))
         
     return redirect(url_for('views.userdashboard'))
 
@@ -393,10 +394,14 @@ def asthmaResult():
     userID = session.get('u_id')
     # Retrieve the result from the query parameter
     prediction = request.args.get('prediction')
+    
+
+    prediction_percentage_true = float(request.args.get('prediction_percentage_true'))
+
     # Fetch the user's data from the database
     user = User.query.get(userID)
 
-    return render_template('asthmaResult.html', user=user, prediction=int(prediction))
+    return render_template('asthmaResult.html', user=user, prediction=int(prediction), prediction_percentage_true=prediction_percentage_true)
 
 @views.route('/asthmaResultFeedback' , methods=['GET','POST'])
 def asthmaResultFeedback():
@@ -428,8 +433,8 @@ def asthmaResultFeedback():
 def diabetesPredictionForm():
     # Retrieve the user ID from the session or wherever it's stored
     userID = session.get('u_id')
-    # Retrieve the result from the query parameter
-    result = request.args.get('result')
+    # # Retrieve the result from the query parameter
+    # result = request.args.get('result')
 
     # Fetch the user's data from the database
     user = User.query.get(userID)
@@ -440,7 +445,35 @@ def diabetesPredictionForm():
 def predictDiabetes():
     if request.method == 'POST':
         # Retrieve input from the request
-        age = request.form['age']
+        getAge = int(request.form['age'])
+
+        if getAge >= 18 and getAge <= 24:
+            age = 1
+        elif getAge >= 25 and getAge <= 29:
+            age = 2
+        elif getAge >= 30 and getAge <= 34:
+            age = 3
+        elif getAge >= 35 and getAge <= 39:
+            age = 4
+        elif getAge >= 40 and getAge <= 44:
+            age = 5
+        elif getAge >= 45 and getAge <= 49:
+            age = 6
+        elif getAge >= 50 and getAge <= 54:
+            age = 7
+        elif getAge >= 55 and getAge <= 59:
+            age = 8
+        elif getAge >= 60 and getAge <= 64:
+            age = 9
+        elif getAge >= 65 and getAge <= 69:
+            age = 10
+        elif getAge >= 70 and getAge <= 74:
+            age = 11
+        elif getAge >= 75 and getAge <= 79:
+            age = 12
+        else:
+            age = 13
+
         highChol = request.form['highChol']  
         bmi = request.form['bmi']
         smoker = request.form['smoker']
@@ -450,16 +483,20 @@ def predictDiabetes():
         veggies = request.form['veggies']
         hvyalcoholconsump = request.form['hvyalcoholconsump']
         generalHealth = request.form['generalHealth']
-        mentalHealth = request.form['mentalHealth']
         physicalHealth = request.form['physicalHealth']
         stroke = request.form['stroke']
         highBP = request.form['highBP']
 
 
         form_array = np.array([[age, highChol, bmi, smoker, heartdisease, physactivity, fruits, veggies, 
-                                hvyalcoholconsump, generalHealth, mentalHealth, physicalHealth, stroke, highBP]]).astype(int)
+                                hvyalcoholconsump, generalHealth, physicalHealth, stroke, highBP]]).astype(int)
         print(form_array)
-        prediction = diabetesModel.predict(form_array)[0]
+        sc_d = scDiabetes.transform(form_array)
+
+        sc_d[0][2] = qtDiabetes[0].transform(sc_d[0][2].reshape(-1,1))
+        sc_d[0][10] = qtDiabetes[1].transform(sc_d[0][10].reshape(-1,1))
+        prediction = diabetesModel.predict(sc_d)[0]
+        prediction_percentage_true = diabetesModel.predict_proba(sc_d)[0,1]
         print(prediction)
          # Retrieve the user ID from the session or wherever it's stored
         userID = session.get('u_id')
@@ -480,7 +517,6 @@ def predictDiabetes():
             d_veggies = int(veggies),
             d_hvyalcoholconsump = int(hvyalcoholconsump),
             d_genhealth = int(generalHealth),
-            d_menthealth = int(mentalHealth),
             d_physhealth = int(physicalHealth),
             d_stroke = int(stroke),
             d_highbp = int(highBP),
@@ -493,7 +529,7 @@ def predictDiabetes():
         # Commit the changes to the database
         db.session.commit()
 
-        return redirect(url_for('views.diabetesResult', user=user, prediction=prediction, diabetes=diabetes))
+        return redirect(url_for('views.diabetesResult', user=user, prediction=prediction, diabetes=diabetes, prediction_percentage_true=prediction_percentage_true))
         
     return redirect(url_for('views.userdashboard'))
 
@@ -503,10 +539,12 @@ def diabetesResult():
     userID = session.get('u_id')
     # Retrieve the result from the query parameter
     prediction = request.args.get('prediction')
+
+    prediction_percentage_true = float(request.args.get('prediction_percentage_true'))
     # Fetch the user's data from the database
     user = User.query.get(userID)
 
-    return render_template('diabetesResult.html', user=user, prediction=int(prediction))
+    return render_template('diabetesResult.html', user=user, prediction=int(prediction), prediction_percentage_true=prediction_percentage_true)
 
 @views.route('/DiabetesResultFeedback' , methods=['GET','POST'])
 def diabetesResultFeedback():
@@ -539,7 +577,7 @@ def strokePredictionForm():
     # Retrieve the user ID from the session or wherever it's stored
     userID = session.get('u_id')
     # Retrieve the result from the query parameter
-    result = request.args.get('result')
+    # result = request.args.get('result')
 
     # Fetch the user's data from the database
     user = User.query.get(userID)
@@ -562,11 +600,12 @@ def predictStroke():
 
 
         form_array = np.array([[sex, age, hypertension, heartdisease, married, worktype, avgglucose, bmi, smoking]]).astype(float)
-        sc = scStroke.transform(form_array)
+        sc_s = scStroke.transform(form_array)
 
-        sc[0][6] = qtStroke[0].transform(sc[0][6].reshape(-1,1))
-        sc[0][7] = qtStroke[1].transform(sc[0][7].reshape(-1,1))
-        prediction = strokeModel.predict(sc)[0]
+        sc_s[0][6] = qtStroke[0].transform(sc_s[0][6].reshape(-1,1))
+        sc_s[0][7] = qtStroke[1].transform(sc_s[0][7].reshape(-1,1))
+        prediction = strokeModel.predict(sc_s)[0]
+        prediction_percentage_true = strokeModel.predict_proba(sc_s)[0,1]
          # Retrieve the user ID from the session or wherever it's stored
         userID = session.get('u_id')
 
@@ -594,7 +633,7 @@ def predictStroke():
         # Commit the changes to the database
         db.session.commit()
 
-        return redirect(url_for('views.strokeResult', user=user, prediction=prediction))
+        return redirect(url_for('views.strokeResult', user=user, prediction=prediction, prediction_percentage_true=prediction_percentage_true))
         
     return redirect(url_for('views.userdashboard'))
 
@@ -604,10 +643,11 @@ def strokeResult():
     userID = session.get('u_id')
     # Retrieve the result from the query parameter
     prediction = request.args.get('prediction')
+    prediction_percentage_true = float(request.args.get('prediction_percentage_true'))
     # Fetch the user's data from the database
     user = User.query.get(userID)
 
-    return render_template('strokeResult.html', user=user, prediction=int(prediction))
+    return render_template('strokeResult.html', user=user, prediction=int(prediction), prediction_percentage_true=prediction_percentage_true)
 
 @views.route('/StrokeResultFeedback' , methods=['GET','POST'])
 def strokeResultFeedback():
