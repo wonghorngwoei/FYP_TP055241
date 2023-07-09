@@ -136,9 +136,11 @@
         <!-- testing section -->
         <div class="container about-section">
             <h1>Find Nearby Hospitals</h1>
-            <form method="POST" action="/search">
-                <input type="text" name="query" placeholder="Enter a location">
-                <button type="submit">Search</button>
+            <form class="form-inline" method="POST" id="searchForm" action="/search">
+                <div class="form-group">
+                  <input type="text" class="form-control" name="query" placeholder="Enter a location">
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
             </form>
         </div> <br><br>
 

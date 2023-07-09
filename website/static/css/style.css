@@ -81,3 +81,11 @@ body{
 .about-reason {
     font-style: italic;
 }
+
+.sidebar {
+    position: sticky;
+    top: 0;
+    padding: 0;
+    height: 100vh;
+    overflow-y: auto;
+}

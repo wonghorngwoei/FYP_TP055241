@@ -7,8 +7,6 @@ import pickle
 import csv
 import numpy as np
 
-
-
 views = Blueprint('views', __name__)
 
 # Load the scaler model from the pickle file
@@ -280,6 +278,21 @@ def editUser(u_id):
     # Render the edit user form with the pre-filled user information
     return render_template('manageUserAccount.html', user=user)
 
+#View Prediction Report (Admin)
+@views.route('/viewReports', methods=['GET'])
+def viewPredictionReports():
+     # Retrieve the user ID from the session or wherever it's stored
+    adminID = session.get('a_id')
+    # Fetch the data for each report
+    asthma_reports = User.query.join(Asthma).all()
+    diabetes_reports = User.query.join(Diabetes).all()
+    stroke_reports = User.query.join(Stroke).all()
+
+    # Fetch the user's data from the database
+    admin = Admin.query.get(adminID)
+    return render_template('viewPredictionReport.html', admin=admin, asthma_reports=asthma_reports, diabetes_reports=diabetes_reports, stroke_reports=stroke_reports)
+
+
 # View Feedback (Admin)
 @views.route('/viewFeedback', methods=['GET'])
 def getUserFeedback():
@@ -351,6 +364,8 @@ def predictAsthma():
         cough = request.form['cough']
         allergy = request.form['allergy']
         wheezing = request.form['wheezing']
+        predTarget = request.form['predictionTarget']
+        refName = request.form['referenceName'] if predTarget == 'others' else None
 
         form_array = np.array([[age, sex, sleeping, breath, chesttight, cough, allergy, wheezing]]).astype(int)
         print(form_array)
@@ -377,6 +392,8 @@ def predictAsthma():
             am_wheezing=int(wheezing),
             am_asthma=int(prediction),
             am_feedback=None,  # Initialize feedback as None
+            am_predtarget=predTarget,
+            am_refname=refName
         )
         # Add the Asthma object to the database session
         db.session.add(asthma)
@@ -427,6 +444,41 @@ def asthmaResultFeedback():
         return redirect(url_for('views.userdashboard', user=user))  # Redirect to user dashboard after submitting feedback
 
     return render_template('userDashboard.html')
+
+# Export Asthma CSV
+@views.route('/exportAsthma', methods=['GET'])
+def exportAsthma():
+    # Get feedback data from the database
+    asthma_data = Asthma.query.all()
+
+    # Create a CSV string
+    csv_asthma = create_asthma_csv(asthma_data)
+
+    # Create a response with the CSV data
+    response = Response(csv_asthma, mimetype='text/csv')
+    response.headers.set('Content-Disposition', 'attachment', filename='asthma.csv')
+
+    return response
+
+def create_asthma_csv(asthma_data):
+    # Create a file-like object in memory
+    csv_asthma = StringIO()
+    csv_AsthmaWriter = csv.writer(csv_asthma)
+
+    # Write the header row
+    csv_AsthmaWriter.writerow(['am_id', 'am_userID', 'am_sex', 'am_age', 'am_sleeping', 'am_chesttight', 'am_breath', 
+                         'am_cough', 'am_allergy', 'am_wheezing', 'am_asthma', 'am_feedback', 'am_date'])
+    
+    # Write the asthma data rows
+    for asthma in asthma_data:
+        csv_AsthmaWriter.writerow([asthma.am_id, asthma.am_userID, asthma.am_sex, asthma.am_age, asthma.am_sleeping, asthma.am_chesttight, asthma.am_breath, 
+                             asthma.am_cough, asthma.am_allergy, asthma.am_wheezing, asthma.am_asthma, asthma.am_feedback, asthma.am_date])
+
+    # Get the CSV data as a string
+    csv_asthma.seek(0)
+    csv_asthmaString = csv_asthma.getvalue()
+
+    return csv_asthmaString
 
 ##### Diabetes Prediction #####
 @views.route('/diabetesPredictionForm' , methods=['GET','POST'])
@@ -486,6 +538,8 @@ def predictDiabetes():
         physicalHealth = request.form['physicalHealth']
         stroke = request.form['stroke']
         highBP = request.form['highBP']
+        predTarget = request.form['predictionTarget']
+        refName = request.form['referenceName'] if predTarget == 'others' else None
 
 
         form_array = np.array([[age, highChol, bmi, smoker, heartdisease, physactivity, fruits, veggies, 
@@ -522,6 +576,8 @@ def predictDiabetes():
             d_highbp = int(highBP),
             d_diabetes = int(prediction),
             d_feedback = None,  # feedback as None as it will be updated by the user input after prediction result is out.
+            d_predtarget=predTarget,
+            d_refname=refName
         )
         # Add the Diabetes object to the database session
         db.session.add(diabetes)
@@ -571,6 +627,41 @@ def diabetesResultFeedback():
 
     return render_template('userDashboard.html')
 
+# Export Diabetes CSV
+@views.route('/exportDiabetes', methods=['GET'])
+def exportDiabetes():
+    # Get feedback data from the database
+    diabetes_data = Diabetes.query.all()
+
+    # Create a CSV string
+    csv_diabetes = create_diabetes_csv(diabetes_data)
+
+    # Create a response with the CSV data
+    response = Response(csv_diabetes, mimetype='text/csv')
+    response.headers.set('Content-Disposition', 'attachment', filename='diabetes.csv')
+
+    return response
+
+def create_diabetes_csv(diabetes_data):
+    # Create a file-like object in memory
+    csv_diabetes = StringIO()
+    csv_DiabetesWriter = csv.writer(csv_diabetes)
+
+    # Write the header row
+    csv_DiabetesWriter.writerow(['d_id', 'd_userID', 'd_age', 'd_highchol', 'd_BMI', 'd_smoker', 'd_heartdisease', 'd_physactivity', 'd_fruits', 'd_veggies', 
+                         'd_hvyalcoholconsump', 'd_genhealth', 'd_physhealth', 'd_stroke', 'd_highbp', 'd_diabetes', 'd_feedback', 'd_date'])
+    
+    # Write the diabetes data rows
+    for diabetes in diabetes_data:
+        csv_DiabetesWriter.writerow([diabetes.d_id, diabetes.d_userID, diabetes.d_age, diabetes.d_highchol, diabetes.d_BMI, diabetes.d_smoker, diabetes.d_heartdisease, diabetes.d_physactivity, diabetes.d_fruits, diabetes.d_veggies, 
+                             diabetes.d_hvyalcoholconsump, diabetes.d_genhealth, diabetes.d_physhealth, diabetes.d_stroke, diabetes.d_highbp, diabetes.d_diabetes, diabetes.d_feedback, diabetes.d_date])
+
+    # Get the CSV data as a string
+    csv_diabetes.seek(0)
+    csv_diabetesString = csv_diabetes.getvalue()
+
+    return csv_diabetesString
+
 ##### Stroke Prediction #####
 @views.route('/strokePredictionForm' , methods=['GET','POST'])
 def strokePredictionForm():
@@ -597,6 +688,8 @@ def predictStroke():
         avgglucose = request.form['avgglucose']
         bmi = request.form['bmi']
         smoking = request.form['smoking']
+        predTarget = request.form['predictionTarget']
+        refName = request.form['referenceName'] if predTarget == 'others' else None
 
 
         form_array = np.array([[sex, age, hypertension, heartdisease, married, worktype, avgglucose, bmi, smoking]]).astype(float)
@@ -625,7 +718,9 @@ def predictStroke():
             s_BMI=float(bmi),
             s_smoking=int(smoking),
             s_stroke=int(prediction),
-            s_feedback=None  # Initialize feedback as None
+            s_feedback=None,  # Initialize feedback as None
+            s_predtarget=predTarget,
+            s_refname=refName
         )
         # Add the Stroke object to the database session
         db.session.add(stroke)
@@ -656,13 +751,13 @@ def strokeResultFeedback():
         userID = session.get('u_id')
         
         # Retrieve the feedback from the form
-        feedback = request.form['d_feedback']
+        feedback = request.form['s_feedback']
 
         # Fetch the user's data from the database
         user = User.query.get(userID)
 
         # Retrieve the latest Stroke record for the user
-        stroke = Stroke.query.filter_by(d_userID=userID).order_by(Stroke.d_id.desc()).first()
+        stroke = Stroke.query.filter_by(s_userID=userID).order_by(Stroke.s_id.desc()).first()
         
         # Update the stroke record with the user's feedback
         stroke.s_feedback = feedback
@@ -673,3 +768,38 @@ def strokeResultFeedback():
         return redirect(url_for('views.userdashboard', user=user))  # Redirect to user dashboard after submitting feedback
 
     return render_template('userDashboard.html')
+
+# Export Stroke CSV
+@views.route('/exportStroke', methods=['GET'])
+def exportStroke():
+    # Get feedback data from the database
+    stroke_data = Stroke.query.all()
+
+    # Create a CSV string
+    csv_stroke = create_stroke_csv(stroke_data)
+
+    # Create a response with the CSV data
+    response = Response(csv_stroke, mimetype='text/csv')
+    response.headers.set('Content-Disposition', 'attachment', filename='stroke.csv')
+
+    return response
+
+def create_stroke_csv(stroke_data):
+    # Create a file-like object in memory
+    csv_stroke = StringIO()
+    csv_StrokeWriter = csv.writer(csv_stroke)
+
+    # Write the header row
+    csv_StrokeWriter.writerow(['s_id', 's_userID', 's_sex', 's_age', 's_hypertension', 's_heartdisease', 's_married', 's_worktype', 's_avgglucose', 
+                         's_BMI', 's_smoking', 's_stroke', 's_feedback', 's_date'])
+    
+    # Write the stroke data rows
+    for stroke in stroke_data:
+        csv_StrokeWriter.writerow([stroke.s_id, stroke.s_userID, stroke.s_sex, stroke.s_age, stroke.s_hypertension, stroke.s_heartdisease, stroke.s_married, stroke.s_worktype, stroke.s_avgglucose, 
+                             stroke.s_BMI, stroke.s_smoking, stroke.s_stroke, stroke.s_feedback, stroke.s_date])
+
+    # Get the CSV data as a string
+    csv_stroke.seek(0)
+    csv_asthmaString = csv_stroke.getvalue()
+
+    return csv_asthmaString

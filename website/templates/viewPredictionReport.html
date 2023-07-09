@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Asthma Prediction</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <!-- Google supported fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+        <!-- Cascading Style Sheet -->
+        <link rel="stylesheet" type="text/css" href="static/css/style.css">
+        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+        <script>
+            $(document).ready(function(){
+                $('#myTabs a').click(function (e) {
+                    e.preventDefault();
+                    $(this).tab('show');
+                });
+            });
+        </script>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                const sidebar = document.getElementById('sidebar');
+                const sidebarTop = sidebar.offsetTop;
+
+                window.addEventListener('scroll', () => {
+                    if (window.pageYOffset >= sidebarTop) {
+                        sidebar.classList.add('fixed');
+                    } else {
+                        sidebar.classList.remove('fixed');
+                    }
+                });
+            });
+        </script>
+        <script>
+            function filterAsthmaTable() {
+                // Declare variables
+                var input, filter, table, tbody, tr, td, i, txtValue;
+                input = document.getElementById("asthmaSearchInput");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("asthmaTable");
+                tbody = table.getElementsByTagName("tbody");
+                tr = tbody[0].getElementsByTagName("tr");
+        
+                // Loop through all table rows, hide those that do not match the search query
+                for (i = 0; i < tr.length; i++) {
+                    var matchFound = false;
+                    td = tr[i].getElementsByTagName("td");
+                    for (var j = 0; j < td.length; j++) {
+                        if (td[j]) {
+                            txtValue = td[j].textContent || td[j].innerText;
+                            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                matchFound = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (matchFound) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        
+            function filterDiabetesTable() {
+                // Declare variables
+                var input, filter, table, tbody, tr, td, i, txtValue;
+                input = document.getElementById("diabetesSearchInput");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("diabetesTable");
+                tbody = table.getElementsByTagName("tbody");
+                tr = tbody[0].getElementsByTagName("tr");
+        
+                // Loop through all table rows, hide those that do not match the search query
+                for (i = 0; i < tr.length; i++) {
+                    var matchFound = false;
+                    td = tr[i].getElementsByTagName("td");
+                    for (var j = 0; j < td.length; j++) {
+                        if (td[j]) {
+                            txtValue = td[j].textContent || td[j].innerText;
+                            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                matchFound = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (matchFound) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        
+            function filterStrokeTable() {
+                // Declare variables
+                var input, filter, table, tbody, tr, td, i, txtValue;
+                input = document.getElementById("strokeSearchInput");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("strokeTable");
+                tbody = table.getElementsByTagName("tbody");
+                tr = tbody[0].getElementsByTagName("tr");
+        
+                // Loop through all table rows, hide those that do not match the search query
+                for (i = 0; i < tr.length; i++) {
+                    var matchFound = false;
+                    td = tr[i].getElementsByTagName("td");
+                    for (var j = 0; j < td.length; j++) {
+                        if (td[j]) {
+                            txtValue = td[j].textContent || td[j].innerText;
+                            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                matchFound = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (matchFound) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <!-- Include the modals -->
+        {% include 'logout.html' %}
+        <!-- Navigation bar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Lifestyle Disease Prediction and Management System</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#myProfileModal">My Profile</a>
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal" >Logout</a>
+                </form>
+            </div>
+        </nav>
+
+        <!-- Side Bar -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-2 sidebar" id="sidebar">
+                    <div class="nav flex-column nav-pills" aria-orientation="vertical">
+                        <a class="nav-link" href="{{ url_for('views.admindashboard') }}" aria-selected="true" style="margin-bottom: 15px;">Charts & Statistics</a>
+                        <a class="nav-link" href="{{ url_for('views.getUserInfo') }}"  aria-selected="false" style="margin-bottom: 15px;">Manage User Account</a>
+                        <a class="nav-link active" href="#" aria-selected="false" style="margin-bottom: 15px;">View Prediction Report</a>
+                        <a class="nav-link" href="{{ url_for('views.getUserFeedback') }}" aria-selected="false" style="margin-bottom: 15px;">View Feedback</a>
+                    </div>
+                </div>                
+
+                <div class="col-sm-10"><br>
+                    <nav>
+                        <div class="nav nav-tabs" id="myTabs" role="tablist">
+                            <a class="nav-item nav-link active" id="asthma-tab" data-toggle="tab" href="#asthma" role="tab" aria-controls="asthma" aria-selected="true">Asthma</a>
+                            <a class="nav-item nav-link" id="diabetes-tab" data-toggle="tab" href="#diabetes" role="tab" aria-controls="diabetes" aria-selected="false">Diabetes</a>
+                            <a class="nav-item nav-link" id="stroke-tab" data-toggle="tab" href="#stroke" role="tab" aria-controls="stroke" aria-selected="false">Stroke</a>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="asthma" role="tabpanel" aria-labelledby="asthma-tab"><br>
+                            <h2 class="d-flex justify-content-between align-items-center">
+                                <span>Asthma Reports</span>
+                                <a class="btn btn-success" href="{{ url_for('views.exportAsthma') }}">Export CSV</a>
+                            </h2>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="asthmaSearchInput" placeholder="Search..." onkeyup="filterAsthmaTable()">
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table" id="asthmaTable">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>User</th>
+                                            <th>Gender</th>
+                                            <th>Age</th>
+                                            <th>Difficulty Sleeping</th>
+                                            <th>Chest Tightness</th>
+                                            <th>Short of Breath</th>
+                                            <th>Cough</th>
+                                            <th>Allergy</th>
+                                            <th>Wheezing</th>
+                                            <th>Asthma</th>
+                                            <th>Prediction Feedback</th>
+                                            <th>Prediction Date</th>
+                                            <th>Prediction Target | Reference Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user_a in asthma_reports %}
+                                            {% for asthma in user_a.asthma %}
+                                            <tr>
+                                                <td>{{ asthma.am_id }}</td>
+                                                <td>{{ user_a.u_username }}</td>
+                                                <td>{% if asthma.am_sex == 1 %}Male{% else %}Female{% endif %}</td>
+                                                <td>{{ asthma.am_age }}</td>
+                                                <td>{% if asthma.am_sleeping == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if asthma.am_chesttight == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if asthma.am_breath == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if asthma.am_cough == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if asthma.am_allergy == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if asthma.am_wheezing == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if asthma.am_asthma == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{{ asthma.am_feedback }}</td>
+                                                <td>{{ asthma.am_date }}</td>
+                                                <td>{{ asthma.am_predtarget }} | {{ asthma.am_refname }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="diabetes" role="tabpanel" aria-labelledby="diabetes-tab"><br>
+                            <h2 class="d-flex justify-content-between align-items-center">
+                                <span>Diabetes Reports</span>
+                                <a class="btn btn-success" href="{{ url_for('views.exportDiabetes') }}">Export CSV</a>
+                            </h2>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="diabetesSearchInput" placeholder="Search..." onkeyup="filterDiabetesTable()">
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table" id="diabetesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>User</th>
+                                            <th>Age</th>
+                                            <th>High Cholesterol</th>
+                                            <th>Body Mass Index</th>
+                                            <th>Smoker</th>
+                                            <th>Heart Disease</th>
+                                            <th>Physical Activity</th>
+                                            <th>Fruits</th>
+                                            <th>Veggies</th>
+                                            <th>Heavy Alcohol Consumption</th>
+                                            <th>General Health</th>
+                                            <th>Physical Health</th>
+                                            <th>Stroke</th>
+                                            <th>High Blood Pressure</th>
+                                            <th>Diabetes</th>
+                                            <th>Prediction Feedback</th>
+                                            <th>Prediction Date</th>
+                                            <th>Prediction Target | Reference Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user_d in diabetes_reports %}
+                                            {% for diabetes in user_d.diabetes %}
+                                            <tr>
+                                                <td>{{ diabetes.d_id }}</td>
+                                                <td>{{ user_d.u_username }}</td>
+                                                <td>{{ diabetes.d_age }}</td>
+                                                <td>{% if diabetes.d_highchol == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{{ diabetes.d_BMI }}</td>
+                                                <td>{% if diabetes.d_smoker == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if diabetes.d_heartdisease == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if diabetes.d_physactivity == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if diabetes.d_fruits == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if diabetes.d_veggies == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if diabetes.d_hvyalcoholconsump == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>
+                                                    {% if diabetes.d_genhealth == 1 %}
+                                                        Excellent
+                                                    {% elif diabetes.d_genhealth == 2 %}
+                                                        Very Good
+                                                    {% elif diabetes.d_genhealth == 3 %}
+                                                        Good
+                                                    {% elif diabetes.d_genhealth == 4 %}
+                                                        Fair
+                                                    {% else %}
+                                                        Poor
+                                                    {% endif %}
+                                                </td>
+                                                <td>{% if diabetes.d_physhealth == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if diabetes.d_stroke == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if diabetes.d_highbp == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if diabetes.d_diabetes == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{{ diabetes.d_feedback }}</td>
+                                                <td>{{ diabetes.d_date }}</td>
+                                                <td>{{ diabetes.d_predtarget }} | {{ diabetes.d_refname }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="stroke" role="tabpanel" aria-labelledby="stroke-tab"><br>
+                            <h2 class="d-flex justify-content-between align-items-center">
+                                <span>Stroke Reports</span>
+                                <a class="btn btn-success" href="{{ url_for('views.exportStroke') }}">Export CSV</a>
+                            </h2>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="strokeSearchInput" placeholder="Search..." onkeyup="filterStrokeTable()">
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table" id="strokeTable">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>User</th>
+                                            <th>Gender</th>
+                                            <th>Age</th>
+                                            <th>Hypertension</th>
+                                            <th>Heart Disease</th>
+                                            <th>Married</th>
+                                            <th>Work Type</th>
+                                            <th>Glucose Level</th>
+                                            <th>Body Mass Index</th>
+                                            <th>Smoker</th>
+                                            <th>Stroke</th>
+                                            <th>Prediction Feedback</th>
+                                            <th>Prediction Date</th>
+                                            <th>Prediction Target | Reference Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user_s in stroke_reports %}
+                                            {% for stroke in user_s.stroke %}
+                                            <tr>
+                                                <td>{{ stroke.s_id }}</td>
+                                                <td>{{ user_s.u_username }}</td>
+                                                <td>{{ stroke.s_sex }}</td>
+                                                <td>{{ stroke.s_age }}</td>
+                                                <td>{% if stroke.s_hypertension == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if stroke.s_heartdisease == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if stroke.s_married == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if stroke.s_worktype == 0 %}
+                                                    Never Worked
+                                                {% elif stroke.s_worktype == 1 %}
+                                                    Children
+                                                {% elif stroke.s_worktype == 2 %}
+                                                    Govt Job
+                                                {% elif stroke.s_worktype == 3 %}
+                                                    Self-employed
+                                                {% else %}
+                                                    Private
+                                                {% endif %}</td>
+                                                <td>{{ stroke.s_avgglucose }}</td>
+                                                <td>{{ stroke.s_BMI }}</td>
+                                                <td>{% if stroke.s_smoking == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{% if stroke.s_stroke == 1 %}Yes{% else %}No{% endif %}</td>
+                                                <td>{{ stroke.s_feedback }}</td>
+                                                <td>{{ stroke.s_date }}</td>
+                                                <td>{{ stroke.s_predtarget }} | {{ stroke.s_refname }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Profile Modal -->
+            <div class="modal fade" id="myProfileModal" tabindex="-1" role="dialog" aria-labelledby="myProfileModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="myProfileModalLabel">My Profile</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary" id="editProfileBtn" data-toggle="modal" data-target="#editProfileModal" data-dismiss="modal">Edit Profile</button>
+                                <button type="button" class="btn btn-primary" id="changePasswordBtn">Change Password</button>
+                            </div>
+                            <form>
+                                <div class="form-group">
+                                    <label for="a_username">Username</label>
+                                    <input type="text" class="form-control" id="a_username" value="{{ admin.a_username }}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="a_fname">First Name</label>
+                                    <input type="text" class="form-control" id="a_fname" value="{{ admin.a_fname }}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="a_lname">Last Name</label>
+                                    <input type="text" class="form-control" id="a_lname" value="{{ admin.a_lname }}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="a_email">Email</label>
+                                    <input type="email" class="form-control" id="a_email" value="{{ admin.a_email }}" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="a_hpnumber">Phone Number</label>
+                                    <input type="tel" class="form-control" id="a_hpnumber" value="{{ admin.a_hpnumber }}" readonly>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Profile Modal -->
+            <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editProfileModalLabel">Edit Admin Profile</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" action="/edit-aprofile/{{ admin.a_id }}">
+                                <div class="form-group">
+                                    <label for="a_fname">First Name</label>
+                                    <input type="text" class="form-control" name="a_fname" id="a_fname" value="{{ admin.a_fname }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="a_lname">Last Name</label>
+                                    <input type="text" class="form-control" name="a_lname" id="a_lname" value="{{ admin.a_lname }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="a_hpnumber">Phone Number</label>
+                                    <input type="tel" class="form-control" name="a_hpnumber" id="a_hpnumber" value="{{ admin.a_hpnumber }}">
+                                </div>
+                                <div class="form-group">
+                                    <p><input type="submit" class="btn btn-primary" value="Update Profile"></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </body>
+</html>

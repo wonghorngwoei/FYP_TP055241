@@ -16,6 +16,38 @@
         <!-- Cascading Style Sheet -->
         <link rel="stylesheet" type="text/css" href="static/css/style.css">
         <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+        <script>
+            function filterTable() {
+                // Declare variables
+                var input, filter, table, tbody, tr, td, i, txtValue;
+                input = document.getElementById("searchInput");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("feedbackTable");
+                tbody = table.getElementsByTagName("tbody");
+                tr = tbody[0].getElementsByTagName("tr");
+        
+                // Loop through all table rows, hide those that do not match the search query
+                for (i = 0; i < tr.length; i++) {
+                    var matchFound = false;
+                    td = tr[i].getElementsByTagName("td");
+                    for (var j = 0; j < td.length; j++) {
+                        if (td[j]) {
+                            txtValue = td[j].textContent || td[j].innerText;
+                            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                matchFound = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (matchFound) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        </script>
+        
     </head>
     <body>
         <!-- Include the modals -->
@@ -39,20 +71,24 @@
         <!-- Side Bar -->
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-2" style="padding: 0;">
+                <div class="col-sm-2 sidebar" id="sidebar">
                     <div class="nav flex-column nav-pills" aria-orientation="vertical">
                         <a class="nav-link" href="{{ url_for('views.admindashboard') }}" aria-selected="true" style="margin-bottom: 15px;">Charts & Statistics</a>
                         <a class="nav-link" href="{{ url_for('views.getUserInfo') }}"  aria-selected="false" style="margin-bottom: 15px;">Manage User Account</a>
-                        <a class="nav-link" href="#" aria-selected="false" style="margin-bottom: 15px;">View Prediction Report</a>
+                        <a class="nav-link" href="{{ url_for('views.viewPredictionReports') }}" aria-selected="false" style="margin-bottom: 15px;">View Prediction Report</a>
                         <a class="nav-link active" href="{{ url_for('views.getUserFeedback') }}" aria-selected="false" style="margin-bottom: 15px;">View Feedback</a>
                     </div>
                 </div>
 
                 <div class="col-sm-10">
-                    <div class="container">
+                    <div class="container-fluid"><br>
                         <h1>Users Feedback</h1>
-                        <a class="btn btn-primary" href="{{ url_for('views.exportFeedback') }}">Export CSV</a><br><br>
-                            <table class="table table-striped">
+                        <a class="btn btn-success" href="{{ url_for('views.exportFeedback') }}">Export CSV</a><br><br>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="feedbackTable">
                                 <thead>
                                     <tr>
                                         <th>User First Name</th>
@@ -82,6 +118,7 @@
                                     {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
                     </div>
                 </div>
             </div>

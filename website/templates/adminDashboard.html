@@ -39,11 +39,11 @@
         <!-- Side Bar -->
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-2" style="padding: 0;">
+                <div class="col-sm-2 sidebar" id="sidebar">
                     <div class="nav flex-column nav-pills" aria-orientation="vertical">
                         <a class="nav-link active" href="#" aria-selected="true" style="margin-bottom: 15px;">Charts & Statistics</a>
                         <a class="nav-link" href="{{ url_for('views.getUserInfo') }}"  aria-selected="false" style="margin-bottom: 15px;">Manage User Account</a>
-                        <a class="nav-link" href="#" aria-selected="false" style="margin-bottom: 15px;">View Prediction Report</a>
+                        <a class="nav-link" href="{{ url_for('views.viewPredictionReports') }}" aria-selected="false" style="margin-bottom: 15px;">View Prediction Report</a>
                         <a class="nav-link" href="{{ url_for('views.getUserFeedback') }}" aria-selected="false" style="margin-bottom: 15px;">View Feedback</a>
                     </div>
                 </div>

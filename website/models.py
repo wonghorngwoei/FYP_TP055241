@@ -21,6 +21,8 @@ class User(db.Model, UserMixin):
     u_usertype = db.Column(db.String(255))
     feedbacks = db.relationship('Feedback', backref='user', lazy=True)
     asthma = db.relationship('Asthma', backref='user', lazy=True)
+    diabetes = db.relationship('Diabetes', backref='user', lazy=True)
+    stroke = db.relationship('Stroke', backref='user', lazy=True)
 
     def get_token(self, expires_sec=300):
         expires_at = datetime.utcnow() + timedelta(seconds=expires_sec)
@@ -80,6 +82,8 @@ class Asthma(db.Model):
     am_asthma = db.Column(db.Integer)
     am_feedback = db.Column(db.String(10000), nullable=True)
     am_date = db.Column(db.DateTime(timezone=True), default=func.now())
+    am_predtarget = db.Column(db.String(20))
+    am_refname = db.Column(db.String(255), nullable=True)
 
 class Diabetes(db.Model):
     __tablename__ = 'Diabetes'
@@ -96,13 +100,14 @@ class Diabetes(db.Model):
     d_veggies = db.Column(db.Integer)
     d_hvyalcoholconsump = db.Column(db.Integer)
     d_genhealth = db.Column(db.Integer)
-    d_menthealth = db.Column(db.Integer)
     d_physhealth = db.Column(db.Integer)
     d_stroke = db.Column(db.Integer)
     d_highbp = db.Column(db.Integer)
     d_diabetes = db.Column(db.Integer)
     d_feedback = db.Column(db.String(10000), nullable=True)
     d_date = db.Column(db.DateTime(timezone=True), default=func.now())
+    d_predtarget = db.Column(db.String(20))
+    d_refname = db.Column(db.String(255), nullable=True)
 
 
 class Stroke(db.Model):
@@ -122,3 +127,7 @@ class Stroke(db.Model):
     s_stroke = db.Column(db.Integer)
     s_feedback = db.Column(db.String(10000), nullable=True)
     s_date = db.Column(db.DateTime(timezone=True), default=func.now())
+    s_predtarget = db.Column(db.String)
+    s_refname = db.Column(db.String, nullable=True)
+    s_predtarget = db.Column(db.String(20))
+    s_refname = db.Column(db.String(255), nullable=True)

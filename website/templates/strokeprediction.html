@@ -17,6 +17,63 @@
         <!-- Cascading Style Sheet -->
         <link rel="stylesheet" type="text/css" href="static/css/style.css">
         <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var predictionTarget = document.querySelectorAll('input[name="predictionTarget"]');
+                var referenceNameGroup = document.getElementById('referenceNameGroup');
+                var referenceNameInput = document.getElementById('referenceName');
+        
+                for (var i = 0; i < predictionTarget.length; i++) {
+                    predictionTarget[i].addEventListener('change', function() {
+                        if (this.value === 'Others') {
+                            referenceNameGroup.style.display = 'block';
+                            referenceNameInput.required = true;
+                        } else {
+                            referenceNameGroup.style.display = 'none';
+                            referenceNameInput.required = false;
+                        }
+                    });
+                }
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+              // Auto-fill age and gender for "myself" prediction target
+              var predictionTarget = $('input[name="predictionTarget"]');
+              var ageInput = $('#age');
+              var sexInput = $('#sex');
+              var age = "{{ user.u_age }}";
+              var gender = "{{ user.u_gender }}";
+          
+              // Store gender value in data attribute
+              sexInput.data('gender', gender);
+          
+              function updateFields() {
+                if (predictionTarget.filter(':checked').val() === 'Myself') {
+                  ageInput.val(age);
+                  sexInput.val(sexInput.data('gender'));
+                } else {
+                  ageInput.val('');
+                  sexInput.val('');
+                }
+              }
+          
+              // Attach event listener to prediction target
+              predictionTarget.on('change', function() {
+                updateFields();
+              });
+          
+              // Trigger initial update on page load
+              updateFields();
+          
+              // Select the correct gender option
+              if (sexInput.data('gender') === 'Male') {
+                sexInput.val('1');
+              } else if (sexInput.data('gender') === 'Female') {
+                sexInput.val('0');
+              }
+            });
+        </script>
     </head>
     <body>
         <!-- Include the modals -->
@@ -40,7 +97,7 @@
         <!-- Side Bar -->
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-2" style="padding: 0;">
+                <div class="col-sm-2 sidebar" id="sidebar">
                     <div class="nav flex-column nav-pills" aria-orientation="vertical">
                         <a class="nav-link" href="{{ url_for('views.userdashboard') }}" aria-selected="true" style="margin-bottom: 15px;">Home</a>
                         <a class="nav-link" href="{{ url_for('views.diabetesPredictionForm') }}"  aria-selected="false" style="margin-bottom: 15px;">Diabetes Prediction</a>
@@ -52,9 +109,24 @@
                 </div>
 
                 <div class="col-sm-10">
-                    <div class="container">
+                    <div class="container"><br>
                         <h1 class="text-center">Stroke Prediction</h1>
                         <form method="POST" action="/strokePrediction">
+                            <div class="form-group">
+                                <label for="predictionTarget">Prediction Target:</label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="predictionTarget" id="Myself" value="Myself" checked>
+                                    <label class="form-check-label" for="Myself">Predict for myself</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="predictionTarget" id="Others" value="Others">
+                                    <label class="form-check-label" for="Others">Predict for others</label>
+                                </div>
+                            </div>
+                            <div class="form-group" id="referenceNameGroup" style="display: none;">
+                                <label for="referenceName">Reference Name:</label>
+                                <input type="text" class="form-control" name="referenceName" id="referenceName" placeholder="Enter reference name">
+                            </div>
                             <div class="form-group">
                                 <label for="sex">Gender:</label>
                                 <select class="form-control" id="sex" name="sex" required>
@@ -92,7 +164,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="work-type">Work Type:</label>
+                                <label for="worktype">Work Type:</label>
                                 <select class="form-control" id="worktype" name="worktype" required>
                                     <option value="" disabled selected>Select the type of work.</option>
                                     <option value="0">Never Worked</option>
@@ -118,7 +190,9 @@
                                     <option value="0">No</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Predict</button>
+                            </div>
                         </form>
                     </div>
                 </div>
