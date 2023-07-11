@@ -127,7 +127,5 @@ class Stroke(db.Model):
     s_stroke = db.Column(db.Integer)
     s_feedback = db.Column(db.String(10000), nullable=True)
     s_date = db.Column(db.DateTime(timezone=True), default=func.now())
-    s_predtarget = db.Column(db.String)
-    s_refname = db.Column(db.String, nullable=True)
     s_predtarget = db.Column(db.String(20))
     s_refname = db.Column(db.String(255), nullable=True)

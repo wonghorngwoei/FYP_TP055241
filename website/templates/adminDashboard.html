@@ -16,6 +16,10 @@
         <!-- Cascading Style Sheet -->
         <link rel="stylesheet" type="text/css" href="static/css/style.css">
         <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+        <!-- Add Chart.js library -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- Add your charts JavaScript code -->
+        <script src="js/charts.js"></script>
     </head>
     <body>
         <!-- Include the modals -->
@@ -47,11 +51,152 @@
                         <a class="nav-link" href="{{ url_for('views.getUserFeedback') }}" aria-selected="false" style="margin-bottom: 15px;">View Feedback</a>
                     </div>
                 </div>
+                <div class="col-sm-10"><br>
+                    <div class="container-fluid">
+                        <h1>Chart and Statistics</h1>
+                        <!-- Add statistics section -->
+                        <div class="statistics">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="border-box shadow standard-box">
+                                        <div class="box-content">
+                                            <h2 style="font-size: 38px;">{{ total_users }}</h2>
+                                            <p style="font-size: 16px; margin-top: -10px;">Total Users</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="border-box shadow standard-box">
+                                        <div class="box-content">
+                                            <h2 style="font-size: 38px;">{{ total_predictions_count }}</h2>
+                                            <p style="font-size: 16px; margin-top: -10px;">Total Prediction</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="border-box shadow standard-box">
+                                        <div class="box-content">
+                                            <h2 style="font-size: 38px;">{{ feedback_count }}</h2>
+                                            <p style="font-size: 16px; margin-top: -10px;">Total Feedback</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="border-box shadow standard-box">
+                                        <div class="box-content">
+                                            <h2 style="font-size: 38px;">{{ asthma_count }}</h2>
+                                            <p style="font-size: 16px; margin-top: -10px;">Asthma Predictions Count</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="border-box shadow standard-box">
+                                        <div class="box-content">
+                                            <h2 style="font-size: 38px;">{{ diabetes_count }}</h2>
+                                            <p style="font-size: 16px; margin-top: -10px;">Diabetes Predictions Count</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="border-box shadow standard-box">
+                                        <div class="box-content">
+                                            <h2 style="font-size: 38px;">{{ stroke_count }}</h2>
+                                            <p style="font-size: 16px; margin-top: -10px;">Stroke Predictions Count</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br><br>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <nav>
+                                        <div class="nav nav-tabs" id="myTabs" role="tablist">
+                                            <a class="nav-item nav-link active" id="asthma-tab" data-toggle="tab" href="#asthma" role="tab" aria-controls="asthma" aria-selected="true">Asthma</a>
+                                            <a class="nav-item nav-link" id="diabetes-tab" data-toggle="tab" href="#diabetes" role="tab" aria-controls="diabetes" aria-selected="false">Diabetes</a>
+                                            <a class="nav-item nav-link" id="stroke-tab" data-toggle="tab" href="#stroke" role="tab" aria-controls="stroke" aria-selected="false">Stroke</a>
+                                        </div>
+                                    </nav>
+                                    <div class="tab-content">
+                                        <div class="tab-pane fade" id="diabetes" role="tabpanel" aria-labelledby="diabetes-tab">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <canvas id="diabetesPieChart"></canvas>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <canvas id="diabetesBMIChart"></canvas>
+                                                </div>
+                                            </div>
+                                            <br><br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <canvas id="diabetesCholesterolChart"></canvas>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <canvas id="highbpChart"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade show active" id="asthma" role="tabpanel" aria-labelledby="asthma-tab">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <canvas id="commonSymptomsChart"></canvas>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <canvas id="asthmaSexChart"></canvas>
+                                                </div>
+                                            </div>
+                                            <br><br>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <canvas id="ageDistributionChart2"></canvas>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <canvas id="ageDistributionChart1"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="stroke" role="tabpanel" aria-labelledby="stroke-tab">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <canvas id="workTypeChart"></canvas>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <canvas id="s_ageDistributionChart"></canvas>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <canvas id="strokeBMIChart_t"></canvas>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <canvas id="strokeBMIChart_f"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="shadow fixed-box-vertical float-right">
+                                        <div class="box-content">
+                                            <h3>Recent Users:</h3>
+                                            <ul id="recentUsersList">
+                                                {% for user in recent_users %}
+                                                    <li>{{ user.u_fname }} {{ user.u_lname }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>     
+                </div>
             </div>
         </div>
 
-        
-        
         <!-- My Profile Modal -->
         <div class="modal fade" id="myProfileModal" tabindex="-1" role="dialog" aria-labelledby="myProfileModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -65,7 +210,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <button type="button" class="btn btn-primary" id="editProfileBtn" data-toggle="modal" data-target="#editProfileModal" data-dismiss="modal">Edit Profile</button>
-                            <button type="button" class="btn btn-primary" id="changePasswordBtn">Change Password</button>
+                            <button type="button" class="btn btn-primary" id="changePasswordBtn"data-toggle="modal" data-target="#changePasswordModal" data-dismiss="modal" >Change Password</button>
                         </div>
                         <form>
                             <div class="form-group">
@@ -87,6 +232,39 @@
                             <div class="form-group">
                                 <label for="a_hpnumber">Phone Number</label>
                                 <input type="tel" class="form-control" id="a_hpnumber" value="{{ admin.a_hpnumber }}" readonly>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Password Modal -->
+        <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="/change-password/{{ admin.a_id }}">
+                            <div class="form-group">
+                                <label for="a_password">Current Password</label>
+                                <input type="text" class="form-control" name="a_password" id="a_password" placeholder="Enter your current password">
+                            </div>
+                            <div class="form-group">
+                                <label for="a_newPW">New Password</label>
+                                <input type="text" class="form-control" name="a_newPW" id="a_newPW" placeholder="Enter your new password">
+                            </div>
+                            <div class="form-group">
+                                <label for="a_newPWconfirmed">Confirm New Password</label>
+                                <input type="text" class="form-control" name="a_newPWconfirmed" id="a_newPWconfirmed" placeholder="Enter your new password again">
+                            </div>
+                            <div class="form-group">
+                                <p><input type="submit" class="btn btn-primary" value="Change Password"></p>
                             </div>
                         </form>
                     </div>
@@ -127,6 +305,513 @@
             </div>
         </div>
 
+        <script>
+            // Get the data for the chart from Flask
+            const ageGroups = [
+            '18-24', '25-29', '30-34', '35-39', '40-44', '45-49',
+            '50-54', '55-59', '60-64', '65-69', '70-74', '75-79', '80+'
+            ];
 
+            const ageGroupCounts = {{ age_group_counts | tojson }};
+
+            const diabetesData = {
+            labels: ageGroups,
+            datasets: [{
+                label: 'Diabetes Cases',
+                data: ageGroupCounts,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#E53935', '#8E24AA', '#FFA726', '#66BB6A', '#AB47BC', '#26C6DA', '#FF7043', '#D4E157', '#78909C'],
+                borderWidth: 1
+            }]
+            };
+
+            // Create the Pie Chart
+            const diabetesPieChart = new Chart(document.getElementById('diabetesPieChart'), {
+            type: 'pie',
+            data: diabetesData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                title: {
+                    display: true,
+                    text: 'Distribution of Predicted Diabetes Cases by Age Group',
+                    font: {
+                    size: 16
+                    }
+                }
+                }
+            }
+            });
+        </script>
+        <script>
+            // Get the data for the chart from Flask
+            const bmiData = {
+                labels: ['Underweight', 'Normal Weight', 'Overweight', 'Obese'],
+                datasets: [{
+                    label: 'Diabetes Cases',
+                    data: [{{ underweight_cases }}, {{ normal_weight_cases }}, {{ overweight_cases }}, {{ obese_cases }}],
+                    backgroundColor: ['#36A2EB', '#FFCE56', '#FF6384', '#4BC0C0'],
+                    borderWidth: 1
+                }]
+            };
+        
+            // Configure the chart options
+            const bmiOptions = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Diabetes Cases by BMI Categories',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true
+                        }
+                    }
+                }
+            };
+        
+            // Create the Polar Area Chart
+            const diabetesBMIChart = new Chart(document.getElementById('diabetesBMIChart'), {
+                type: 'polarArea',
+                data: bmiData,
+                options: bmiOptions
+            });
+        </script>
+        <script>
+            // Get the data for the chart from Flask
+            const cholesterolData = {
+                labels: ['With High Cholesterol', 'Without High Cholesterol'],
+                datasets: [{
+                    label: 'Diabetes Cases',
+                    data: [{{ with_cholesterol_cases }}, {{ without_cholesterol_cases }}],
+                    backgroundColor: ['#FF6384', '#36A2EB'],
+                    borderWidth: 1
+                }]
+            };
+        
+            // Configure the chart options
+            const cholesterolOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Diabetes Cases by High Cholesterol Status',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            };
+        
+            // Create the bar chart
+            const diabetesCholesterolChart = new Chart(document.getElementById('diabetesCholesterolChart'), {
+                type: 'bar',
+                data: cholesterolData,
+                options: cholesterolOptions
+            });
+        </script>
+        <script>
+            // Get the data for the chart
+            const highbpData = {
+                labels: ['With High Blood Pressure', 'Without High Blood Pressure'],
+                datasets: [{
+                    data: [{{ with_highbp_percentage }}, {{ without_highbp_percentage }}],
+                    backgroundColor: ['#FF6384', '#36A2EB'],
+                    borderWidth: 1
+                }]
+            };
+        
+            // Create the pie chart
+            const highbpChart = new Chart(document.getElementById('highbpChart'), {
+                type: 'pie',
+                data: highbpData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'High Blood Pressure Causes Diabetes Cases Status',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        </script>
+        <script>
+            // Get the data for the chart from Flask
+            const commonSymptomsData = {
+                labels: ['Chest Tightness', 'Shortness of Breath', 'Coughing', 'Wheezing', 'Allergy', 'Difficult to Sleep'],
+                datasets: [{
+                    data: [{{ chest_tightness_cases }}, {{ shortness_of_breath_cases }}, {{ coughing_cases }}, {{ wheezing_cases }}, {{ allergy_cases }}, {{ sleeping_cases }}],
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#E53935', '#8E24AA'],
+                    borderWidth: 1
+                }]
+            };
+        
+            // Create the donut chart
+            const commonSymptomsChart = new Chart(document.getElementById('commonSymptomsChart'), {
+                type: 'doughnut',
+                data: commonSymptomsData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Asthma Common Habits Distribution',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+        <script>
+            // Get the data for the chart from Flask
+            const am_ageGroups1 = ['0-17', '18-30', '31-45', '46-60', '61+'];
+            const nonasthmaCases = {{ non_asthma_cases | tojson }};
+          
+            // Prepare the data for the chart
+            const ageDistributionData1 = {
+              labels: am_ageGroups1,
+              datasets: [{
+                label: 'Non-Asthma Cases',
+                data: nonasthmaCases,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#E53935'],
+                borderWidth: 1
+              }]
+            };
+          
+            // Configure the chart options
+            const ageDistributionOptions1 = {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'Non-Asthma Cases by Age Distribution',
+                  font: {
+                    size: 16,
+                    weight: 'bold'
+                  }
+                }
+              }
+            };
+          
+            // Create the polar area chart
+            const ageDistributionChart1 = new Chart(document.getElementById('ageDistributionChart1'), {
+              type: 'polarArea',
+              data: ageDistributionData1,
+              options: ageDistributionOptions1
+            });
+        </script>
+        <script>
+            // Get the data for the chart from Flask
+            const am_ageGroups2 = ['0-17', '18-30', '31-45', '46-60', '61+'];
+            const asthmaCases = {{ asthma_cases | tojson }};
+          
+            // Prepare the data for the chart
+            const ageDistributionData2 = {
+              labels: am_ageGroups2,
+              datasets: [{
+                label: 'Asthma Cases',
+                data: asthmaCases,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#E53935'],
+                borderWidth: 1
+              }]
+            };
+          
+            // Configure the chart options
+            const ageDistributionOptions2 = {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'Asthma Cases by Age Distribution',
+                  font: {
+                    size: 16,
+                    weight: 'bold'
+                  }
+                }
+              }
+            };
+          
+            // Create the polar area chart
+            const ageDistributionChart2 = new Chart(document.getElementById('ageDistributionChart2'), {
+              type: 'polarArea',
+              data: ageDistributionData2,
+              options: ageDistributionOptions2
+            });
+        </script>
+        <script>
+            // Get the data for the chart from Flask
+            const asthmaData = {
+                labels: ['Male', 'Female'],
+                datasets: [
+                    {
+                        label: 'Asthma Cases - Yes',
+                        data: [{{ am_male_cases_yes }}, {{ am_female_cases_yes }}],
+                        backgroundColor: ['#36A2EB', '#FFCE56'],
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Asthma Cases - No',
+                        data: [{{ am_male_cases_no }}, {{ am_female_cases_no }}],
+                        backgroundColor: ['#4BC0C0', '#E53935'],
+                        borderWidth: 1
+                    }
+                ]
+            };
+
+            // Configure the chart options
+            const asthmaOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Asthma Cases by Gender and Asthma Prediction',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            };
+
+            // Create the bivariate bar chart
+            const asthmaSexChart = new Chart(document.getElementById('asthmaSexChart'), {
+                type: 'bar',
+                data: asthmaData,
+                options: asthmaOptions
+            });
+        </script>
+        <script>
+            // Get the data for the chart from Flask
+            const workTypes = ['Never Worked', 'Children', 'Govt Job', 'Self-employed', 'Private'];
+            const strokePercentages = {{ work_type_percentages }};
+        
+            // Prepare the data for the chart
+            const workTypeData = {
+                labels: workTypes,
+                datasets: [{
+                    label: 'Stroke Cases by Percentage',
+                    data: strokePercentages,
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#E53935'],
+                    borderWidth: 1
+                }]
+            };
+        
+            // Create the Pie chart
+            const workTypeChart = new Chart(document.getElementById('workTypeChart'), {
+                type: 'pie',
+                data: workTypeData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Pie Chart for Stroke Cases by Work Type',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+        <script>
+            // Get the data for the chart from Flask
+            const s_ageGroups = ['18-30', '31-45', '46-60', '61+'];
+            const strokeCasesYes = [{{ stroke_cases_yes | tojson }}];
+            const strokeCasesNo = [{{ stroke_cases_no | tojson }}];
+        
+            // Prepare the data for the chart
+            const s_ageDistributionData = {
+                labels: s_ageGroups,
+                datasets: [
+                    {
+                        label: 'Stroke Cases (Yes)',
+                        data: strokeCasesYes,
+                        backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Stroke Cases (No)',
+                        data: strokeCasesNo,
+                        backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                        borderWidth: 1
+                    }
+                ]
+            };
+        
+            // Configure the chart options
+            const s_ageDistributionOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Bivariate Bar Chart for Stroke Cases by Age Distribution',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            };
+        
+            // Create the bivariate bar chart
+            const s_ageDistributionChart = new Chart(document.getElementById('s_ageDistributionChart'), {
+                type: 'bar',
+                data: s_ageDistributionData,
+                options: s_ageDistributionOptions
+            });
+        </script>
+        <script>
+            // Get the data for the chart from Flask
+            const s_bmiData_t = {
+                labels: ['Underweight', 'Normal Weight', 'Overweight', 'Obese'],
+                datasets: [{
+                    label: 'Stroke Cases',
+                    data: [{{ s_underweight_cases_t }}, {{ s_normal_weight_cases_t }}, {{ s_overweight_cases_t }}, {{ s_obese_cases_t }}],
+                    backgroundColor: ['#36A2EB', '#FFCE56', '#FF6384', '#4BC0C0'],
+                    borderWidth: 1
+                }]
+            };
+        
+            // Configure the chart options
+            const s_bmiOptions_t = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Diagnosed Stroke Cases by BMI Categories',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true
+                        }
+                    }
+                }
+            };
+        
+            // Create the Polar Area Chart
+            const strokeBMIChart_t = new Chart(document.getElementById('strokeBMIChart_t'), {
+                type: 'doughnut',
+                data: s_bmiData_t,
+                options: s_bmiOptions_t
+            });
+        </script>
+        <script>
+            // Get the data for the chart from Flask
+            const s_bmiData_f = {
+                labels: ['Underweight', 'Normal Weight', 'Overweight', 'Obese'],
+                datasets: [{
+                    label: 'Stroke Cases',
+                    data: [{{ s_underweight_cases_f }}, {{ s_normal_weight_cases_f }}, {{ s_overweight_cases_f }}, {{ s_obese_cases_f }}],
+                    backgroundColor: ['#36A2EB', '#FFCE56', '#FF6384', '#4BC0C0'],
+                    borderWidth: 1
+                }]
+            };
+        
+            // Configure the chart options
+            const s_bmiOptions_f = {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'No Diagnosed Stroke Cases by BMI Categories',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
+                    },
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true
+                        }
+                    }
+                }
+            };
+        
+            // Create the Polar Area Chart
+            const strokeBMIChart_f = new Chart(document.getElementById('strokeBMIChart_f'), {
+                type: 'doughnut',
+                data: s_bmiData_f,
+                options: s_bmiOptions_f
+            });
+        </script>
     </body>
 </html>

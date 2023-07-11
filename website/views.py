@@ -1,11 +1,15 @@
 from flask import Blueprint, render_template, redirect, url_for, request, session, flash, Response
 from .models import User, Feedback, Admin, Asthma, Diabetes, Stroke
+from werkzeug.security import check_password_hash, generate_password_hash
 from . import db
 from io import StringIO
+from sqlalchemy import func
 import requests
 import pickle
 import csv
 import numpy as np
+import json
+
 
 views = Blueprint('views', __name__)
 
@@ -50,15 +54,60 @@ def userdashboard():
     # Retrieve the user ID from the session or wherever it's stored
     userID = session.get('u_id')
 
+    # Retrieve the counts of diagnosed and not diagnosed asthma cases from the database
+    asthma_diagnosed_count = Asthma.query.filter(Asthma.am_predtarget == "myself", Asthma.am_asthma == 1).count()
+    asthma_not_diagnosed_count = Asthma.query.filter(Asthma.am_predtarget == "myself", Asthma.am_asthma == 0).count()
+
+    # Retrieve the counts of diagnosed and not diagnosed diabetes cases from the database
+    diabetes_diagnosed_count = Diabetes.query.filter(Diabetes.d_predtarget == "myself", Diabetes.d_diabetes == 1).count()
+    diabetes_not_diagnosed_count = Diabetes.query.filter(Diabetes.d_predtarget == "myself", Diabetes.d_diabetes == 0).count()
+
+    # Retrieve the counts of diagnosed and not diagnosed stroke cases from the database
+    stroke_diagnosed_count = Stroke.query.filter(Stroke.s_predtarget == "myself", Stroke.s_stroke == 1).count()
+    stroke_not_diagnosed_count = Stroke.query.filter(Stroke.s_predtarget == "myself", Stroke.s_stroke == 0).count()
+
+
     # Fetch the user's data from the database
     user = User.query.get(userID)
-
-    return render_template('userdashboard.html', user = user)
+    return render_template('userdashboard.html', user=user, asthma_diagnosed_count=asthma_diagnosed_count, asthma_not_diagnosed_count=asthma_not_diagnosed_count, diabetes_diagnosed_count=diabetes_diagnosed_count, 
+                           diabetes_not_diagnosed_count=diabetes_not_diagnosed_count, stroke_diagnosed_count=stroke_diagnosed_count, stroke_not_diagnosed_count=stroke_not_diagnosed_count)
 
 def index():
     active_tab = request.args.get('active_tab', 'home')
     return render_template('userDashboard.html', active_tab=active_tab)
 
+@views.route('/change-u_password/<int:u_id>', methods=['POST'])
+def user_change_password(u_id):
+    # Retrieve the user from the database
+    user = User.query.get(u_id)
+
+    # Get the input values from the form
+    current_password = request.form.get('u_password')
+    new_password = request.form.get('u_newPW')
+    confirm_password = request.form.get('u_newPWconfirmed')
+
+    # Check if the current password matches the stored password hash
+    if check_password_hash(user.u_password, current_password):
+        # Check if the new password and confirm password match
+        if new_password == confirm_password:
+            # Generate a new password hash
+            new_password_hash = generate_password_hash(new_password)
+
+            # Update the user's password in the database
+            user.u_password = new_password_hash
+            db.session.commit()
+
+            # Password successfully changed
+            flash('Password has been changed successfully.', 'success')
+        else:
+            # New password and confirm password do not match
+            flash('New password and confirm password do not match.', 'error')
+    else:
+        # Current password is incorrect
+        flash('Incorrect current password.', 'error')
+
+    # Redirect to the user profile page
+    return redirect(url_for('views.userdashboard', user=user))
 
 # Find Nearby Hospital (User)
 @views.route('/findNearbyHospital', methods=['GET','POST'])
@@ -147,6 +196,21 @@ def editProfile(u_id):
     
     else:
         return render_template('userDashboard.html', user=user)
+    
+##### User Past Prediction Record #####
+@views.route('/pastPredictionRecords', methods=['GET'])
+def pastPredictionRecords():
+     # Retrieve the user ID from the session or wherever it's stored
+    userID = session.get('u_id')
+    # Fetch the data for each report
+    asthma_records = User.query.join(Asthma).all()
+    diabetes_records = User.query.join(Diabetes).all()
+    stroke_records = User.query.join(Stroke).all()
+
+    # Fetch the user's data from the database
+    user = User.query.get(userID)
+    return render_template('pastPredictionRecords.html', user=user, asthma_records=asthma_records, diabetes_records=diabetes_records, stroke_records=stroke_records)
+
 
 ##### User Feedback #####
 @views.route('/FeedbackForm', methods=['GET','POST'])
@@ -184,12 +248,207 @@ def feedback():
 def admindashboard():
     # Retrieve the user ID from the session or wherever it's stored
     adminID = session.get('a_id')
+    total_users = User.query.count()
+    asthma_count = Asthma.query.count()
+    diabetes_count = Diabetes.query.count()
+    stroke_count = Stroke.query.count()
+    feedback_count = Feedback.query.count()
+    recent_users = User.query.order_by(User.u_id.desc()).limit(15).all()
+
+    total_predictions_count = asthma_count + diabetes_count + stroke_count
+
+    # Retrieve the diabetes age group data from your data source
+    age_group_counts = [0] * 13
+
+    # Query the database to get the counts for each age group
+    diabetes_records = Diabetes.query.all()
+    for record in diabetes_records:
+        age_group = record.d_age
+        age_group_counts[age_group - 1] += 1
+
+    # Retrieve the counts of predicted diabetes cases for different BMI categories
+    underweight_cases = Diabetes.query.filter(Diabetes.d_BMI < 18.5).count()
+    normal_weight_cases = Diabetes.query.filter(Diabetes.d_BMI >= 18.5, Diabetes.d_BMI < 25).count()
+    overweight_cases = Diabetes.query.filter(Diabetes.d_BMI >= 25, Diabetes.d_BMI < 30).count()
+    obese_cases = Diabetes.query.filter(Diabetes.d_BMI >= 30).count()
+
+    # Retrieve the data for High Cholesterol Status from your data source
+    with_cholesterol_cases = Diabetes.query.filter_by(d_highchol=1).count()
+    without_cholesterol_cases = Diabetes.query.filter_by(d_highchol=0).count()
+
+    # Retrieve the data for the chart
+    with_highbp_count = Diabetes.query.filter_by(d_highbp=1).count()
+    without_highbp_count = Diabetes.query.filter_by(d_highbp=0).count()
+
+    # Calculate the percentages
+    total_cases = with_highbp_count + without_highbp_count
+    with_highbp_percentage = round((with_highbp_count / total_cases) * 100, 2)
+    without_highbp_percentage = round((without_highbp_count / total_cases) * 100, 2)
+
+    # Fetch the data for common symptoms from the Asthma table
+    asthma_records = Asthma.query.all()
+    chest_tightness_cases = sum(record.am_chesttight for record in asthma_records if record.am_asthma == 1)
+    shortness_of_breath_cases = sum(record.am_breath for record in asthma_records if record.am_asthma == 1)
+    coughing_cases = sum(record.am_cough for record in asthma_records if record.am_asthma == 1)
+    allergy_cases = sum(record.am_allergy for record in asthma_records if record.am_asthma == 1)
+    wheezing_cases = sum(record.am_wheezing for record in asthma_records if record.am_asthma == 1)
+    sleeping_cases = sum(record.am_sleeping for record in asthma_records if record.am_asthma == 1)
+
+    age_groups = ['0-17', '18-30', '31-45', '46-60', '61+']
+
+    asthma_cases = []
+    non_asthma_cases = []
+
+    for age_group in age_groups:
+        asthma_group_cases = filter_asthma_cases_by_age_group(age_group, asthma=True)
+        non_asthma_group_cases = filter_asthma_cases_by_age_group(age_group, asthma=False)
+        
+        asthma_cases.append(asthma_group_cases)
+        non_asthma_cases.append(non_asthma_group_cases)
+
+    # Filter the asthma records by gender and prediction for Asthma
+    am_male_records_yes = [record for record in asthma_records if record.am_sex == 1 and record.am_asthma == 1]
+    am_male_records_no = [record for record in asthma_records if record.am_sex == 1 and record.am_asthma == 0]
+    am_female_records_yes = [record for record in asthma_records if record.am_sex == 0 and record.am_asthma == 1]
+    am_female_records_no = [record for record in asthma_records if record.am_sex == 0 and record.am_asthma == 0]
+
+    # Count the number of asthma cases for each gender and prediction category
+    am_male_cases_yes = len(am_male_records_yes)
+    am_male_cases_no = len(am_male_records_no)
+    am_female_cases_yes = len(am_female_records_yes)
+    am_female_cases_no = len(am_female_records_no)
+
+    # Load the data from the database
+    stroke_records = Stroke.query.all()
+
+    # Filter the stroke records by work type
+    work_type_counts = {
+        'Never Worked': 0,
+        'Children': 0,
+        'Govt Job': 0,
+        'Self-employed': 0,
+        'Private': 0
+    }
+
+    for record in stroke_records:
+        work_type = record.s_worktype
+        if work_type == 0:
+            work_type_counts['Never Worked'] += 1
+        elif work_type == 1:
+            work_type_counts['Children'] += 1
+        elif work_type == 2:
+            work_type_counts['Govt Job'] += 1
+        elif work_type == 3:
+            work_type_counts['Self-employed'] += 1
+        elif work_type == 4:
+            work_type_counts['Private'] += 1
+
+    # Calculate the percentage of stroke cases for each work type
+    total_cases = len(stroke_records)
+    work_type_percentages = {
+        work_type: (count / total_cases) * 100 for work_type, count in work_type_counts.items()
+    }
+
+    # Convert the percentages to a JSON format
+    work_type_percentages_json = json.dumps(list(work_type_percentages.values()))
+
+    stroke_cases_yes = [0] * len(age_groups)
+    stroke_cases_no = [0] * len(age_groups)
+
+    # Filter the stroke records and count the cases for each age group
+    for record in stroke_records:
+        age = record.s_age
+        stroke_prediction = record.s_stroke
+
+        # Group the records into age groups
+        if age <= 30:
+            age_group_index = 0
+        elif age <= 45:
+            age_group_index = 1
+        elif age <= 60:
+            age_group_index = 2
+        else:
+            age_group_index = 3
+
+        # Increment the corresponding stroke cases count based on stroke prediction
+        if stroke_prediction == 1:
+            stroke_cases_yes[age_group_index] += 1
+        else:
+            stroke_cases_no[age_group_index] += 1
+
+    # Retrieve the counts of predicted stroke cases for different BMI categories
+    s_underweight_cases_t = Stroke.query.filter(Stroke.s_BMI < 18.5, Stroke.s_stroke == 1).count()
+    s_normal_weight_cases_t = Stroke.query.filter(Stroke.s_BMI >= 18.5, Stroke.s_BMI < 25, Stroke.s_stroke == 1).count()
+    s_overweight_cases_t = Stroke.query.filter(Stroke.s_BMI >= 25, Stroke.s_BMI < 30, Stroke.s_stroke == 1).count()
+    s_obese_cases_t = Stroke.query.filter(Stroke.s_BMI >= 30, Stroke.s_stroke == 1).count()
+
+    # Retrieve the counts of predicted stroke cases for different BMI categories
+    s_underweight_cases_f = Stroke.query.filter(Stroke.s_BMI < 18.5, Stroke.s_stroke == 0).count()
+    s_normal_weight_cases_f = Stroke.query.filter(Stroke.s_BMI >= 18.5, Stroke.s_BMI < 25, Stroke.s_stroke == 0).count()
+    s_overweight_cases_f = Stroke.query.filter(Stroke.s_BMI >= 25, Stroke.s_BMI < 30, Stroke.s_stroke == 0).count()
+    s_obese_cases_f = Stroke.query.filter(Stroke.s_BMI >= 30, Stroke.s_stroke == 0).count()
+
+    # Retrieve the data for the time periods and average glucose levels
+    query = db.session.query(func.date_format(Stroke.s_date, '%Y-%m').label('time_period'),
+                             func.avg(Stroke.s_avgglucose).label('average_glucose')) \
+                      .filter(Stroke.s_stroke == 1) \
+                      .group_by('time_period') \
+                      .order_by('time_period')
+
+    results = query.all()
+
+    time_periods = [result.time_period for result in results]
+    average_glucose_levels = [result.average_glucose for result in results]
+
+    # Serialize the data to JSON
+    time_periods_json = json.dumps(time_periods)
+    average_glucose_levels_json = json.dumps(average_glucose_levels)
+
+
 
     # Fetch the user's data from the database
     admin = Admin.query.get(adminID)
-    return render_template('adminDashboard.html', admin = admin)
+    return render_template('adminDashboard.html', admin=admin, total_users=total_users, 
+                           total_predictions_count=total_predictions_count, asthma_count=asthma_count, 
+                           diabetes_count=diabetes_count, stroke_count=stroke_count, feedback_count=feedback_count, 
+                           recent_users=recent_users, age_group_counts=age_group_counts, underweight_cases=underweight_cases, normal_weight_cases=normal_weight_cases, 
+                           overweight_cases=overweight_cases, obese_cases=obese_cases, with_cholesterol_cases=with_cholesterol_cases, without_cholesterol_cases=without_cholesterol_cases, 
+                           with_highbp_percentage=with_highbp_percentage, without_highbp_percentage=without_highbp_percentage, chest_tightness_cases=chest_tightness_cases,
+                           shortness_of_breath_cases=shortness_of_breath_cases, coughing_cases=coughing_cases, allergy_cases=allergy_cases, wheezing_cases=wheezing_cases, sleeping_cases=sleeping_cases, 
+                           asthma_cases=asthma_cases, non_asthma_cases=non_asthma_cases, am_male_cases_yes=am_male_cases_yes, am_male_cases_no=am_male_cases_no, am_female_cases_yes=am_female_cases_yes, 
+                           am_female_cases_no=am_female_cases_no, work_type_percentages=work_type_percentages_json, stroke_cases_yes=stroke_cases_yes, stroke_cases_no=stroke_cases_no,
+                           s_underweight_cases_t=s_underweight_cases_t, s_normal_weight_cases_t=s_normal_weight_cases_t, s_overweight_cases_t=s_overweight_cases_t, s_obese_cases_t=s_obese_cases_t,
+                           s_underweight_cases_f=s_underweight_cases_f, s_normal_weight_cases_f=s_normal_weight_cases_f, s_overweight_cases_f=s_overweight_cases_f, s_obese_cases_f=s_obese_cases_f,
+                           time_periods_json=time_periods_json, average_glucose_levels_json=average_glucose_levels_json)
 
-
+def filter_asthma_cases_by_age_group(age_group, asthma=True):
+    if age_group == '0-17':
+        if asthma:
+            return Asthma.query.filter(Asthma.am_age <= 17, Asthma.am_asthma == 1).count()
+        else:
+            return Asthma.query.filter(Asthma.am_age <= 17, Asthma.am_asthma == 0).count()
+    elif age_group == '18-30':
+        if asthma:
+            return Asthma.query.filter(Asthma.am_age >= 18, Asthma.am_age <= 30, Asthma.am_asthma == 1).count()
+        else:
+            return Asthma.query.filter(Asthma.am_age >= 18, Asthma.am_age <= 30, Asthma.am_asthma == 0).count()
+    elif age_group == '31-45':
+        if asthma:
+            return Asthma.query.filter(Asthma.am_age >= 31, Asthma.am_age <= 45, Asthma.am_asthma == 1).count()
+        else:
+            return Asthma.query.filter(Asthma.am_age >= 31, Asthma.am_age <= 45, Asthma.am_asthma == 0).count()
+    elif age_group == '46-60':
+        if asthma:
+            return Asthma.query.filter(Asthma.am_age >= 46, Asthma.am_age <= 60, Asthma.am_asthma == 1).count()
+        else:
+            return Asthma.query.filter(Asthma.am_age >= 46, Asthma.am_age <= 60, Asthma.am_asthma == 0).count()
+    elif age_group == '61+':
+        if asthma:
+            return Asthma.query.filter(Asthma.am_age >= 61, Asthma.am_asthma == 1).count()
+        else:
+            return Asthma.query.filter(Asthma.am_age >= 61, Asthma.am_asthma == 0).count()
+    else:
+        return 0
 # Route for the edit profile page
 @views.route('/edit-aprofile/<int:a_id>', methods=['GET', 'POST'])
 def editAdminProfile(a_id):
@@ -198,10 +457,7 @@ def editAdminProfile(a_id):
         # Get the form data
         admin.a_fname = request.form['a_fname']
         admin.a_lname = request.form['a_lname']
-        admin.a_age = request.form['a_age']
         admin.a_hpnumber = request.form['a_hpnumber']
-        admin.a_address = request.form['a_address']
-        admin.a_gender = request.form['a_gender']
 
         try:
             db.session.commit()
@@ -212,6 +468,37 @@ def editAdminProfile(a_id):
     
     else:
         return render_template('adminDashboard.html', admin=admin)
+    
+@views.route('/change-password/<int:a_id>', methods=['POST'])
+def change_password(a_id):
+    # Retrieve the a from the database
+    admin = Admin.query.get(a_id)
+
+    # Get the input values from the form
+    current_password = request.form.get('a_password')
+    new_password = request.form.get('a_newPW')
+    confirm_password = request.form.get('a_newPWconfirmed')
+
+    # Check if the current password matches the stored password hash
+    if admin.a_password == current_password:
+        # Check if the new password and confirm password match
+        if new_password == confirm_password:
+
+            # Update the admin's password in the database
+            admin.a_password = new_password
+            db.session.commit()
+
+            # Password successfully changed
+            flash('Password has been changed successfully.', 'success')
+        else:
+            # New password and confirm password do not match
+            flash('New password and confirm password do not match.', 'error')
+    else:
+        # Current password is incorrect
+        flash('Incorrect current password.', 'error')
+
+    # Redirect to the admin profile page
+    return redirect(url_for('views.admindashboard', admin=admin))
     
 # Manage User Account (Admin)
 @views.route('/manageUserAccount', methods=['GET','POST'])

@@ -89,3 +89,30 @@ body{
     height: 100vh;
     overflow-y: auto;
 }
+
+.border-box {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 20px;
+}
+  
+.standard-box {
+    text-align: center;
+    width: 420px;
+}
+
+.fixed-box-vertical {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 20px;
+    width: 250px;
+}
+
+.box-content {
+    margin-top: 20px;
+    text-align: center;
+}
+  
+  

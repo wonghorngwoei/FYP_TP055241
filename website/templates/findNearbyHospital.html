@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Admin Dashboard</title>
+        <title>Find Nearby Hospital for User</title>
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -41,7 +41,7 @@
             <div class="row">
                 <div class="col-sm-2 sidebar" id="sidebar">
                     <div class="nav flex-column nav-pills" aria-orientation="vertical">
-                        <a class="nav-link" href="#" aria-selected="true" style="margin-bottom: 15px;">Home</a>
+                        <a class="nav-link" href="{{ url_for('views.userdashboard') }}" aria-selected="true" style="margin-bottom: 15px;">Home</a>
                         <a class="nav-link" href="{{ url_for('views.diabetesPredictionForm') }}"  aria-selected="false" style="margin-bottom: 15px;">Diabetes Prediction</a>
                         <a class="nav-link" href="{{ url_for('views.strokePredictionForm') }}" aria-selected="false" style="margin-bottom: 15px;">Stroke Prediction</a>
                         <a class="nav-link" href="{{ url_for('views.asthmaPredictionForm') }}" aria-selected="false" style="margin-bottom: 15px;">Asthma Prediction</a>
@@ -106,7 +106,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <button type="button" class="btn btn-primary" id="editProfileBtn" data-toggle="modal" data-target="#editProfileModal" data-dismiss="modal">Edit Profile</button>
-                            <button type="button" class="btn btn-primary" id="changePasswordBtn">Change Password</button>
+                            <button type="button" class="btn btn-primary" id="changePasswordBtn"data-toggle="modal" data-target="#changePasswordModal" data-dismiss="modal" >Change Password</button>
                         </div>
                         <form>
                             <div class="form-group">
@@ -147,6 +147,39 @@
             </div>
         </div>
 
+        <!-- Change Password Modal -->
+        <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="/change-u_password/{{ user.u_id }}">
+                            <div class="form-group">
+                                <label for="u_password">Current Password</label>
+                                <input type="text" class="form-control" name="u_password" id="u_password" placeholder="Enter your current password">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_newPW">New Password</label>
+                                <input type="text" class="form-control" name="u_newPW" id="u_newPW" placeholder="Enter your new password">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_newPWconfirmed">Confirm New Password</label>
+                                <input type="text" class="form-control" name="u_newPWconfirmed" id="u_newPWconfirmed" placeholder="Enter your new password again">
+                            </div>
+                            <div class="form-group">
+                                <p><input type="submit" class="btn btn-primary" value="Change Password"></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Edit Profile Modal -->
         <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -172,8 +205,12 @@
                                 <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}">
                             </div>
                             <div class="form-group">
-                                <label for="u_gender">Gender</label>
-                                <input type="text" class="form-control"  name="u_gender"id="u_gender" value="{{ user.u_gender }}">
+                                <label for="u_gender" class="col-form-label">Gender:</label>
+                                <select id="u_gender" name="u_gender" class="form-control" required>
+                                    <option value="" disabled>Select gender</option>
+                                    <option value="Male" {% if user.u_gender == 'Male' %}selected{% endif %}>Male</option>
+                                    <option value="Female" {% if user.u_gender == 'Female' %}selected{% endif %}>Female</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="u_hpnumber">Phone Number</label>

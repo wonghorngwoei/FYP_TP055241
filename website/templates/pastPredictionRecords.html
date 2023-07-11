@@ -1,0 +1,669 @@
+<!-- Asthma Prediction Content-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Past Prediction Records</title>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <!-- Google supported fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+        <!-- Cascading Style Sheet -->
+        <link rel="stylesheet" type="text/css" href="static/css/style.css">
+        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var predictionTarget = document.querySelectorAll('input[name="predictionTarget"]');
+                var referenceNameGroup = document.getElementById('referenceNameGroup');
+                var referenceNameInput = document.getElementById('referenceName');
+        
+                for (var i = 0; i < predictionTarget.length; i++) {
+                    predictionTarget[i].addEventListener('change', function() {
+                        if (this.value === 'Others') {
+                            referenceNameGroup.style.display = 'block';
+                            referenceNameInput.required = true;
+                        } else {
+                            referenceNameGroup.style.display = 'none';
+                            referenceNameInput.required = false;
+                        }
+                    });
+                }
+            });
+        </script>
+        <script>
+            $(document).ready(function() {
+              // Auto-fill age and gender for "Myself" prediction target
+              var predictionTarget = $('input[name="predictionTarget"]');
+              var ageInput = $('#age');
+              var sexInput = $('#sex');
+              var age = "{{ user.u_age }}";
+              var gender = "{{ user.u_gender }}";
+          
+              // Store gender value in data attribute
+              sexInput.data('gender', gender);
+          
+              function updateFields() {
+                if (predictionTarget.filter(':checked').val() === 'Myself') {
+                  ageInput.val(age);
+                  sexInput.val(sexInput.data('gender'));
+                } else {
+                  ageInput.val('');
+                  sexInput.val('');
+                }
+              }
+          
+              // Attach event listener to prediction target
+              predictionTarget.on('change', function() {
+                updateFields();
+              });
+          
+              // Trigger initial update on page load
+              updateFields();
+          
+              // Select the correct gender option
+              if (sexInput.data('gender') === 'Male') {
+                sexInput.val('1');
+              } else if (sexInput.data('gender') === 'Female') {
+                sexInput.val('0');
+              }
+            });
+        </script>
+    </head>
+    <body>
+        <!-- Include the modals -->
+        {% include 'logout.html' %}
+        <!-- Navigation bar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Lifestyle Disease Prediction and Management System</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#myProfileModal">My Profile</a>
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal" >Logout</a>
+                </form>
+            </div>
+        </nav>
+
+        <!-- Side Bar -->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-2 sidebar" id="sidebar">
+                    <div class="nav flex-column nav-pills" aria-orientation="vertical">
+                        <a class="nav-link" href="{{ url_for('views.userdashboard') }}" aria-selected="true" style="margin-bottom: 15px;">Home</a>
+                        <a class="nav-link" href="{{ url_for('views.diabetesPredictionForm') }}"  aria-selected="false" style="margin-bottom: 15px;">Diabetes Prediction</a>
+                        <a class="nav-link" href="{{ url_for('views.strokePredictionForm') }}" aria-selected="false" style="margin-bottom: 15px;">Stroke Prediction</a>
+                        <a class="nav-link" href="{{ url_for('views.asthmaPredictionForm') }}" aria-selected="false" style="margin-bottom: 15px;">Asthma Prediction</a>
+                        <a class="nav-link active" href="{{ url_for('views.pastPredictionRecords') }}" aria-selected="false" style="margin-bottom: 15px;">Past Prediction Records</a>
+                        <a class="nav-link" href="{{ url_for('views.findNearbyHospital') }}" aria-selected="false" style="margin-bottom: 15px;">Find Nearby Hospital</a>
+                        <a class="nav-link" href="{{ url_for('views.feedbackForm') }}" aria-selected="false" style="margin-bottom: 15px;">Feedback</a>
+                    </div>
+                </div>
+
+                <div class="col-sm-10"><br>
+                    <div class="container-fluid">
+                        <nav>
+                            <div class="nav nav-tabs" id="myTabs" role="tablist">
+                                <a class="nav-item nav-link active" id="asthma-tab" data-toggle="tab" href="#asthma" role="tab" aria-controls="asthma" aria-selected="true">Asthma</a>
+                                <a class="nav-item nav-link" id="diabetes-tab" data-toggle="tab" href="#diabetes" role="tab" aria-controls="diabetes" aria-selected="false">Diabetes</a>
+                                <a class="nav-item nav-link" id="stroke-tab" data-toggle="tab" href="#stroke" role="tab" aria-controls="stroke" aria-selected="false">Stroke</a>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="asthma" role="tabpanel" aria-labelledby="asthma-tab"><br>
+                                <h2 class="d-flex justify-content-between align-items-center">
+                                    <span>Asthma Records</span>
+                                </h2>
+                                <ul class="nav nav-tabs" id="asthmaTabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="asthmaPersonal-tab" data-toggle="tab" href="#asthmaPersonal" role="tab" aria-controls="asthmaPersonal" aria-selected="true">Personal Prediction</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="asthmaOthers-tab" data-toggle="tab" href="#asthmaOthers" role="tab" aria-controls="asthmaOthers" aria-selected="false">Others Prediction</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="asthmaTabsContent">
+                                    <div class="tab-pane fade show active" id="asthmaPersonal" role="tabpanel" aria-labelledby="asthmaPersonal-tab">
+                                        <div class="table-responsive">
+                                            <table class="table" id="asthmaTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>User</th>
+                                                        <th>Gender</th>
+                                                        <th>Age</th>
+                                                        <th>Difficulty Sleeping</th>
+                                                        <th>Chest Tightness</th>
+                                                        <th>Short of Breath</th>
+                                                        <th>Cough</th>
+                                                        <th>Allergy</th>
+                                                        <th>Wheezing</th>
+                                                        <th>Asthma</th>
+                                                        <th>Prediction Feedback</th>
+                                                        <th>Prediction Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for user_a in asthma_records %}
+                                                        {% for asthma in user_a.asthma %}
+                                                            {% if asthma.am_predtarget == "myself" %}
+                                                            <tr>
+                                                                <td>{{ asthma.am_id }}</td>
+                                                                <td>{{ user_a.u_username }}</td>
+                                                                <td>{% if asthma.am_sex == 1 %}Male{% else %}Female{% endif %}</td>
+                                                                <td>{{ asthma.am_age }}</td>
+                                                                <td>{% if asthma.am_sleeping == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if asthma.am_chesttight == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if asthma.am_breath == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if asthma.am_cough == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if asthma.am_allergy == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if asthma.am_wheezing == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if asthma.am_asthma == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{{ asthma.am_feedback }}</td>
+                                                                <td>{{ asthma.am_date }}</td>
+                                                            </tr>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="asthmaOthers" role="tabpanel" aria-labelledby="asthmaOthers-tab">
+                                        <div class="table-responsive">
+                                            <table class="table" id="asthmaTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>User</th>
+                                                        <th>Gender</th>
+                                                        <th>Age</th>
+                                                        <th>Difficulty Sleeping</th>
+                                                        <th>Chest Tightness</th>
+                                                        <th>Short of Breath</th>
+                                                        <th>Cough</th>
+                                                        <th>Allergy</th>
+                                                        <th>Wheezing</th>
+                                                        <th>Asthma</th>
+                                                        <th>Prediction Feedback</th>
+                                                        <th>Prediction Date</th>
+                                                        <th>Reference Name</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for user_a in asthma_records %}
+                                                        {% for asthma in user_a.asthma %}
+                                                            {% if asthma.am_predtarget == "others" %}
+                                                            <tr>
+                                                                <td>{{ asthma.am_id }}</td>
+                                                                <td>{{ user_a.u_username }}</td>
+                                                                <td>{% if asthma.am_sex == 1 %}Male{% else %}Female{% endif %}</td>
+                                                                <td>{{ asthma.am_age }}</td>
+                                                                <td>{% if asthma.am_sleeping == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if asthma.am_chesttight == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if asthma.am_breath == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if asthma.am_cough == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if asthma.am_allergy == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if asthma.am_wheezing == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if asthma.am_asthma == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{{ asthma.am_feedback }}</td>
+                                                                <td>{{ asthma.am_date }}</td>
+                                                                <td>{{ asthma.am_refname }}</td>
+                                                            </tr>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="diabetes" role="tabpanel" aria-labelledby="diabetes-tab"><br>
+                                <h2 class="d-flex justify-content-between align-items-center">
+                                    <span>Diabetes Records</span>
+                                </h2>
+                                <ul class="nav nav-tabs" id="diabetesTabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="diabetesPersonal-tab" data-toggle="tab" href="#diabetesPersonal" role="tab" aria-controls="diabetesPersonal" aria-selected="true">Personal Prediction</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="diabetesOthers-tab" data-toggle="tab" href="#diabetesOthers" role="tab" aria-controls="diabetesOthers" aria-selected="false">Others Prediction</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="diabetesTabsContent">
+                                    <div class="tab-pane fade show active" id="diabetesPersonal" role="tabpanel" aria-labelledby="diabetesPersonal-tab">
+                                        <div class="table-responsive">
+                                            <table class="table" id="diabetesTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>User</th>
+                                                        <th>Age</th>
+                                                        <th>High Cholesterol</th>
+                                                        <th>Body Mass Index</th>
+                                                        <th>Smoker</th>
+                                                        <th>Heart Disease</th>
+                                                        <th>Physical Activity</th>
+                                                        <th>Fruits</th>
+                                                        <th>Veggies</th>
+                                                        <th>Heavy Alcohol Consumption</th>
+                                                        <th>General Health</th>
+                                                        <th>Physical Health</th>
+                                                        <th>Stroke</th>
+                                                        <th>High Blood Pressure</th>
+                                                        <th>Diabetes</th>
+                                                        <th>Prediction Feedback</th>
+                                                        <th>Prediction Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for user_d in diabetes_records %}
+                                                        {% for diabetes in user_d.diabetes %}
+                                                            {% if diabetes.d_predtarget == "myself" %}
+                                                            <tr>
+                                                                <td>{{ diabetes.d_id }}</td>
+                                                                <td>{{ user_d.u_username }}</td>
+                                                                <td>{{ diabetes.d_age }}</td>
+                                                                <td>{% if diabetes.d_highchol == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{{ diabetes.d_BMI }}</td>
+                                                                <td>{% if diabetes.d_smoker == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_heartdisease == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_physactivity == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_fruits == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_veggies == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_hvyalcoholconsump == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>
+                                                                    {% if diabetes.d_genhealth == 1 %}
+                                                                        Excellent
+                                                                    {% elif diabetes.d_genhealth == 2 %}
+                                                                        Very Good
+                                                                    {% elif diabetes.d_genhealth == 3 %}
+                                                                        Good
+                                                                    {% elif diabetes.d_genhealth == 4 %}
+                                                                        Fair
+                                                                    {% else %}
+                                                                        Poor
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>{% if diabetes.d_physhealth == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_stroke == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_highbp == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_diabetes == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{{ diabetes.d_feedback }}</td>
+                                                                <td>{{ diabetes.d_date }}</td>
+                                                            </tr>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="diabetesOthers" role="tabpanel" aria-labelledby="diabetesOthers-tab">
+                                        <div class="table-responsive">
+                                            <table class="table" id="diabetesTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>User</th>
+                                                        <th>Age</th>
+                                                        <th>High Cholesterol</th>
+                                                        <th>Body Mass Index</th>
+                                                        <th>Smoker</th>
+                                                        <th>Heart Disease</th>
+                                                        <th>Physical Activity</th>
+                                                        <th>Fruits</th>
+                                                        <th>Veggies</th>
+                                                        <th>Heavy Alcohol Consumption</th>
+                                                        <th>General Health</th>
+                                                        <th>Physical Health</th>
+                                                        <th>Stroke</th>
+                                                        <th>High Blood Pressure</th>
+                                                        <th>Diabetes</th>
+                                                        <th>Prediction Feedback</th>
+                                                        <th>Prediction Date</th>
+                                                        <th>Reference Name</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for user_d in diabetes_records %}
+                                                        {% for diabetes in user_d.diabetes %}
+                                                            {% if diabetes.d_predtarget == "others" %}
+                                                            <tr>
+                                                                <td>{{ diabetes.d_id }}</td>
+                                                                <td>{{ user_d.u_username }}</td>
+                                                                <td>{{ diabetes.d_age }}</td>
+                                                                <td>{% if diabetes.d_highchol == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{{ diabetes.d_BMI }}</td>
+                                                                <td>{% if diabetes.d_smoker == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_heartdisease == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_physactivity == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_fruits == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_veggies == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_hvyalcoholconsump == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>
+                                                                    {% if diabetes.d_genhealth == 1 %}
+                                                                        Excellent
+                                                                    {% elif diabetes.d_genhealth == 2 %}
+                                                                        Very Good
+                                                                    {% elif diabetes.d_genhealth == 3 %}
+                                                                        Good
+                                                                    {% elif diabetes.d_genhealth == 4 %}
+                                                                        Fair
+                                                                    {% else %}
+                                                                        Poor
+                                                                    {% endif %}
+                                                                </td>
+                                                                <td>{% if diabetes.d_physhealth == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_stroke == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_highbp == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if diabetes.d_diabetes == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{{ diabetes.d_feedback }}</td>
+                                                                <td>{{ diabetes.d_date }}</td>
+                                                                <td>{{ diabetes.d_predtarget }} | {{ diabetes.d_refname }}</td>
+                                                            </tr>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>  
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="stroke" role="tabpanel" aria-labelledby="stroke-tab"><br>
+                                <h2 class="d-flex justify-content-between align-items-center">
+                                    <span>Stroke Records</span>
+                                </h2>
+                                <ul class="nav nav-tabs" id="strokeTabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="strokePersonal-tab" data-toggle="tab" href="#strokePersonal" role="tab" aria-controls="strokePersonal" aria-selected="true">Personal Prediction</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="strokeOthers-tab" data-toggle="tab" href="#strokeOthers" role="tab" aria-controls="strokeOthers" aria-selected="false">Others Prediction</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="strokeTabsContent">
+                                    <div class="tab-pane fade show active" id="strokePersonal" role="tabpanel" aria-labelledby="strokePersonal-tab">
+                                        <div class="table-responsive">
+                                            <table class="table" id="strokeTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>User</th>
+                                                        <th>Gender</th>
+                                                        <th>Age</th>
+                                                        <th>Hypertension</th>
+                                                        <th>Heart Disease</th>
+                                                        <th>Married</th>
+                                                        <th>Work Type</th>
+                                                        <th>Glucose Level</th>
+                                                        <th>Body Mass Index</th>
+                                                        <th>Smoker</th>
+                                                        <th>Stroke</th>
+                                                        <th>Prediction Feedback</th>
+                                                        <th>Prediction Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for user_s in stroke_records %}
+                                                        {% for stroke in user_s.stroke %}
+                                                            {% if stroke.s_predtarget == "myself" %}
+                                                            <tr>
+                                                                <td>{{ stroke.s_id }}</td>
+                                                                <td>{{ user_s.u_username }}</td>
+                                                                <td>{{ stroke.s_sex }}</td>
+                                                                <td>{{ stroke.s_age }}</td>
+                                                                <td>{% if stroke.s_hypertension == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if stroke.s_heartdisease == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if stroke.s_married == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if stroke.s_worktype == 0 %}
+                                                                    Never Worked
+                                                                {% elif stroke.s_worktype == 1 %}
+                                                                    Children
+                                                                {% elif stroke.s_worktype == 2 %}
+                                                                    Govt Job
+                                                                {% elif stroke.s_worktype == 3 %}
+                                                                    Self-employed
+                                                                {% else %}
+                                                                    Private
+                                                                {% endif %}</td>
+                                                                <td>{{ stroke.s_avgglucose }}</td>
+                                                                <td>{{ stroke.s_BMI }}</td>
+                                                                <td>{% if stroke.s_smoking == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if stroke.s_stroke == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{{ stroke.s_feedback }}</td>
+                                                                <td>{{ stroke.s_date }}</td>
+                                                            </tr>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="strokeOthers" role="tabpanel" aria-labelledby="strokeOthers-tab">
+                                        <div class="table-responsive">
+                                            <table class="table" id="strokeTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>User</th>
+                                                        <th>Gender</th>
+                                                        <th>Age</th>
+                                                        <th>Hypertension</th>
+                                                        <th>Heart Disease</th>
+                                                        <th>Married</th>
+                                                        <th>Work Type</th>
+                                                        <th>Glucose Level</th>
+                                                        <th>Body Mass Index</th>
+                                                        <th>Smoker</th>
+                                                        <th>Stroke</th>
+                                                        <th>Prediction Feedback</th>
+                                                        <th>Prediction Date</th>
+                                                        <th>Reference Name</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for user_s in stroke_records %}
+                                                        {% for stroke in user_s.stroke %}
+                                                            {% if stroke.s_predtarget == "others" %}
+                                                            <tr>
+                                                                <td>{{ stroke.s_id }}</td>
+                                                                <td>{{ user_s.u_username }}</td>
+                                                                <td>{{ stroke.s_sex }}</td>
+                                                                <td>{{ stroke.s_age }}</td>
+                                                                <td>{% if stroke.s_hypertension == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if stroke.s_heartdisease == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if stroke.s_married == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if stroke.s_worktype == 0 %}
+                                                                    Never Worked
+                                                                {% elif stroke.s_worktype == 1 %}
+                                                                    Children
+                                                                {% elif stroke.s_worktype == 2 %}
+                                                                    Govt Job
+                                                                {% elif stroke.s_worktype == 3 %}
+                                                                    Self-employed
+                                                                {% else %}
+                                                                    Private
+                                                                {% endif %}</td>
+                                                                <td>{{ stroke.s_avgglucose }}</td>
+                                                                <td>{{ stroke.s_BMI }}</td>
+                                                                <td>{% if stroke.s_smoking == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{% if stroke.s_stroke == 1 %}Yes{% else %}No{% endif %}</td>
+                                                                <td>{{ stroke.s_feedback }}</td>
+                                                                <td>{{ stroke.s_date }}</td>
+                                                                <td>{{ stroke.s_refname }}</td>
+                                                            </tr>
+                                                            {% endif %}  
+                                                        {% endfor %}
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Profile Modal -->
+        <div class="modal fade" id="myProfileModal" tabindex="-1" role="dialog" aria-labelledby="myProfileModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="myProfileModalLabel">My Profile</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary" id="editProfileBtn" data-toggle="modal" data-target="#editProfileModal" data-dismiss="modal">Edit Profile</button>
+                            <button type="button" class="btn btn-primary" id="changePasswordBtn"data-toggle="modal" data-target="#changePasswordModal" data-dismiss="modal" >Change Password</button>
+                        </div>
+                        <form>
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" value="{{ user.u_username }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" class="form-control" id="firstName" value="{{ user.u_fname }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" class="form-control" id="lastName" value="{{ user.u_lname }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" value="{{ user.u_email }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="age">Age</label>
+                                <input type="number" class="form-control" id="age" value="{{ user.u_age }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <input type="text" class="form-control" id="gender" value="{{ user.u_gender }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="phoneNumber">Phone Number</label>
+                                <input type="tel" class="form-control" id="phoneNumber" value="{{ user.u_hpnumber }}" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <textarea class="form-control" id="address" rows="3" readonly>{{ user.u_address }}</textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Password Modal -->
+        <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="/change-u_password/{{ user.u_id }}">
+                            <div class="form-group">
+                                <label for="u_password">Current Password</label>
+                                <input type="text" class="form-control" name="u_password" id="u_password" placeholder="Enter your current password">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_newPW">New Password</label>
+                                <input type="text" class="form-control" name="u_newPW" id="u_newPW" placeholder="Enter your new password">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_newPWconfirmed">Confirm New Password</label>
+                                <input type="text" class="form-control" name="u_newPWconfirmed" id="u_newPWconfirmed" placeholder="Enter your new password again">
+                            </div>
+                            <div class="form-group">
+                                <p><input type="submit" class="btn btn-primary" value="Change Password"></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Edit Profile Modal -->
+        <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProfileModalLabel">Edit My Profile</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="/edit-profile/{{ user.u_id }}">
+                            <div class="form-group">
+                                <label for="u_fname">First Name</label>
+                                <input type="text" class="form-control" name="u_fname" id="u_fname" value="{{ user.u_fname }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_lname">Last Name</label>
+                                <input type="text" class="form-control" name="u_lname" id="u_lname" value="{{ user.u_lname }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_age">Age</label>
+                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_gender" class="col-form-label">Gender:</label>
+                                <select id="u_gender" name="u_gender" class="form-control" required>
+                                    <option value="" disabled>Select gender</option>
+                                    <option value="Male" {% if user.u_gender == 'Male' %}selected{% endif %}>Male</option>
+                                    <option value="Female" {% if user.u_gender == 'Female' %}selected{% endif %}>Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="u_hpnumber">Phone Number</label>
+                                <input type="tel" class="form-control" name="u_hpnumber" id="u_hpnumber" value="{{ user.u_hpnumber }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_address">Address</label>
+                                <textarea class="form-control" name="u_address" id="u_address" rows="3">{{ user.u_address }}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <p><input type="submit" class="btn btn-primary" value="Update Profile"></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    
+
+
+
+
+
+    </body>
+</html>
+
