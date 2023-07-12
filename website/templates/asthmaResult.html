@@ -42,12 +42,13 @@
           <div class="row">
               <div class="col-sm-2 sidebar" id="sidebar">
                   <div class="nav flex-column nav-pills" aria-orientation="vertical">
-                      <a class="nav-link" href="{{ url_for('views.userdashboard') }}" aria-selected="true">Home</a>
-                      <a class="nav-link" href="{{ url_for('views.diabetesPredictionForm') }}"  aria-selected="false">Diabetes Prediction</a>
-                      <a class="nav-link" href="{{ url_for('views.strokePredictionForm') }}" aria-selected="false">Stroke Prediction</a>
-                      <a class="nav-link active" href="{{ url_for('views.asthmaPredictionForm') }}" aria-selected="false" >Asthma Prediction</a>
-                      <a class="nav-link" href="{{ url_for('views.findNearbyHospital') }}" aria-selected="false">Find Nearby Hospital</a>
-                      <a class="nav-link" href="{{ url_for('views.feedbackForm') }}" aria-selected="false">Feedback</a>
+                      <a class="nav-link" href="{{ url_for('views.userdashboard') }}" aria-selected="true" style="margin-bottom: 15px;">Home</a>
+                      <a class="nav-link" href="{{ url_for('views.diabetesPredictionForm') }}"  aria-selected="false" style="margin-bottom: 15px;">Diabetes Prediction</a>
+                      <a class="nav-link" href="{{ url_for('views.strokePredictionForm') }}" aria-selected="false" style="margin-bottom: 15px;">Stroke Prediction</a>
+                      <a class="nav-link active" href="{{ url_for('views.asthmaPredictionForm') }}" aria-selected="false" style="margin-bottom: 15px;">Asthma Prediction</a>
+                      <a class="nav-link" href="{{ url_for('views.pastPredictionRecords') }}" aria-selected="false" style="margin-bottom: 15px;">Past Prediction Records</a>
+                      <a class="nav-link" href="{{ url_for('views.findNearbyHospital') }}" aria-selected="false" style="margin-bottom: 15px;">Find Nearby Hospital</a>
+                      <a class="nav-link" href="{{ url_for('views.feedbackForm') }}" aria-selected="false" style="margin-bottom: 15px;">Feedback</a>
                   </div>
               </div>
 
@@ -67,6 +68,36 @@
                                     <li>Avoid triggers such as smoke, pollen, and dust mites.</li>
                                     <li>Take prescribed medication as directed by your doctor.</li>
                                     <li>Follow an asthma action plan.</li>
+                                    {% if sleeping == 1 %}
+                                        <li>Avoid triggers such as smoke, pollen, and dust mites. Make sure your bedroom is clean and allergen-free.</li>
+                                        <li>Establish a regular sleep routine and ensure you get enough quality sleep each night.</li>
+                                        <li>Consider using a hypoallergenic pillow and mattress cover to reduce exposure to allergens.</li>
+                                    {% endif %}
+                                    {% if chesttight == 1 %}
+                                        <li>Practice relaxation techniques and deep breathing exercises to alleviate chest tightness.</li>
+                                        <li>Avoid exposure to cold air and extreme temperature changes, as they can worsen chest tightness.</li>
+                                        <li>Consider using a humidifier in your home to add moisture to the air and reduce respiratory irritation.</li>
+                                    {% endif %}
+                                    {% if breath == 1 %}
+                                        <li>Use prescribed inhalers and medications as directed by your doctor to relieve shortness of breath.</li>
+                                        <li>Incorporate regular cardiovascular exercise into your routine to improve lung function and endurance.</li>
+                                        <li>Avoid exposure to environmental pollutants and irritants that can trigger shortness of breath.</li>
+                                    {% endif %}
+                                    {% if cough == 1 %}
+                                        <li>Avoid irritants such as smoke, strong odors, and air pollution that can trigger coughing episodes.</li>
+                                        <li>Stay well-hydrated to help reduce throat irritation and ease coughing.</li>
+                                        <li>Practice good hand hygiene to minimize the risk of respiratory infections that can lead to coughing.</li>
+                                    {% endif %}
+                                    {% if allergy == 1 %}
+                                        <li>Identify and avoid specific allergens that may trigger your asthma symptoms. Consider allergy testing if necessary.</li>
+                                        <li>Keep windows closed during high pollen seasons and use air purifiers to filter allergens from the air.</li>
+                                        <li>Consider using allergy-proof bedding covers to reduce exposure to dust mites and other allergens while sleeping.</li>
+                                    {% endif %}
+                                    {% if wheezing == 1 %}
+                                        <li>Monitor your lung function regularly using a peak flow meter. Seek medical attention if you experience wheezing.</li>
+                                        <li>Create an asthma action plan with your healthcare provider to manage and prevent wheezing episodes.</li>
+                                        <li>Take prescribed long-term controller medications to reduce airway inflammation and prevent wheezing.</li>
+                                    {% endif %}
                                     <!-- Add more recommendations as needed -->
                                 </ul>
                                 <a class="btn btn-primary mt-3" href="#findnearbyhospital" role="button">Find Nearby Hospital</a>
@@ -79,6 +110,24 @@
                                     <li>Maintain a balanced diet rich in fruits and vegetables.</li>
                                     <li>Engage in regular physical activity.</li>
                                     <li>Avoid exposure to environmental pollutants.</li>
+                                    {% if sleeping == 1 %}
+                                        <li>Avoid triggers such as smoke, pollen, and dust mites. Make sure your bedroom is clean and allergen-free.</li>
+                                    {% endif %}
+                                    {% if chesttight == 1 %}
+                                        <li>Practice relaxation techniques and deep breathing exercises to alleviate chest tightness.</li>
+                                    {% endif %}
+                                    {% if breath == 1 %}
+                                        <li>Use prescribed inhalers and medications as directed by your doctor to relieve shortness of breath.</li>
+                                    {% endif %}
+                                    {% if cough == 1 %}
+                                        <li>Avoid irritants such as smoke and strong odors that can trigger coughing episodes.</li>
+                                    {% endif %}
+                                    {% if allergy == 1 %}
+                                        <li>Identify and avoid specific allergens that may trigger your asthma symptoms. Consider allergy testing if necessary.</li>
+                                    {% endif %}
+                                    {% if wheezing == 1 %}
+                                        <li>Monitor your lung function regularly using a peak flow meter. Seek medical attention if you experience wheezing.</li>
+                                    {% endif %}
                                     <!-- Add more recommendations as needed -->
                                 </ul>
                             </div>

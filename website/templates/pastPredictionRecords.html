@@ -138,7 +138,6 @@
                                                 <thead>
                                                     <tr>
                                                         <th>No.</th>
-                                                        <th>User</th>
                                                         <th>Gender</th>
                                                         <th>Age</th>
                                                         <th>Difficulty Sleeping</th>
@@ -155,10 +154,9 @@
                                                 <tbody>
                                                     {% for user_a in asthma_records %}
                                                         {% for asthma in user_a.asthma %}
-                                                            {% if asthma.am_predtarget == "myself" %}
+                                                            {% if asthma.am_predtarget == "Myself" and user_a.u_id == session['u_id'] %}
                                                             <tr>
                                                                 <td>{{ asthma.am_id }}</td>
-                                                                <td>{{ user_a.u_username }}</td>
                                                                 <td>{% if asthma.am_sex == 1 %}Male{% else %}Female{% endif %}</td>
                                                                 <td>{{ asthma.am_age }}</td>
                                                                 <td>{% if asthma.am_sleeping == 1 %}Yes{% else %}No{% endif %}</td>
@@ -184,7 +182,6 @@
                                                 <thead>
                                                     <tr>
                                                         <th>No.</th>
-                                                        <th>User</th>
                                                         <th>Gender</th>
                                                         <th>Age</th>
                                                         <th>Difficulty Sleeping</th>
@@ -202,10 +199,9 @@
                                                 <tbody>
                                                     {% for user_a in asthma_records %}
                                                         {% for asthma in user_a.asthma %}
-                                                            {% if asthma.am_predtarget == "others" %}
+                                                            {% if asthma.am_predtarget == "others" and user_a.u_id == session['u_id'] %}
                                                             <tr>
                                                                 <td>{{ asthma.am_id }}</td>
-                                                                <td>{{ user_a.u_username }}</td>
                                                                 <td>{% if asthma.am_sex == 1 %}Male{% else %}Female{% endif %}</td>
                                                                 <td>{{ asthma.am_age }}</td>
                                                                 <td>{% if asthma.am_sleeping == 1 %}Yes{% else %}No{% endif %}</td>
@@ -247,7 +243,6 @@
                                                 <thead>
                                                     <tr>
                                                         <th>No.</th>
-                                                        <th>User</th>
                                                         <th>Age</th>
                                                         <th>High Cholesterol</th>
                                                         <th>Body Mass Index</th>
@@ -269,10 +264,9 @@
                                                 <tbody>
                                                     {% for user_d in diabetes_records %}
                                                         {% for diabetes in user_d.diabetes %}
-                                                            {% if diabetes.d_predtarget == "myself" %}
+                                                            {% if diabetes.d_predtarget == "Myself" and user_d.u_id == session['u_id'] %}
                                                             <tr>
                                                                 <td>{{ diabetes.d_id }}</td>
-                                                                <td>{{ user_d.u_username }}</td>
                                                                 <td>{{ diabetes.d_age }}</td>
                                                                 <td>{% if diabetes.d_highchol == 1 %}Yes{% else %}No{% endif %}</td>
                                                                 <td>{{ diabetes.d_BMI }}</td>
@@ -315,7 +309,6 @@
                                                 <thead>
                                                     <tr>
                                                         <th>No.</th>
-                                                        <th>User</th>
                                                         <th>Age</th>
                                                         <th>High Cholesterol</th>
                                                         <th>Body Mass Index</th>
@@ -338,10 +331,9 @@
                                                 <tbody>
                                                     {% for user_d in diabetes_records %}
                                                         {% for diabetes in user_d.diabetes %}
-                                                            {% if diabetes.d_predtarget == "others" %}
+                                                            {% if diabetes.d_predtarget == "others" and user_d.u_id == session['u_id'] %}
                                                             <tr>
                                                                 <td>{{ diabetes.d_id }}</td>
-                                                                <td>{{ user_d.u_username }}</td>
                                                                 <td>{{ diabetes.d_age }}</td>
                                                                 <td>{% if diabetes.d_highchol == 1 %}Yes{% else %}No{% endif %}</td>
                                                                 <td>{{ diabetes.d_BMI }}</td>
@@ -400,7 +392,6 @@
                                                 <thead>
                                                     <tr>
                                                         <th>No.</th>
-                                                        <th>User</th>
                                                         <th>Gender</th>
                                                         <th>Age</th>
                                                         <th>Hypertension</th>
@@ -418,10 +409,9 @@
                                                 <tbody>
                                                     {% for user_s in stroke_records %}
                                                         {% for stroke in user_s.stroke %}
-                                                            {% if stroke.s_predtarget == "myself" %}
+                                                            {% if stroke.s_predtarget == "Myself" and user_s.u_id == session['u_id'] %}
                                                             <tr>
                                                                 <td>{{ stroke.s_id }}</td>
-                                                                <td>{{ user_s.u_username }}</td>
                                                                 <td>{{ stroke.s_sex }}</td>
                                                                 <td>{{ stroke.s_age }}</td>
                                                                 <td>{% if stroke.s_hypertension == 1 %}Yes{% else %}No{% endif %}</td>
@@ -458,7 +448,6 @@
                                                 <thead>
                                                     <tr>
                                                         <th>No.</th>
-                                                        <th>User</th>
                                                         <th>Gender</th>
                                                         <th>Age</th>
                                                         <th>Hypertension</th>
@@ -477,10 +466,9 @@
                                                 <tbody>
                                                     {% for user_s in stroke_records %}
                                                         {% for stroke in user_s.stroke %}
-                                                            {% if stroke.s_predtarget == "others" %}
+                                                            {% if stroke.s_predtarget == "others" and user_s.u_id == session['u_id'] %}
                                                             <tr>
                                                                 <td>{{ stroke.s_id }}</td>
-                                                                <td>{{ user_s.u_username }}</td>
                                                                 <td>{{ stroke.s_sex }}</td>
                                                                 <td>{{ stroke.s_age }}</td>
                                                                 <td>{% if stroke.s_hypertension == 1 %}Yes{% else %}No{% endif %}</td>

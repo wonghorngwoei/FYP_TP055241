@@ -54,21 +54,23 @@ def userdashboard():
     # Retrieve the user ID from the session or wherever it's stored
     userID = session.get('u_id')
 
-    # Retrieve the counts of diagnosed and not diagnosed asthma cases from the database
-    asthma_diagnosed_count = Asthma.query.filter(Asthma.am_predtarget == "myself", Asthma.am_asthma == 1).count()
-    asthma_not_diagnosed_count = Asthma.query.filter(Asthma.am_predtarget == "myself", Asthma.am_asthma == 0).count()
-
-    # Retrieve the counts of diagnosed and not diagnosed diabetes cases from the database
-    diabetes_diagnosed_count = Diabetes.query.filter(Diabetes.d_predtarget == "myself", Diabetes.d_diabetes == 1).count()
-    diabetes_not_diagnosed_count = Diabetes.query.filter(Diabetes.d_predtarget == "myself", Diabetes.d_diabetes == 0).count()
-
-    # Retrieve the counts of diagnosed and not diagnosed stroke cases from the database
-    stroke_diagnosed_count = Stroke.query.filter(Stroke.s_predtarget == "myself", Stroke.s_stroke == 1).count()
-    stroke_not_diagnosed_count = Stroke.query.filter(Stroke.s_predtarget == "myself", Stroke.s_stroke == 0).count()
-
-
     # Fetch the user's data from the database
     user = User.query.get(userID)
+
+    # Retrieve the counts of diagnosed and not diagnosed asthma cases for the current user's session
+    asthma_diagnosed_count = Asthma.query.filter(Asthma.am_predtarget == "myself", Asthma.am_asthma == 1, Asthma.am_userID == user.u_id).count()
+    asthma_not_diagnosed_count = Asthma.query.filter(Asthma.am_predtarget == "myself", Asthma.am_asthma == 0, Asthma.am_userID == user.u_id).count()
+
+    # Retrieve the counts of diagnosed and not diagnosed diabetes cases from the database
+    diabetes_diagnosed_count = Diabetes.query.filter(Diabetes.d_predtarget == "myself", Diabetes.d_diabetes == 1, Diabetes.d_userID == user.u_id).count()
+    diabetes_not_diagnosed_count = Diabetes.query.filter(Diabetes.d_predtarget == "myself", Diabetes.d_diabetes == 0, Diabetes.d_userID == user.u_id).count()
+
+    # Retrieve the counts of diagnosed and not diagnosed stroke cases from the database
+    stroke_diagnosed_count = Stroke.query.filter(Stroke.s_predtarget == "myself", Stroke.s_stroke == 1, Stroke.s_userID == user.u_id).count()
+    stroke_not_diagnosed_count = Stroke.query.filter(Stroke.s_predtarget == "myself", Stroke.s_stroke == 0, Stroke.s_userID == user.u_id).count()
+
+
+    
     return render_template('userdashboard.html', user=user, asthma_diagnosed_count=asthma_diagnosed_count, asthma_not_diagnosed_count=asthma_not_diagnosed_count, diabetes_diagnosed_count=diabetes_diagnosed_count, 
                            diabetes_not_diagnosed_count=diabetes_not_diagnosed_count, stroke_diagnosed_count=stroke_diagnosed_count, stroke_not_diagnosed_count=stroke_not_diagnosed_count)
 
@@ -688,7 +690,7 @@ def predictAsthma():
         # Commit the changes to the database
         db.session.commit()
 
-        return redirect(url_for('views.asthmaResult', user=user, prediction=prediction, prediction_percentage_true=prediction_percentage_true))
+        return redirect(url_for('views.asthmaResult', user=user, age=age, sex=sex, sleeping=sleeping, chesttight=chesttight, breath=breath, cough=cough, allergy=allergy, wheezing=wheezing, prediction=prediction, prediction_percentage_true=prediction_percentage_true))
         
     return redirect(url_for('views.userdashboard'))
 
@@ -697,6 +699,15 @@ def asthmaResult():
     # Retrieve the user ID from the session or wherever it's stored
     userID = session.get('u_id')
     # Retrieve the result from the query parameter
+    age=request.args.get('age')
+    sex=request.args.get('sex')
+    sleeping=request.args.get('sleeping')
+    chesttight=request.args.get('chesttight')
+    breath=request.args.get('breath')
+    cough=request.args.get('cough')
+    allergy=request.args.get('allergy')
+    wheezing=request.args.get('wheezing')
+
     prediction = request.args.get('prediction')
     
 
@@ -705,7 +716,7 @@ def asthmaResult():
     # Fetch the user's data from the database
     user = User.query.get(userID)
 
-    return render_template('asthmaResult.html', user=user, prediction=int(prediction), prediction_percentage_true=prediction_percentage_true)
+    return render_template('asthmaResult.html', user=user, age=int(age), sex=int(sex), sleeping=int(sleeping), chesttight=int(chesttight), breath=int(breath), cough=int(cough), allergy=int(allergy), wheezing=int(wheezing), prediction=int(prediction), prediction_percentage_true=prediction_percentage_true)
 
 @views.route('/asthmaResultFeedback' , methods=['GET','POST'])
 def asthmaResultFeedback():
