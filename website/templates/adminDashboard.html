@@ -20,6 +20,13 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <!-- Add your charts JavaScript code -->
         <script src="js/charts.js"></script>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <script>
+                    alert("{{ messages[0] }}");
+                </script>
+            {% endif %}
+        {% endwith %}
     </head>
     <body>
         <!-- Include the modals -->

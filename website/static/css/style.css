@@ -115,4 +115,18 @@ body{
     text-align: center;
 }
   
-  
+.table-header {
+    background-color: #e9ecef;
+}
+
+.table-content1 {
+    background-color: #2ba202;
+}
+
+.table-content2 {
+    background-color: #Eaf414;
+}
+
+.table-content3 {
+    background-color: #D71316;
+}

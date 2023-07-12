@@ -18,25 +18,30 @@ def login():
         print(user)
         if user:
             if check_password_hash(user.u_password, password):
+                # Display alert message to the user
+                alert_message = "Logged in successfully as user: " + username
                 flash('Logged in successfully!', category='success')
                 # Store user information in the session
                 session['u_id'] = user.u_id
                 session['username'] = user.u_username
-                return redirect(url_for('views.userdashboard'))
+                return redirect(url_for('views.userdashboard', alert_message=alert_message))
                 
         admin = Admin.query.filter_by(a_username=username).first()
         print(admin)
         if admin:
             if admin.a_password == password:
+                # Display alert message to the user
+                alert_message = "Logged in successfully as admin: " + username
                 flash('Logged in successfully as admin!', category='success')
                 session['a_id'] = admin.a_id
                 session['username'] = admin.a_username
-                return redirect(url_for('views.admindashboard'))
+                return redirect(url_for('views.admindashboard', alert_message=alert_message))
 
+        alert_message = "Invalid username or password, try again."
         flash('Invalid username or password, try again.', category='error')
-        return render_template("homepage.html")
+        return render_template("homepage.html", alert_message=alert_message)
 
-    return render_template("homepage.html")
+    return render_template("homepage.html", alert_message=None)
 
 
 @auth.route('/Logout', methods=['GET','POST'])
