@@ -423,15 +423,15 @@
                             <form method="POST" action="/change-password/{{ admin.a_id }}">
                                 <div class="form-group">
                                     <label for="a_password">Current Password</label>
-                                    <input type="text" class="form-control" name="a_password" id="a_password" placeholder="Enter your current password">
+                                    <input type="text" class="form-control" name="a_password" id="a_password" placeholder="Enter your current password" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="a_newPW">New Password</label>
-                                    <input type="text" class="form-control" name="a_newPW" id="a_newPW" placeholder="Enter your new password">
+                                    <input type="text" class="form-control" name="a_newPW" id="a_newPW" placeholder="Enter your new password" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="a_newPWconfirmed">Confirm New Password</label>
-                                    <input type="text" class="form-control" name="a_newPWconfirmed" id="a_newPWconfirmed" placeholder="Enter your new password again">
+                                    <input type="text" class="form-control" name="a_newPWconfirmed" id="a_newPWconfirmed" placeholder="Enter your new password again" required>
                                 </div>
                                 <div class="form-group">
                                     <p><input type="submit" class="btn btn-primary" value="Change Password"></p>
@@ -456,15 +456,15 @@
                             <form method="POST" action="/edit-aprofile/{{ admin.a_id }}">
                                 <div class="form-group">
                                     <label for="a_fname">First Name</label>
-                                    <input type="text" class="form-control" name="a_fname" id="a_fname" value="{{ admin.a_fname }}">
+                                    <input type="text" class="form-control" name="a_fname" id="a_fname" value="{{ admin.a_fname }}" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="a_lname">Last Name</label>
-                                    <input type="text" class="form-control" name="a_lname" id="a_lname" value="{{ admin.a_lname }}">
+                                    <input type="text" class="form-control" name="a_lname" id="a_lname" value="{{ admin.a_lname }}" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="a_hpnumber">Phone Number</label>
-                                    <input type="tel" class="form-control" name="a_hpnumber" id="a_hpnumber" value="{{ admin.a_hpnumber }}">
+                                    <input type="tel" class="form-control" name="a_hpnumber" id="a_hpnumber" value="{{ admin.a_hpnumber }}" required>
                                 </div>
                                 <div class="form-group">
                                     <p><input type="submit" class="btn btn-primary" value="Update Profile"></p>

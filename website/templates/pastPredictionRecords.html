@@ -199,7 +199,7 @@
                                                 <tbody>
                                                     {% for user_a in asthma_records %}
                                                         {% for asthma in user_a.asthma %}
-                                                            {% if asthma.am_predtarget == "others" and user_a.u_id == session['u_id'] %}
+                                                            {% if asthma.am_predtarget == "Others" and user_a.u_id == session['u_id'] %}
                                                             <tr>
                                                                 <td>{{ asthma.am_id }}</td>
                                                                 <td>{% if asthma.am_sex == 1 %}Male{% else %}Female{% endif %}</td>
@@ -243,7 +243,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th>No.</th>
-                                                        <th>Age</th>
+                                                        <th>Age Group</th>
                                                         <th>High Cholesterol</th>
                                                         <th>Body Mass Index</th>
                                                         <th>Smoker</th>
@@ -309,7 +309,7 @@
                                                 <thead>
                                                     <tr>
                                                         <th>No.</th>
-                                                        <th>Age</th>
+                                                        <th>Age Group</th>
                                                         <th>High Cholesterol</th>
                                                         <th>Body Mass Index</th>
                                                         <th>Smoker</th>
@@ -331,7 +331,7 @@
                                                 <tbody>
                                                     {% for user_d in diabetes_records %}
                                                         {% for diabetes in user_d.diabetes %}
-                                                            {% if diabetes.d_predtarget == "others" and user_d.u_id == session['u_id'] %}
+                                                            {% if diabetes.d_predtarget == "Others" and user_d.u_id == session['u_id'] %}
                                                             <tr>
                                                                 <td>{{ diabetes.d_id }}</td>
                                                                 <td>{{ diabetes.d_age }}</td>
@@ -362,7 +362,7 @@
                                                                 <td>{% if diabetes.d_diabetes == 1 %}Yes{% else %}No{% endif %}</td>
                                                                 <td>{{ diabetes.d_feedback }}</td>
                                                                 <td>{{ diabetes.d_date }}</td>
-                                                                <td>{{ diabetes.d_predtarget }} | {{ diabetes.d_refname }}</td>
+                                                                <td>{{ diabetes.d_refname }}</td>
                                                             </tr>
                                                             {% endif %}
                                                         {% endfor %}
@@ -466,7 +466,7 @@
                                                 <tbody>
                                                     {% for user_s in stroke_records %}
                                                         {% for stroke in user_s.stroke %}
-                                                            {% if stroke.s_predtarget == "others" and user_s.u_id == session['u_id'] %}
+                                                            {% if stroke.s_predtarget == "Others" and user_s.u_id == session['u_id'] %}
                                                             <tr>
                                                                 <td>{{ stroke.s_id }}</td>
                                                                 <td>{{ stroke.s_sex }}</td>
@@ -576,15 +576,15 @@
                         <form method="POST" action="/change-u_password/{{ user.u_id }}">
                             <div class="form-group">
                                 <label for="u_password">Current Password</label>
-                                <input type="text" class="form-control" name="u_password" id="u_password" placeholder="Enter your current password">
+                                <input type="text" class="form-control" name="u_password" id="u_password" placeholder="Enter your current password" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_newPW">New Password</label>
-                                <input type="text" class="form-control" name="u_newPW" id="u_newPW" placeholder="Enter your new password">
+                                <input type="text" class="form-control" name="u_newPW" id="u_newPW" placeholder="Enter your new password" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_newPWconfirmed">Confirm New Password</label>
-                                <input type="text" class="form-control" name="u_newPWconfirmed" id="u_newPWconfirmed" placeholder="Enter your new password again">
+                                <input type="text" class="form-control" name="u_newPWconfirmed" id="u_newPWconfirmed" placeholder="Enter your new password again" required>
                             </div>
                             <div class="form-group">
                                 <p><input type="submit" class="btn btn-primary" value="Change Password"></p>
@@ -610,15 +610,15 @@
                         <form method="POST" action="/edit-profile/{{ user.u_id }}">
                             <div class="form-group">
                                 <label for="u_fname">First Name</label>
-                                <input type="text" class="form-control" name="u_fname" id="u_fname" value="{{ user.u_fname }}">
+                                <input type="text" class="form-control" name="u_fname" id="u_fname" value="{{ user.u_fname }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_lname">Last Name</label>
-                                <input type="text" class="form-control" name="u_lname" id="u_lname" value="{{ user.u_lname }}">
+                                <input type="text" class="form-control" name="u_lname" id="u_lname" value="{{ user.u_lname }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_age">Age</label>
-                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}">
+                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_gender" class="col-form-label">Gender:</label>
@@ -630,11 +630,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="u_hpnumber">Phone Number</label>
-                                <input type="tel" class="form-control" name="u_hpnumber" id="u_hpnumber" value="{{ user.u_hpnumber }}">
+                                <input type="tel" class="form-control" name="u_hpnumber" id="u_hpnumber" value="{{ user.u_hpnumber }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_address">Address</label>
-                                <textarea class="form-control" name="u_address" id="u_address" rows="3">{{ user.u_address }}</textarea>
+                                <textarea class="form-control" name="u_address" id="u_address" rows="3" required>{{ user.u_address }}</textarea>
                             </div>
                             <div class="form-group">
                                 <p><input type="submit" class="btn btn-primary" value="Update Profile"></p>

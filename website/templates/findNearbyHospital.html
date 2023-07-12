@@ -63,7 +63,7 @@
                         </form>
                     </div>
                     {% if hospitals %}
-                    <div class="container">
+                    <div class="container-fluid">
                         <br><br>
                         <h1>Hospital Search Results</h1>
                         <table class="table">
@@ -162,15 +162,15 @@
                         <form method="POST" action="/change-u_password/{{ user.u_id }}">
                             <div class="form-group">
                                 <label for="u_password">Current Password</label>
-                                <input type="text" class="form-control" name="u_password" id="u_password" placeholder="Enter your current password">
+                                <input type="text" class="form-control" name="u_password" id="u_password" placeholder="Enter your current password" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_newPW">New Password</label>
-                                <input type="text" class="form-control" name="u_newPW" id="u_newPW" placeholder="Enter your new password">
+                                <input type="text" class="form-control" name="u_newPW" id="u_newPW" placeholder="Enter your new password" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_newPWconfirmed">Confirm New Password</label>
-                                <input type="text" class="form-control" name="u_newPWconfirmed" id="u_newPWconfirmed" placeholder="Enter your new password again">
+                                <input type="text" class="form-control" name="u_newPWconfirmed" id="u_newPWconfirmed" placeholder="Enter your new password again" required>
                             </div>
                             <div class="form-group">
                                 <p><input type="submit" class="btn btn-primary" value="Change Password"></p>
@@ -195,15 +195,15 @@
                         <form method="POST" action="/edit-profile/{{ user.u_id }}">
                             <div class="form-group">
                                 <label for="u_fname">First Name</label>
-                                <input type="text" class="form-control" name="u_fname" id="u_fname" value="{{ user.u_fname }}">
+                                <input type="text" class="form-control" name="u_fname" id="u_fname" value="{{ user.u_fname }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_lname">Last Name</label>
-                                <input type="text" class="form-control" name="u_lname" id="u_lname" value="{{ user.u_lname }}">
+                                <input type="text" class="form-control" name="u_lname" id="u_lname" value="{{ user.u_lname }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_age">Age</label>
-                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}">
+                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_gender" class="col-form-label">Gender:</label>
@@ -215,11 +215,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="u_hpnumber">Phone Number</label>
-                                <input type="tel" class="form-control" name="u_hpnumber" id="u_hpnumber" value="{{ user.u_hpnumber }}">
+                                <input type="tel" class="form-control" name="u_hpnumber" id="u_hpnumber" value="{{ user.u_hpnumber }}" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_address">Address</label>
-                                <textarea class="form-control" name="u_address" id="u_address" rows="3">{{ user.u_address }}</textarea>
+                                <textarea class="form-control" name="u_address" id="u_address" rows="3" required>{{ user.u_address }}</textarea>
                             </div>
                             <div class="form-group">
                                 <p><input type="submit" class="btn btn-primary" value="Update Profile"></p>

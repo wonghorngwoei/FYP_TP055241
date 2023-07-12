@@ -71,9 +71,8 @@ def userdashboard():
 
 
     
-    return render_template('userdashboard.html', user=user, asthma_diagnosed_count=asthma_diagnosed_count, asthma_not_diagnosed_count=asthma_not_diagnosed_count, diabetes_diagnosed_count=diabetes_diagnosed_count, 
-                           diabetes_not_diagnosed_count=diabetes_not_diagnosed_count, stroke_diagnosed_count=stroke_diagnosed_count, stroke_not_diagnosed_count=stroke_not_diagnosed_count)
-
+    return render_template('userDashboard.html', user=user, asthma_diagnosed_count=asthma_diagnosed_count, asthma_not_diagnosed_count=asthma_not_diagnosed_count, diabetes_diagnosed_count=diabetes_diagnosed_count, 
+                            diabetes_not_diagnosed_count=diabetes_not_diagnosed_count, stroke_diagnosed_count=stroke_diagnosed_count, stroke_not_diagnosed_count=stroke_not_diagnosed_count)
 def index():
     active_tab = request.args.get('active_tab', 'home')
     return render_template('userDashboard.html', active_tab=active_tab)
@@ -654,7 +653,7 @@ def predictAsthma():
         allergy = request.form['allergy']
         wheezing = request.form['wheezing']
         predTarget = request.form['predictionTarget']
-        refName = request.form['referenceName'] if predTarget == 'others' else None
+        refName = request.form['referenceName'] if predTarget == 'Others' else None
 
         form_array = np.array([[age, sex, sleeping, breath, chesttight, cough, allergy, wheezing]]).astype(int)
         print(form_array)
@@ -732,13 +731,20 @@ def asthmaResultFeedback():
 
         # Retrieve the latest Asthma record for the user
         asthma = Asthma.query.filter_by(am_userID=userID).order_by(Asthma.am_id.desc()).first()
-        
+
+
         # Update the Asthma record with the user's feedback
-        asthma.am_feedback = feedback
-
-        # Commit the changes to the database
-        db.session.commit()
-
+        try:
+            # Update the Asthma record with the user's feedback
+            asthma.am_feedback = feedback
+            # Commit the changes to the database
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            flash("Failed to submit asthma prediction feedback, please try again.")
+        else:
+            flash("Successfully submitted asthma prediction feedback.")
+       
         return redirect(url_for('views.userdashboard', user=user))  # Redirect to user dashboard after submitting feedback
 
     return render_template('userDashboard.html')
@@ -837,7 +843,7 @@ def predictDiabetes():
         stroke = request.form['stroke']
         highBP = request.form['highBP']
         predTarget = request.form['predictionTarget']
-        refName = request.form['referenceName'] if predTarget == 'others' else None
+        refName = request.form['referenceName'] if predTarget == 'Others' else None
 
 
         form_array = np.array([[age, highChol, bmi, smoker, heartdisease, physactivity, fruits, veggies, 
@@ -916,12 +922,16 @@ def diabetesResultFeedback():
         diabetes = Diabetes.query.filter_by(d_userID=userID).order_by(Diabetes.d_id.desc()).first()
         
         # Update the Diabetes record with the user's feedback
-        diabetes.d_feedback = feedback
+        try:
+            diabetes.d_feedback = feedback
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            flash("Failed to submit diabetes prediction feedback, please try again.")
+        else:
+            flash("Successfully submitted diabetes prediction feedback.")
 
-        # Commit the changes to the database
-        db.session.commit()
-
-        return redirect(url_for('views.userdashboard', user=user))  # Redirect to user dashboard after submitting feedback
+        return redirect(url_for('views.userdashboard', user=user))
 
     return render_template('userDashboard.html')
 
@@ -987,7 +997,7 @@ def predictStroke():
         bmi = request.form['bmi']
         smoking = request.form['smoking']
         predTarget = request.form['predictionTarget']
-        refName = request.form['referenceName'] if predTarget == 'others' else None
+        refName = request.form['referenceName'] if predTarget == 'Others' else None
 
 
         form_array = np.array([[sex, age, hypertension, heartdisease, married, worktype, avgglucose, bmi, smoking]]).astype(float)
@@ -1057,13 +1067,19 @@ def strokeResultFeedback():
         # Retrieve the latest Stroke record for the user
         stroke = Stroke.query.filter_by(s_userID=userID).order_by(Stroke.s_id.desc()).first()
         
-        # Update the stroke record with the user's feedback
-        stroke.s_feedback = feedback
+        # Update the Stroke record with the user's feedback
+        try:
+            # Update the stroke record with the user's feedback
+            stroke.s_feedback = feedback
+            # Commit the changes to the database
+            db.session.commit()
+        except Exception as e:
+            print(e)
+            flash("Failed to submit stroke prediction feedback, please try again.")
+        else:
+            flash("Successfully submitted stroke prediction feedback.")
 
-        # Commit the changes to the database
-        db.session.commit()
-
-        return redirect(url_for('views.userdashboard', user=user))  # Redirect to user dashboard after submitting feedback
+        return redirect(url_for('views.userdashboard', user=user))# Redirect to user dashboard after submitting feedback
 
     return render_template('userDashboard.html')
 

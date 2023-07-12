@@ -42,22 +42,6 @@
         {% include 'signup.html' %}
         {% include 'resetpw.html' %}
 
-        <!-- Pop up messages -->
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="container">
-                    {% for message in messages %}
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
-
         <!-- Navigation bar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="#">Lifestyle Disease Prediction & Management System</a>

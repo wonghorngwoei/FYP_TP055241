@@ -4,7 +4,6 @@ from website import mail
 from flask_mail import Message
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db, mail
-import secrets
 
 auth = Blueprint('auth', __name__)
 
@@ -19,23 +18,21 @@ def login():
         if user:
             if check_password_hash(user.u_password, password):
                 # Display alert message to the user
-                alert_message = "Logged in successfully as user: " + username
                 flash('Logged in successfully!', category='success')
                 # Store user information in the session
                 session['u_id'] = user.u_id
                 session['username'] = user.u_username
-                return redirect(url_for('views.userdashboard', alert_message=alert_message))
+                return redirect(url_for('views.userdashboard'))
                 
         admin = Admin.query.filter_by(a_username=username).first()
         print(admin)
         if admin:
             if admin.a_password == password:
                 # Display alert message to the user
-                alert_message = "Logged in successfully as admin: " + username
                 flash('Logged in successfully as admin!', category='success')
                 session['a_id'] = admin.a_id
                 session['username'] = admin.a_username
-                return redirect(url_for('views.admindashboard', alert_message=alert_message))
+                return redirect(url_for('views.admindashboard'))
 
         alert_message = "Invalid username or password, try again."
         flash('Invalid username or password, try again.', category='error')
@@ -71,20 +68,21 @@ def sign_up():
         chk_email = check_email_exists(u_email)
 
         if chk_username:
-           return flash('Username already exists', category='error')
+            flash('Username already exists', category='error')
+            return redirect(url_for('views.homepage'))
         elif chk_email:
-            return flash('Email already exists', category='error')
-
-        newUser = User(u_username=u_username,u_password=generate_password_hash(u_password, method='sha256'),
-                       u_fname=u_fname,u_lname=u_lname,u_email=u_email,u_age=u_age,u_hpnumber=u_hpnumber,
-                       u_address=u_address,u_gender=u_gender,u_usertype=u_usertype)
+            flash('Email already exists', category='error')
+            return redirect(url_for('views.homepage'))
         
+        newUser = User(u_username=u_username,u_password=generate_password_hash(u_password, method='sha256'),
+                    u_fname=u_fname,u_lname=u_lname,u_email=u_email,u_age=u_age,u_hpnumber=u_hpnumber,
+                    u_address=u_address,u_gender=u_gender,u_usertype=u_usertype)
+    
         db.session.add(newUser)
         db.session.commit()
-        flash('Successfully created an account!', 'success')  # Flash success message
-        print("Successfully Registered An Account!")
+        flash('Successfully created an account!', category='success')  # Flash success message
         return redirect(url_for('views.homepage'))
-
+    
     return render_template("homepage.html")
 
 def send_mail(user):
@@ -160,32 +158,19 @@ def check_email_exists(u_email):
     # If a user object is returned, the username already exists
     return user is not None
 
-def generate_reset_token():
-    return secrets.token_hex(20)
+def check_adminusername_exists(a_username):
+    # Query the User model to check if the username exists
+    admin = Admin.query.filter_by(a_username=a_username).first()
 
-def send_password_reset_email(user, token):
-    # Create the email message
-    subject = 'Password Reset Request'
-    sender = 'tp055241@mail.apu.edu.my'  # Replace with your email address
-    recipient = user.u_email
-    message = f'''
-    Hi {user.u_username},
-    
-    You have requested to reset your password. Please click on the following link to reset your password:
-    
-    {url_for('auth.reset_password_confirm', token=token, _external=True)}
-    
-    If you did not make this request, please ignore this email.
-    
-    Best regards,
-    Lifestyle Disease Prediction and Management System Team
-    '''
-    
-    # Send the email
-    msg = Message(subject, sender=sender, recipients=[recipient])
-    msg.body = message
-    mail.send_message(msg)
+    # If a user object is returned, the username already exists
+    return admin is not None
 
+def check_adminemail_exists(a_email):
+    # Query the User model to check if the username exists
+    admin = Admin.query.filter_by(a_email=a_email).first()
+
+    # If a user object is returned, the username already exists
+    return admin is not None
 
 @auth.route('/adminReg', methods=['GET','POST'])
 def admin_reg():
@@ -199,8 +184,8 @@ def admin_reg():
         a_usertype = "Admin"
 
         # Check if the information already exists
-        chk_username = check_username_exists(a_username)
-        chk_email = check_email_exists(a_email)
+        chk_username = check_adminusername_exists(a_username)
+        chk_email = check_adminemail_exists(a_email)
 
         if chk_username:
             flash('Username already exists', category='error')
