@@ -65,9 +65,20 @@
                                 <h2 class="alert-heading">You have asthma.</h2>
                                 <p class="mb-0">Health Recommendation: Take the following steps to manage your asthma and reduce symptoms:</p>
                                 <ul>
-                                    <li>Avoid triggers such as smoke, pollen, and dust mites.</li>
+                                    <!-- <li>Avoid triggers such as smoke, pollen, and dust mites.</li>
                                     <li>Take prescribed medication as directed by your doctor.</li>
-                                    <li>Follow an asthma action plan.</li>
+                                    <li>Follow an asthma action plan.</li> -->
+                                    {% if age >= 18 %}
+                                        <!-- Additional condition for age group -->
+                                        <li>For adults aged 18 and above, it is important to monitor and manage other respiratory conditions such as chronic obstructive pulmonary disease (COPD) or allergic rhinitis that can coexist with asthma.</li>
+                                        <li>Quit smoking and avoid exposure to secondhand smoke, as smoking can worsen asthma symptoms and increase the risk of respiratory complications.</li>
+                                        <li>Discuss with your healthcare provider about getting a pneumococcal vaccine and annual influenza vaccine to prevent respiratory infections.</li>
+                                    {% else %}
+                                        <!-- Additional condition for younger age group -->
+                                        <li>For children and adolescents, it is important to create an asthma management plan in collaboration with parents, healthcare providers, and school personnel.</li>
+                                        <li>Ensure that asthma medications are administered properly and consistently according to the child's age and developmental stage.</li>
+                                        <li>Regularly assess and address triggers in the child's environment such as allergens, pets, and indoor pollutants.</li>
+                                    {% endif %}
                                     {% if sleeping == 1 %}
                                         <li>Avoid triggers such as smoke, pollen, and dust mites. Make sure your bedroom is clean and allergen-free.</li>
                                         <li>Establish a regular sleep routine and ensure you get enough quality sleep each night.</li>
@@ -111,31 +122,30 @@
                                     <li>Engage in regular physical activity.</li>
                                     <li>Avoid exposure to environmental pollutants.</li>
                                     {% if sleeping == 1 %}
-                                        <li>Avoid triggers such as smoke, pollen, and dust mites. Make sure your bedroom is clean and allergen-free.</li>
+                                        <li>Because you've selected difficulty in falling asleep, avoid triggers such as smoke, pollen, and dust mites. Make sure your bedroom is clean and allergen-free.</li>
                                     {% endif %}
                                     {% if chesttight == 1 %}
-                                        <li>Practice relaxation techniques and deep breathing exercises to alleviate chest tightness.</li>
+                                        <li>Because you've selected in having chest tightness, practice relaxation techniques and deep breathing exercises to alleviate chest tightness.</li>
                                     {% endif %}
                                     {% if breath == 1 %}
-                                        <li>Use prescribed inhalers and medications as directed by your doctor to relieve shortness of breath.</li>
+                                        <li>Because you've selected that you often feel breathless, use prescribed inhalers and medications as directed by your doctor to relieve shortness of breath.</li>
                                     {% endif %}
                                     {% if cough == 1 %}
-                                        <li>Avoid irritants such as smoke and strong odors that can trigger coughing episodes.</li>
+                                        <li>Because you've selected cough symptoms, avoid irritants such as smoke and strong odors that can trigger coughing episodes.</li>
                                     {% endif %}
                                     {% if allergy == 1 %}
-                                        <li>Identify and avoid specific allergens that may trigger your asthma symptoms. Consider allergy testing if necessary.</li>
+                                        <li>Because you've selected in having allergy, identify and avoid specific allergens that may trigger your asthma symptoms. Consider allergy testing if necessary.</li>
                                     {% endif %}
                                     {% if wheezing == 1 %}
-                                        <li>Monitor your lung function regularly using a peak flow meter. Seek medical attention if you experience wheezing.</li>
+                                        <li>Because you've selected in having wheezing, monitor your lung function regularly using a peak flow meter. Seek medical attention if you experience wheezing.</li>
                                     {% endif %}
-                                    <!-- Add more recommendations as needed -->
                                 </ul>
                             </div>
                         {% endif %}
                         <form action="{{ url_for('views.asthmaResultFeedback') }}" method="POST">
                             <div class="form-group mt-4">
                                 <label for="feedback">Provide Feedback:</label>
-                                <textarea class="form-control" id="am_feedback" name="am_feedback" rows="5"></textarea>
+                                <textarea class="form-control" id="am_feedback" name="am_feedback" rows="5" required></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit Feedback</button>
                         </form>

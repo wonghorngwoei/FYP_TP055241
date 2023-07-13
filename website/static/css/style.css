@@ -82,12 +82,32 @@ body{
     font-style: italic;
 }
 
+
+.navbar {
+    background-color: #a5e4e1;
+}
+
 .sidebar {
     position: sticky;
+    background-color: #a5e4e1;
     top: 0;
     padding: 0;
     height: 100vh;
     overflow-y: auto;
+}
+
+.navbar-nav .nav-link:hover {
+    font-weight: bold;
+}
+
+.form-inline .nav-link:hover {
+    font-weight: bold;
+}
+
+.nav .custom-nav-link.active {
+    background-color: white;
+    padding: 20px;
+    /* Add any additional styles as needed */
 }
 
 .border-box {

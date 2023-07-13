@@ -190,10 +190,11 @@ def editProfile(u_id):
 
         try:
             db.session.commit()
-            print("Updated user!")
+            flash("Updated user profile!")
             return redirect(url_for('views.userdashboard'))
         except:
-            return "Error 404: Could not update user"
+            flash("Error 404: Could not update user")
+            return redirect(url_for('views.userdashboard'))
     
     else:
         return render_template('userDashboard.html', user=user)
@@ -233,12 +234,12 @@ def feedback():
         feedback = request.form.get('f_feedback')
 
         if len(feedback) < 1:
-            flash('Note is too short!',category='error')
+            flash('Feedback is too short!',category='error')
         else:
             new_feedback = Feedback(f_feedback=feedback, f_userID=userID)
             db.session.add(new_feedback)
             db.session.commit()
-            flash('Note added!', category='success')
+            flash('Feedback submitted!', category='success')
             return redirect(url_for('views.userdashboard'))
         
     return render_template('userDashboard.html')
@@ -462,10 +463,11 @@ def editAdminProfile(a_id):
 
         try:
             db.session.commit()
-            print("Updated admin profile!")
+            flash("Updated admin profile!")
             return redirect(url_for('views.admindashboard'))
         except:
-            return "Error 404: Could not update admin profile"
+            flash("Error 404: Could not update admin profile")
+            return redirect(url_for('views.admindashboard'))
     
     else:
         return render_template('adminDashboard.html', admin=admin)
@@ -513,32 +515,31 @@ def getUserInfo():
 
     # Fetch the user's data from the database
     admin = Admin.query.get(adminID)
-    return render_template('manageUserAccount.html', admin = admin, user=user)
+
+    # Get the flash message from the session
+    messages = session.pop('flash_messages', [])
+
+    return render_template('manageUserAccount.html', admin = admin, user=user, messages=messages)
 
 @views.route('/delete_user/<int:u_id>', methods=['GET', 'POST'])
 def deleteUser(u_id):
-    # Retrieve the user ID from the session or wherever it's stored
-    adminID = session.get('a_id')
     # Retrieve the user from the database based on the user_id
     userdel = User.query.get_or_404(u_id)
-    # Retrieve all users from the database
-    user = User.query.all()
-    # Fetch the user's data from the database
-    admin = Admin.query.get(adminID)
 
     try:
         # Delete the user from the database
         db.session.delete(userdel)
         db.session.commit()
         flash("User Deleted Successully.")
-
-        # Redirect to the user account page or any other desired page
-        return redirect(url_for('views.getUserInfo'))
-
     except:
         flash("Problem deleting the user account.")
-            # Redirect to the user account page or any other desired page
-        return redirect(url_for('views.getUserInfo'))
+        # Redirect to the user account page or any other desired page
+
+    # Store the flash message in the session
+    session['flash_messages'] = [message for message in session.get('flashes', [])]
+
+    # Redirect to the user account page or any other desired page
+    return redirect(url_for('views.getUserInfo'))
 
 
 # Route for the edit profile page
@@ -549,19 +550,27 @@ def editUser(u_id):
 
     if request.method == 'POST':
         # Update the user's information based on the form data
-        user.u_fname = request.form['u_fname']
-        user.u_lname = request.form['u_lname']
-        user.u_email = request.form['u_email']
-        user.u_age = request.form['u_age']
-        user.u_gender = request.form['u_gender']
-        user.u_hpnumber = request.form['u_hpnumber']
-        user.u_address = request.form['u_address']
+        try:
+            user.u_fname = request.form['u_fname']
+            user.u_lname = request.form['u_lname']
+            user.u_email = request.form['u_email']
+            user.u_age = request.form['u_age']
+            user.u_gender = request.form['u_gender']
+            user.u_hpnumber = request.form['u_hpnumber']
+            user.u_address = request.form['u_address']
 
-        # Save the changes to the database
-        db.session.commit()
+            # Save the changes to the database
+            db.session.commit()
+            flash('Successfully updated selected user profile.')
+            # Redirect to the user account page or any other desired page
+            return redirect(url_for('views.getUserInfo'))
 
-        # Redirect to the user account page or any other desired page
-        return redirect(url_for('views.getUserInfo'))
+        except:
+            flash('There was an error updating your profile.')
+            return render_template('manageUserAccount.html', user=user)
+        
+    # Store the flash message in the session
+    session['flash_messages'] = [message for message in session.get('flashes', [])]
 
     # Render the edit user form with the pre-filled user information
     return render_template('manageUserAccount.html', user=user)
@@ -889,7 +898,8 @@ def predictDiabetes():
         # Commit the changes to the database
         db.session.commit()
 
-        return redirect(url_for('views.diabetesResult', user=user, prediction=prediction, diabetes=diabetes, prediction_percentage_true=prediction_percentage_true))
+        return redirect(url_for('views.diabetesResult', user=user, getAge=getAge, highChol=highChol, bmi=bmi, smoker=smoker, heartdisease=heartdisease, physactivity=physactivity, fruits=fruits, veggies=veggies, hvyalcoholconsump=hvyalcoholconsump, 
+                                generalHealth=generalHealth, physicalHealth=physicalHealth, stroke=stroke, highBP=highBP, prediction=prediction, diabetes=diabetes, prediction_percentage_true=prediction_percentage_true))
         
     return redirect(url_for('views.userdashboard'))
 
@@ -898,6 +908,20 @@ def diabetesResult():
     # Retrieve the user ID from the session or wherever it's stored
     userID = session.get('u_id')
     # Retrieve the result from the query parameter
+    getAge = request.args.get('getAge')
+    highChol = request.args.get('highChol')
+    bmi = request.args.get('bmi')
+    smoker = request.args.get('smoker')
+    heartdisease = request.args.get('heartdisease')
+    physactivity = request.args.get('physactivity')
+    fruits = request.args.get('fruits')
+    veggies = request.args.get('veggies')
+    hvyalcoholconsump = request.args.get('hvyalcoholconsump')
+    generalHealth = request.args.get('generalHealth')
+    physicalHealth = request.args.get('physicalHealth')
+    stroke = request.args.get('stroke')
+    highBP = request.args.get('highBP')
+
     prediction = request.args.get('prediction')
 
     prediction_percentage_true = float(request.args.get('prediction_percentage_true'))
@@ -1036,7 +1060,8 @@ def predictStroke():
         # Commit the changes to the database
         db.session.commit()
 
-        return redirect(url_for('views.strokeResult', user=user, prediction=prediction, prediction_percentage_true=prediction_percentage_true))
+        return redirect(url_for('views.strokeResult', user=user, sex=sex, age=age, hypertension=hypertension, heartdisease=heartdisease, married=married, worktype=worktype, 
+                                avgglucose=avgglucose, bmi=bmi, smoking=smoking, prediction=prediction, prediction_percentage_true=prediction_percentage_true))
         
     return redirect(url_for('views.userdashboard'))
 
@@ -1045,12 +1070,23 @@ def strokeResult():
     # Retrieve the user ID from the session or wherever it's stored
     userID = session.get('u_id')
     # Retrieve the result from the query parameter
+    sex=request.args.get('sex')
+    age=request.args.get('age')
+    hypertension=request.args.get('hypertension')
+    heartdisease=request.args.get('heartdisease')
+    married=request.args.get('married')
+    worktype=request.args.get('worktype')
+    avgglucose=request.args.get('avgglucose')
+    bmi=request.args.get('bmi')
+    smoking=request.args.get('smoking')
+
     prediction = request.args.get('prediction')
     prediction_percentage_true = float(request.args.get('prediction_percentage_true'))
     # Fetch the user's data from the database
     user = User.query.get(userID)
 
-    return render_template('strokeResult.html', user=user, prediction=int(prediction), prediction_percentage_true=prediction_percentage_true)
+    return render_template('strokeResult.html', user=user, sex=int(sex), age=int(age), hypertension=int(hypertension), heartdisease=int(heartdisease), married=int(married), worktype=int(worktype),
+                            avgglucose=int(avgglucose), bmi=int(bmi), smoking=int(smoking), prediction=int(prediction), prediction_percentage_true=prediction_percentage_true)
 
 @views.route('/StrokeResultFeedback' , methods=['GET','POST'])
 def strokeResultFeedback():
