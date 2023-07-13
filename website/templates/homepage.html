@@ -36,7 +36,7 @@
         {% endwith %}
         
     </head>
-    <body>
+    <body style="overflow-x: hidden;">
         <!-- Include the modals -->
         {% include 'login.html' %}
         {% include 'signup.html' %}
@@ -54,10 +54,7 @@
                         <a class="nav-link" href="#" style="color:#6a6b6b">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" style="color:#6a6b6b">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" style="color:#6a6b6b">Contact</a>
+                        <a class="nav-link" href="#about-section" style="color:#6a6b6b">About</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-toggle="modal" data-target="#adminRegModal" style="color:#6a6b6b">Admin Register</a>
@@ -118,21 +115,12 @@
           
         
         <!-- About us section -->
-        <div class="container about-section">
+        <div class="container about-section" id="about-section">
             <h2>About Us</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean efficitur purus id gravida pellentesque.</p>
-            <p class="about-reason">We aim to predict and prevent lifestyle diseases to improve overall health and well-being.</p>
-        </div> <br><br>
-
-        <!-- testing section -->
-        <div class="container about-section">
-            <h1>Find Nearby Hospitals</h1>
-            <form class="form-inline" method="POST" id="searchForm" action="/search">
-                <div class="form-group">
-                  <input type="text" class="form-control" name="query" placeholder="Enter a location">
-                </div>
-                <button type="submit" class="btn btn-primary">Search</button>
-            </form>
+            <p>Wong Horng Woei is a passionate individual who embarked on the journey of developing this project as part of his Final Year Project. Inspired by the desire to make a positive impact on people's lives, Wong Horng Woei recognized the importance of predicting and preventing lifestyle diseases.</p>
+            <p>Through extensive research and dedication, Wong Horng Woei has developed a predictive model and a range of valuable health recommendations to help individuals lead healthier lives. By leveraging the power of technology and data analysis, Wong Horng Woei aims to empower individuals to take proactive measures in preventing and managing lifestyle diseases.</p>
+            <p>With the mission to improve overall health and well-being, Wong Horng Woei's Final Year Project serves as a stepping stone in his commitment to making a meaningful difference in the field of healthcare and promoting a healthier future for all.</p>
+            <p class="about-reason">Aim: To develop a lifestyle disease prediction and management system that helps individuals identify potential health problems and provides personalized management recommendations to reduce the risk of getting lifestyle disease.</p>
         </div> <br><br>
 
         <!-- Registration Modal -->

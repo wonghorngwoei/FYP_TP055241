@@ -56,12 +56,14 @@
                     <div class="container-fluid">
                         <h1>Find Nearby Hospital</h1>
                         <form class="form-inline" method="POST" id="searchForm" action="/search">
-                            <div class="form-group">
-                              <input type="text" class="form-control" name="query" placeholder="Enter a location">
+                            <div class="form-group col-md-10">
+                                <input type="text" class="form-control w-100" name="query" placeholder="Enter a location">
                             </div>
-                            <button type="submit" class="btn btn-primary">Search</button>
+                            <div class="form-group col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">Search</button>
+                            </div>
                         </form>
-                    </div>
+                    </div>                    
                     {% if hospitals %}
                     <div class="container-fluid">
                         <br><br>

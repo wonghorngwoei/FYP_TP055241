@@ -69,7 +69,6 @@ def userdashboard():
     stroke_diagnosed_count = Stroke.query.filter(Stroke.s_predtarget == "myself", Stroke.s_stroke == 1, Stroke.s_userID == user.u_id).count()
     stroke_not_diagnosed_count = Stroke.query.filter(Stroke.s_predtarget == "myself", Stroke.s_stroke == 0, Stroke.s_userID == user.u_id).count()
 
-
     
     return render_template('userDashboard.html', user=user, asthma_diagnosed_count=asthma_diagnosed_count, asthma_not_diagnosed_count=asthma_not_diagnosed_count, diabetes_diagnosed_count=diabetes_diagnosed_count, 
                             diabetes_not_diagnosed_count=diabetes_not_diagnosed_count, stroke_diagnosed_count=stroke_diagnosed_count, stroke_not_diagnosed_count=stroke_not_diagnosed_count)

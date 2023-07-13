@@ -19,7 +19,7 @@ body{
 }
 
 .predict-image {
-    background-image: url("images/AIPredict.jpg");
+    background-image: url("images/ldmpsPredict.png");
     height: 500px;
     background-position: center;
     background-repeat: no-repeat;
@@ -28,7 +28,7 @@ body{
 }
 
 .manageHealth-image {
-    background-image: url("images/ManageHealthTilt.jpg");
+    background-image: url("images/ldpmsUserDashboard.png");
     height: 500px;
     /* background-position: center; */
     background-repeat: no-repeat;
@@ -37,7 +37,7 @@ body{
 }
 
 .hospital-image {
-    background-image: url("images/FindNearbyHospital.jpg");
+    background-image: url("images/ldpmsFindNearbyHospital.jpg");
     height: 500px;
     /* background-position: center; */
     background-repeat: no-repeat;
@@ -94,6 +94,10 @@ body{
     padding: 0;
     height: 100vh;
     overflow-y: auto;
+}
+
+.button {
+    background-color: #a5e4e1;
 }
 
 .navbar-nav .nav-link:hover {
