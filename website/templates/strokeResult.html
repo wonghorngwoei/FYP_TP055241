@@ -22,17 +22,17 @@
         <!-- Include the modals -->
         {% include 'logout.html' %}
         <!-- Navigation bar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Lifestyle Disease Prediction and Management System</a>
+        <nav class="navbar navbar-expand-lg navbar-light" id="navbar">
+            <a class="navbar-brand" href="#" style="color:#6a6b6b">Lifestyle Disease Prediction and Management System</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                 </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#myProfileModal">My Profile</a>
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal" >Logout</a>
+                <form class="form-inline my-2 my-lg-0" >
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#myProfileModal" style="color:#6a6b6b">My Profile</a>
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal"  style="color:#6a6b6b">Logout</a>
                 </form>
             </div>
         </nav>
@@ -43,12 +43,12 @@
                 <div class="col-sm-2 sidebar" id="sidebar">
                     <div class="nav flex-column nav-pills" aria-orientation="vertical">
                         <a class="nav-link" href="{{ url_for('views.userdashboard') }}" aria-selected="true">Home</a>
-                        <a class="nav-link" href="{{ url_for('views.diabetesPredictionForm') }}"  aria-selected="false" style="margin-bottom: 15px;">Diabetes Prediction</a>
-                        <a class="nav-link active" href="{{ url_for('views.strokePredictionForm') }}" aria-selected="false" style="margin-bottom: 15px;">Stroke Prediction</a>
-                        <a class="nav-link" href="{{ url_for('views.asthmaPredictionForm') }}" aria-selected="false" style="margin-bottom: 15px;">Asthma Prediction</a>
-                        <a class="nav-link" href="{{ url_for('views.pastPredictionRecords') }}" aria-selected="false" style="margin-bottom: 15px;">Past Prediction Records</a>
-                        <a class="nav-link" href="{{ url_for('views.findNearbyHospital') }}" aria-selected="false" style="margin-bottom: 15px;">Find Nearby Hospital</a>
-                        <a class="nav-link" href="{{ url_for('views.feedbackForm') }}" aria-selected="false" style="margin-bottom: 15px;">Feedback</a>
+                        <a class="nav-link" href="{{ url_for('views.diabetesPredictionForm') }}"  aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Diabetes Prediction</a>
+                        <a class="nav-link custom-nav-link active" href="{{ url_for('views.strokePredictionForm') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Stroke Prediction</a>
+                        <a class="nav-link" href="{{ url_for('views.asthmaPredictionForm') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Asthma Prediction</a>
+                        <a class="nav-link" href="{{ url_for('views.pastPredictionRecords') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Past Prediction Records</a>
+                        <a class="nav-link" href="{{ url_for('views.findNearbyHospital') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Find Nearby Hospital</a>
+                        <a class="nav-link" href="{{ url_for('views.feedbackForm') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Feedback</a>
                     </div>
                 </div>
 

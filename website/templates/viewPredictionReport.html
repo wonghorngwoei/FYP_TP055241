@@ -134,17 +134,17 @@
         <!-- Include the modals -->
         {% include 'logout.html' %}
         <!-- Navigation bar -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Lifestyle Disease Prediction and Management System</a>
+        <nav class="navbar navbar-expand-lg navbar-light" id="navbar">
+            <a class="navbar-brand" href="#" style="color:#6a6b6b">Lifestyle Disease Prediction and Management System</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                 </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#myProfileModal">My Profile</a>
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal" >Logout</a>
+                <form class="form-inline my-2 my-lg-0" >
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#myProfileModal" style="color:#6a6b6b">My Profile</a>
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal"  style="color:#6a6b6b">Logout</a>
                 </form>
             </div>
         </nav>
@@ -154,10 +154,10 @@
             <div class="row">
                 <div class="col-sm-2 sidebar" id="sidebar">
                     <div class="nav flex-column nav-pills" aria-orientation="vertical">
-                        <a class="nav-link" href="{{ url_for('views.admindashboard') }}" aria-selected="true" style="margin-bottom: 15px;">Charts & Statistics</a>
-                        <a class="nav-link" href="{{ url_for('views.getUserInfo') }}"  aria-selected="false" style="margin-bottom: 15px;">Manage User Account</a>
-                        <a class="nav-link active" href="#" aria-selected="false" style="margin-bottom: 15px;">View Prediction Report</a>
-                        <a class="nav-link" href="{{ url_for('views.getUserFeedback') }}" aria-selected="false" style="margin-bottom: 15px;">View Feedback</a>
+                        <a class="nav-link" href="{{ url_for('views.admindashboard') }}" aria-selected="true" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Charts & Statistics</a>
+                        <a class="nav-link" href="{{ url_for('views.getUserInfo') }}"  aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Manage User Account</a>
+                        <a class="nav-link custom-nav-link active" href="#" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">View Prediction Report</a>
+                        <a class="nav-link" href="{{ url_for('views.getUserFeedback') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">View Feedback</a>
                     </div>
                 </div>                
 
