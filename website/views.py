@@ -932,7 +932,8 @@ def diabetesResult():
     # Fetch the user's data from the database
     user = User.query.get(userID)
 
-    return render_template('diabetesResult.html', user=user, prediction=int(prediction), prediction_percentage_true=prediction_percentage_true)
+    return render_template('diabetesResult.html', user=user, highChol=int(highChol), bmi=int(bmi), smoker=int(smoker), heartdisease=int(heartdisease), physactivity=int(physactivity), prediction=int(prediction), fruits=int(fruits), veggies=int(veggies), 
+                           hvyalcoholconsump=int(hvyalcoholconsump), generalHealth=int(generalHealth), physicalHealth=int(physicalHealth), stroke=int(stroke), highBP=int(highBP), prediction_percentage_true=prediction_percentage_true)
 
 @views.route('/DiabetesResultFeedback' , methods=['GET','POST'])
 def diabetesResultFeedback():

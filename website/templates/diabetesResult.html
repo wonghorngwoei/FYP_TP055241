@@ -69,6 +69,55 @@
                                     <li>Follow a balanced diet, rich in fruits, vegetables, and whole grains.</li>
                                     <li>Engage in regular physical activity.</li>
                                     <li>Monitor your blood sugar levels as recommended by your healthcare provider.</li>
+                                    {% if highChol == 1 %}
+                                        <li>Monitor your cholesterol levels regularly and maintain a healthy diet to prevent the development of high cholesterol.</li>
+                                        <li>Incorporate foods rich in omega-3 fatty acids, such as fatty fish (salmon, sardines) and walnuts, to help lower cholesterol levels.</li>
+                                    {% endif %}
+                                    {% if bmi == 1 %}
+                                        <li>Maintain a healthy weight through a balanced diet and regular exercise.</li>
+                                        <li>Engage in strength training exercises to build muscle mass and increase metabolism for better weight management.</li>
+                                    {% endif %}
+                                    {% if smoker == 1 %}
+                                        <li>Avoid smoking to reduce the risk of developing diabetes and other related health conditions.</li>
+                                        <li>Seek support from smoking cessation programs or healthcare professionals to successfully quit smoking.</li>
+                                    {% endif %}
+                                    {% if heartdisease == 1 %}
+                                        <li>Manage your heart disease by following your doctor's recommendations and medications.</li>
+                                        <li>Adopt a heart-healthy diet low in saturated fats, cholesterol, and sodium to support cardiovascular health.</li>
+                                    {% endif %}
+                                    {% if physactivity == 1 %}
+                                        <li>Engage in regular physical activity, such as walking, jogging, or cycling, to improve insulin sensitivity and maintain a healthy weight.</li>
+                                        <li>Consider incorporating strength training exercises to build muscle, which can aid in blood sugar regulation.</li>
+                                    {% endif %}
+                                    {% if fruits == 1 %}
+                                        <li>Incorporate a variety of fruits into your diet, such as berries, citrus fruits, and apples, as they are rich in fiber, vitamins, and antioxidants.</li>
+                                        <li>Aim to consume at least 2 servings of fruits per day to meet your nutritional needs and support overall health.</li>
+                                    {% endif %}
+                                    {% if veggies == 1 %}
+                                        <li>Include plenty of vegetables in your meals, such as leafy greens, broccoli, and bell peppers, to provide essential nutrients and promote overall health.</li>
+                                        <li>Experiment with different cooking methods like steaming, roasting, or stir-frying to enhance the flavors and textures of vegetables.</li>
+                                    {% endif %}
+                                    {% if hvyalcoholconsump == 1 %}
+                                        <li>Limit or avoid heavy alcohol consumption as it can contribute to weight gain, increase blood sugar levels, and affect insulin sensitivity.</li>
+                                        <li>If you choose to drink, do so in moderation - up to one drink per day for women and up to two drinks per day for men.</li>
+                                    {% endif %}
+                                    {% if generalHealth == 1 %}
+                                        <li>Take care of your overall health by getting regular check-ups, managing stress levels, and getting enough sleep.</li>
+                                        <li>Practice stress-reducing techniques like meditation, deep breathing exercises, or engaging in hobbies to promote overall well-being.</li>
+                                    {% endif %}
+                                    {% if physicalHealth == 1 %}
+                                        <li>Address any physical health concerns or injuries promptly by seeking medical attention and following appropriate treatment plans.</li>
+                                        <li>Engage in low-impact exercises or activities recommended by your healthcare provider to support physical health and prevent further complications.</li>
+                                    {% endif %}
+                                    {% if stroke == 1 %}
+                                        <li>Manage your blood pressure and cholesterol levels to reduce the risk of stroke, which is closely linked to diabetes.</li>
+                                        <li>Incorporate heart-healthy foods like avocados, nuts, and olive oil into your diet to support cardiovascular health.</li>
+                                    {% endif %}
+                                    {% if highBP == 1 %}
+                                        <li>Maintain healthy blood pressure levels by adopting a low-sodium diet, regular exercise, and stress management techniques.</li>
+                                        <li>Avoid processed foods high in sodium and opt for fresh, whole foods to support blood pressure regulation.</li>
+                                    {% endif %}
+                                    
                                     <!-- Add more recommendations as needed -->
                                 </ul>
                                 <a class="btn btn-primary mt-3" href="{{ url_for('views.findNearbyHospital') }}" role="button">Find Nearby Hospital</a>
