@@ -16,6 +16,8 @@
         <!-- Cascading Style Sheet -->
         <link rel="stylesheet" type="text/css" href="static/css/style.css">
         <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+        <!-- Font Awesome Icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <script>
             function filterTable() {
                 // Declare variables
@@ -62,8 +64,8 @@
                 <ul class="navbar-nav mr-auto">
                 </ul>
                 <form class="form-inline my-2 my-lg-0" >
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#myProfileModal" style="color:#6a6b6b">My Profile</a>
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal"  style="color:#6a6b6b">Logout</a>
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#myProfileModal" style="color:#6a6b6b"><i class="fa-solid fa-user"></i> My Profile</a>
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal"  style="color:#6a6b6b"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
                 </form>
             </div>
         </nav>
@@ -73,17 +75,17 @@
             <div class="row">
                 <div class="col-sm-2 sidebar" id="sidebar">
                     <div class="nav flex-column nav-pills" aria-orientation="vertical">
-                        <a class="nav-link" href="{{ url_for('views.admindashboard') }}" aria-selected="true" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Charts & Statistics</a>
-                        <a class="nav-link" href="{{ url_for('views.getUserInfo') }}"  aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Manage User Account</a>
-                        <a class="nav-link" href="{{ url_for('views.viewPredictionReports') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">View Prediction Report</a>
-                        <a class="nav-link custom-nav-link active" href="{{ url_for('views.getUserFeedback') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">View Feedback</a>
+                        <a class="nav-link" href="{{ url_for('views.admindashboard') }}" aria-selected="true" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-solid fa-chart-pie"></i> Charts & Statistics</a>
+                        <a class="nav-link" href="{{ url_for('views.getUserInfo') }}"  aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-solid fa-users"></i> Manage User Account</a>
+                        <a class="nav-link" href="{{ url_for('views.viewPredictionReports') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-solid fa-table"></i> View Prediction Report</a>
+                        <a class="nav-link custom-nav-link active" href="{{ url_for('views.getUserFeedback') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-sharp fa-solid fa-comments"></i> View Feedback</a>
                     </div>
                 </div>
 
                 <div class="col-sm-10">
                     <div class="container-fluid"><br>
                         <h1>Users Feedback</h1>
-                        <a class="btn btn-success" href="{{ url_for('views.exportFeedback') }}">Export CSV</a><br><br>
+                        <a class="btn btn-success" href="{{ url_for('views.exportFeedback') }}"><i class="fa-solid fa-file-csv"></i> Export CSV</a><br><br>
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
                         </div>
@@ -123,113 +125,113 @@
                 </div>
             </div>
         </div>
-               <!-- My Profile Modal -->
-               <div class="modal fade" id="myProfileModal" tabindex="-1" role="dialog" aria-labelledby="myProfileModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="myProfileModalLabel">My Profile</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <button type="button" class="btn btn-primary" id="editProfileBtn" data-toggle="modal" data-target="#editProfileModal" data-dismiss="modal">Edit Profile</button>
-                                <button type="button" class="btn btn-primary" id="changePasswordBtn"data-toggle="modal" data-target="#changePasswordModal" data-dismiss="modal" >Change Password</button>
-                            </div>
-                            <form>
-                                <div class="form-group">
-                                    <label for="a_username">Username</label>
-                                    <input type="text" class="form-control" id="a_username" value="{{ admin.a_username }}" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label for="a_fname">First Name</label>
-                                    <input type="text" class="form-control" id="a_fname" value="{{ admin.a_fname }}" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label for="a_lname">Last Name</label>
-                                    <input type="text" class="form-control" id="a_lname" value="{{ admin.a_lname }}" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label for="a_email">Email</label>
-                                    <input type="email" class="form-control" id="a_email" value="{{ admin.a_email }}" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label for="a_hpnumber">Phone Number</label>
-                                    <input type="tel" class="form-control" id="a_hpnumber" value="{{ admin.a_hpnumber }}" readonly>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Change Password Modal -->
-            <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form method="POST" action="/change-password/{{ admin.a_id }}">
-                                <div class="form-group">
-                                    <label for="a_password">Current Password</label>
-                                    <input type="text" class="form-control" name="a_password" id="a_password" placeholder="Enter your current password" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="a_newPW">New Password</label>
-                                    <input type="text" class="form-control" name="a_newPW" id="a_newPW" placeholder="Enter your new password" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="a_newPWconfirmed">Confirm New Password</label>
-                                    <input type="text" class="form-control" name="a_newPWconfirmed" id="a_newPWconfirmed" placeholder="Enter your new password again" required>
-                                </div>
-                                <div class="form-group">
-                                    <p><input type="submit" class="btn btn-primary" value="Change Password"></p>
-                                </div>
-                            </form>
-                        </div>
+        <!-- My Profile Modal -->
+        <div class="modal fade" id="myProfileModal" tabindex="-1" role="dialog" aria-labelledby="myProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="myProfileModalLabel">My Profile</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary" id="editProfileBtn" data-toggle="modal" data-target="#editProfileModal" data-dismiss="modal">Edit Profile</button>
+                        <button type="button" class="btn btn-primary" id="changePasswordBtn"data-toggle="modal" data-target="#changePasswordModal" data-dismiss="modal" >Change Password</button>
                     </div>
+                    <form>
+                        <div class="form-group">
+                            <label for="a_username">Username</label>
+                            <input type="text" class="form-control" id="a_username" value="{{ admin.a_username }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="a_fname">First Name</label>
+                            <input type="text" class="form-control" id="a_fname" value="{{ admin.a_fname }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="a_lname">Last Name</label>
+                            <input type="text" class="form-control" id="a_lname" value="{{ admin.a_lname }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="a_email">Email</label>
+                            <input type="email" class="form-control" id="a_email" value="{{ admin.a_email }}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="a_hpnumber">Phone Number</label>
+                            <input type="tel" class="form-control" id="a_hpnumber" value="{{ admin.a_hpnumber }}" readonly>
+                        </div>
+                    </form>
                 </div>
             </div>
-    
-            <!-- Edit Profile Modal -->
-            <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editProfileModalLabel">Edit Admin Profile</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/change-password/{{ admin.a_id }}">
+                        <div class="form-group">
+                            <label for="a_password">Current Password</label>
+                            <input type="text" class="form-control" name="a_password" id="a_password" placeholder="Enter your current password" onchange="this.value = this.value.trim();" required>
                         </div>
-                        <div class="modal-body">
-                            <form method="POST" action="/edit-aprofile/{{ admin.a_id }}">
-                                <div class="form-group">
-                                    <label for="a_fname">First Name</label>
-                                    <input type="text" class="form-control" name="a_fname" id="a_fname" value="{{ admin.a_fname }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="a_lname">Last Name</label>
-                                    <input type="text" class="form-control" name="a_lname" id="a_lname" value="{{ admin.a_lname }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="a_hpnumber">Phone Number</label>
-                                    <input type="tel" class="form-control" name="a_hpnumber" id="a_hpnumber" value="{{ admin.a_hpnumber }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <p><input type="submit" class="btn btn-primary" value="Update Profile"></p>
-                                </div>
-                            </form>
+                        <div class="form-group">
+                            <label for="a_newPW">New Password</label>
+                            <input type="text" class="form-control" name="a_newPW" id="a_newPW" placeholder="Enter your new password" onchange="this.value = this.value.trim();" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s:])([^\s]){8,}$">
                         </div>
-                    </div>
+                        <div class="form-group">
+                            <label for="a_newPWconfirmed">Confirm New Password</label>
+                            <input type="text" class="form-control" name="a_newPWconfirmed" id="a_newPWconfirmed" placeholder="Enter your new password again" onchange="this.value = this.value.trim();" required>
+                        </div>
+                        <div class="form-group">
+                            <p><input type="submit" class="btn btn-primary" value="Change Password"></p>
+                        </div>
+                    </form>
                 </div>
             </div>
-    
-</body>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Admin Profile</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/edit-aprofile/{{ admin.a_id }}">
+                        <div class="form-group">
+                            <label for="a_fname">First Name</label>
+                            <input type="text" class="form-control" name="a_fname" id="a_fname" value="{{ admin.a_fname }}" onchange="this.value = this.value.trim();" required pattern="[A-Za-z ]+">
+                        </div>
+                        <div class="form-group">
+                            <label for="a_lname">Last Name</label>
+                            <input type="text" class="form-control" name="a_lname" id="a_lname" value="{{ admin.a_lname }}" onchange="this.value = this.value.trim();" required pattern="[A-Za-z ]+">
+                        </div>
+                        <div class="form-group">
+                            <label for="a_hpnumber">Phone Number</label>
+                            <input type="tel" class="form-control" name="a_hpnumber" id="a_hpnumber" value="{{ admin.a_hpnumber }}" onchange="this.value = this.value.trim();" required pattern="^(\+?6?01)[0-46-9]-*[0-9]{7,8}$">
+                        </div>
+                        <div class="form-group">
+                            <p><input type="submit" class="btn btn-primary" value="Update Profile"></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
 </html>

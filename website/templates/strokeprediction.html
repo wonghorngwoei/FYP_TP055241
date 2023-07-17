@@ -17,6 +17,8 @@
         <!-- Cascading Style Sheet -->
         <link rel="stylesheet" type="text/css" href="static/css/style.css">
         <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+        <!-- Font Awesome Icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 var predictionTarget = document.querySelectorAll('input[name="predictionTarget"]');
@@ -88,8 +90,8 @@
                 <ul class="navbar-nav mr-auto">
                 </ul>
                 <form class="form-inline my-2 my-lg-0" >
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#myProfileModal" style="color:#6a6b6b">My Profile</a>
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal"  style="color:#6a6b6b">Logout</a>
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#myProfileModal" style="color:#6a6b6b"><i class="fa-solid fa-user"></i> My Profile</a>
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal" style="color:#6a6b6b"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
                 </form>
             </div>
         </nav>
@@ -99,13 +101,13 @@
             <div class="row">
                 <div class="col-sm-2 sidebar" id="sidebar">
                     <div class="nav flex-column nav-pills" aria-orientation="vertical">
-                        <a class="nav-link" href="{{ url_for('views.userdashboard') }}" aria-selected="true" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Home</a>
-                        <a class="nav-link" href="{{ url_for('views.diabetesPredictionForm') }}"  aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Diabetes Prediction</a>
-                        <a class="nav-link custom-nav-link active" href="#" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Stroke Prediction</a>
-                        <a class="nav-link" href="{{ url_for('views.asthmaPredictionForm') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;" >Asthma Prediction</a>
-                        <a class="nav-link" href="{{ url_for('views.pastPredictionRecords') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Past Prediction Records</a>
-                        <a class="nav-link" href="{{ url_for('views.findNearbyHospital') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Find Nearby Hospital</a>
-                        <a class="nav-link" href="{{ url_for('views.feedbackForm') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Feedback</a>
+                        <a class="nav-link" href="{{ url_for('views.userdashboard') }}" aria-selected="true" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-solid fa-house"></i> Home</a>
+                        <a class="nav-link" href="{{ url_for('views.diabetesPredictionForm') }}"  aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-solid fa-align-justify"></i> Diabetes Prediction</a>
+                        <a class="nav-link custom-nav-link active" href="#" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-solid fa-align-justify"></i> Stroke Prediction</a>
+                        <a class="nav-link" href="{{ url_for('views.asthmaPredictionForm') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;" ><i class="fa-solid fa-align-justify"></i> Asthma Prediction</a>
+                        <a class="nav-link" href="{{ url_for('views.pastPredictionRecords') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-sharp fa-solid fa-clipboard"></i> Past Prediction Records</a>
+                        <a class="nav-link" href="{{ url_for('views.findNearbyHospital') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-solid fa-hospital"></i> Find Nearby Hospital</a>
+                        <a class="nav-link" href="{{ url_for('views.feedbackForm') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-solid fa-comment"></i> Feedback</a>
                     </div>
                 </div>
 
@@ -219,7 +221,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="bmi">BMI:</label>
-                                <input type="number" step="0.01" class="form-control" id="bmi" name="bmi" min="10" max="100" placeholder="Enter your body mass index." required>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" class="form-control" id="bmi" name="bmi" min="10" max="100" placeholder="Enter your body mass index." required>
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#bmiCalculatorModal">
+                                            BMI Calculator
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="smoking">Smoker:</label>
@@ -306,15 +315,15 @@
                         <form method="POST" action="/change-u_password/{{ user.u_id }}">
                             <div class="form-group">
                                 <label for="u_password">Current Password</label>
-                                <input type="text" class="form-control" name="u_password" id="u_password" placeholder="Enter your current password" required>
+                                <input type="text" class="form-control" name="u_password" id="u_password" placeholder="Enter your current password" onchange="this.value = this.value.trim();" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_newPW">New Password</label>
-                                <input type="text" class="form-control" name="u_newPW" id="u_newPW" placeholder="Enter your new password" required>
+                                <input type="text" class="form-control" name="u_newPW" id="u_newPW" placeholder="Enter your new password" onchange="this.value = this.value.trim();" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s:])([^\s]){8,}$">
                             </div>
                             <div class="form-group">
                                 <label for="u_newPWconfirmed">Confirm New Password</label>
-                                <input type="text" class="form-control" name="u_newPWconfirmed" id="u_newPWconfirmed" placeholder="Enter your new password again" required>
+                                <input type="text" class="form-control" name="u_newPWconfirmed" id="u_newPWconfirmed" placeholder="Enter your new password again" onchange="this.value = this.value.trim();" required>
                             </div>
                             <div class="form-group">
                                 <p><input type="submit" class="btn btn-primary" value="Change Password"></p>
@@ -339,15 +348,15 @@
                         <form method="POST" action="/edit-profile/{{ user.u_id }}">
                             <div class="form-group">
                                 <label for="u_fname">First Name</label>
-                                <input type="text" class="form-control" name="u_fname" id="u_fname" value="{{ user.u_fname }}" required>
+                                <input type="text" class="form-control" name="u_fname" id="u_fname" value="{{ user.u_fname }}" onchange="this.value = this.value.trim();" required pattern="[A-Za-z ]+">
                             </div>
                             <div class="form-group">
                                 <label for="u_lname">Last Name</label>
-                                <input type="text" class="form-control" name="u_lname" id="u_lname" value="{{ user.u_lname }}" required>
+                                <input type="text" class="form-control" name="u_lname" id="u_lname" value="{{ user.u_lname }}" onchange="this.value = this.value.trim();" required pattern="[A-Za-z ]+">
                             </div>
                             <div class="form-group">
                                 <label for="u_age">Age</label>
-                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}" required>
+                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}" onchange="this.value = this.value.trim();" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_gender" class="col-form-label">Gender:</label>
@@ -359,11 +368,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="u_hpnumber">Phone Number</label>
-                                <input type="tel" class="form-control" name="u_hpnumber" id="u_hpnumber" value="{{ user.u_hpnumber }}" required>
+                                <input type="tel" class="form-control" name="u_hpnumber" id="u_hpnumber" value="{{ user.u_hpnumber }}" onchange="this.value = this.value.trim();" required pattern="^(\+?6?01)[0-46-9]-*[0-9]{7,8}$">
                             </div>
                             <div class="form-group">
                                 <label for="u_address">Address</label>
-                                <textarea class="form-control" name="u_address" id="u_address" rows="3" required>{{ user.u_address }}</textarea>
+                                <textarea class="form-control" name="u_address" id="u_address" rows="3" onchange="this.value = this.value.trim();" required>{{ user.u_address }}</textarea>
                             </div>
                             <div class="form-group">
                                 <p><input type="submit" class="btn btn-primary" value="Update Profile"></p>
@@ -373,6 +382,44 @@
                 </div>
             </div>
         </div>
-
-</body>
+        <!-- BMI Calculator Modal -->
+        <div class="modal fade" id="bmiCalculatorModal" tabindex="-1" role="dialog" aria-labelledby="bmiCalculatorModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="bmiCalculatorModalLabel">BMI Calculator</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="weight">Weight (kg):</label>
+                            <input type="number" class="form-control" id="weight" name="weight" placeholder="Enter your weight in kilograms" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="height">Height (cm):</label>
+                            <input type="number" class="form-control" id="height" name="height" placeholder="Enter your height in centimeters" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="bmiResult">BMI Result:</label>
+                            <input type="text" class="form-control" id="bmiResult" name="bmiResult" readonly>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="calculateBMI()">Calculate BMI</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            function calculateBMI() {
+                var weight = document.getElementById("weight").value;
+                var height = document.getElementById("height").value / 100; // Convert height to meters
+                var bmi = weight / (height * height);
+                document.getElementById("bmiResult").value = bmi.toFixed(2); // Display BMI with two decimal places
+            }
+        </script>
+    </body>
 </html>

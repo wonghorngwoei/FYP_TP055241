@@ -30,18 +30,18 @@ body{
 .manageHealth-image {
     background-image: url("images/ldpmsUserDashboard.png");
     height: 500px;
-    /* background-position: center; */
+    background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: contain;
     position: relative;
 }
 
 .hospital-image {
     background-image: url("images/ldpmsFindNearbyHospital.jpg");
     height: 500px;
-    /* background-position: center; */
+    background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: contain;
     position: relative;
 }
 
@@ -55,31 +55,57 @@ body{
   }
 
 .feature {
-    margin-top: 50px;
-    margin-bottom: 50px;
+    margin: 50px;
+    padding: 20px;
+    border-radius: 10px;
 }
+
 
 .feature-title {
     font-weight: bold;
-    font-size: 24px;
-    margin-bottom: 10px;
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
 }
 
 .feature-description {
     font-size: 18px;
+    color: #555;
+}
+
+.feature-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .about-section {
     margin-top: 50px;
     padding: 20px;
-    background-color: white;
-    border: 1px solid #ccc;
+    background-color: #f9f9f9;
     border-radius: 10px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+.about-section h2 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.about-section p {
+    font-size: 18px;
+    margin-bottom: 15px;
 }
 
 .about-reason {
     font-style: italic;
+    font-size: 16px;
+    color: #555;
 }
 
 

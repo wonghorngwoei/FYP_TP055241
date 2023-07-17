@@ -12,47 +12,47 @@
                 <form action="Register" method="POST">
                     <div class="form-group">
                         <label for="u_username">Username</label>
-                        <input type="text" class="form-control" id="u_username" name="u_username" placeholder="Enter Username" required >
+                        <input type="text" class="form-control" id="u_username" name="u_username" placeholder="Enter Username" onchange="this.value = this.value.trim();" required>
                     </div>
                     <div class="form-group">
                         <label for="u_password">Password</label>
-                        <input type="password" class="form-control" id="u_password" name="u_password" placeholder="Enter Password" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s:])([^\s]){8,}$">
+                        <input type="password" class="form-control" id="u_password" name="u_password" placeholder="Enter Password" onchange="this.value = this.value.trim();" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s:])([^\s]){8,}$">
                         <small>Password must be at least 8 characters long, contain at least 1 uppercase letter, 1 lowercase letter, 1 numeric number, and 1 special character.</small>
                     </div>
                     <div class="form-group">
                         <label for="u_fname">First Name</label>
-                        <input type="text" class="form-control" id="u_fname" name="u_fname" placeholder="Enter First Name" required pattern="[A-Za-z ]+">
+                        <input type="text" class="form-control" id="u_fname" name="u_fname" placeholder="Enter First Name" onchange="this.value = this.value.trim();" required pattern="[A-Za-z ]+">
                         <small>First Name must be in alphabets only.</small>
                     </div>
                     <div class="form-group">
                         <label for="u_lname">Last Name</label>
-                        <input type="text" class="form-control" id="u_lname" name="u_lname" placeholder="Enter Last Name" required pattern="[A-Za-z ]+">
+                        <input type="text" class="form-control" id="u_lname" name="u_lname" placeholder="Enter Last Name" onchange="this.value = this.value.trim();" required pattern="[A-Za-z ]+">
                         <small>Last Name must be in alphabets only.</small>
                     </div>
                     <div class="form-group">
                         <label for="u_email">Email address</label>
-                        <input type="email" class="form-control" id="u_email" name="u_email" aria-describedby="emailHelp" placeholder="Enter email" required>
+                        <input type="email" class="form-control" id="u_email" name="u_email" aria-describedby="emailHelp" onchange="this.value = this.value.trim();" placeholder="Enter email" required>
                         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                     </div>
                     <div class="form-group">
                         <label for="u_age">Age</label>
-                        <input type="number" class="form-control" id="u_age" name="u_age" placeholder="Enter Age" min="18" max="100" required>
+                        <input type="number" class="form-control" id="u_age" name="u_age" placeholder="Enter Age" min="18" max="100" onchange="this.value = this.value.trim();" required>
                     </div>
                     <div class="form-group">
-                        <label for="u_hpnumber">Phone Number</label>
-                        <input type="number" class="form-control" id="u_hpnumber" name="u_hpnumber" placeholder="Enter phone number" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="u_address">Address</label>
-                        <input type="text" class="form-control" id="u_address" name="u_address" placeholder="Enter Your Address" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="u_gender">Gender: </label>
-                        <select id="u_gender" name="u_gender" required>
+                        <label for="u_gender" class="col-form-label">Gender:</label>
+                        <select id="u_gender" name="u_gender" class="form-control" required>
                             <option value="" disabled selected>Select gender</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="u_hpnumber">Phone Number</label>
+                        <input type="tel" class="form-control" id="u_hpnumber" name="u_hpnumber" placeholder="Enter phone number. Eg:0123456789" onchange="this.value = this.value.trim();" required pattern="^(\+?6?01)[0-46-9]-*[0-9]{7,8}$">
+                    </div>
+                    <div class="form-group">
+                        <label for="u_address">Address</label>
+                        <textarea class="form-control" id="u_address" name="u_address" placeholder="Enter Your Address" onchange="this.value = this.value.trim();" required></textarea>
                     </div>
                     <p><input type="submit" class="btn btn-primary" value="Register"></p>
                 </form>

@@ -16,8 +16,10 @@
         <!-- Cascading Style Sheet -->
         <link rel="stylesheet" type="text/css" href="static/css/style.css">
         <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-        <!-- Add Chart.js library -->
+        <!-- Chart.js library -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- Font Awesome Icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <script>
@@ -39,8 +41,8 @@
                 <ul class="navbar-nav mr-auto">
                 </ul>
                 <form class="form-inline my-2 my-lg-0" >
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#myProfileModal" style="color:#6a6b6b">My Profile</a>
-                    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal"  style="color:#6a6b6b">Logout</a>
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#myProfileModal" style="color:#6a6b6b"><i class="fa-solid fa-user"></i> My Profile</a>
+                    <a class="nav-link" href="#" data-toggle="modal" data-target="#logoutModal"  style="color:#6a6b6b"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
                 </form>
             </div>
         </nav>
@@ -51,10 +53,10 @@
             <div class="row">
                 <div class="col-sm-2 sidebar" id="sidebar">
                     <div class="nav flex-column nav-pills" aria-orientation="vertical">
-                        <a class="nav-link custom-nav-link active" href="#" aria-selected="true" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Charts & Statistics</a>
-                        <a class="nav-link" href="{{ url_for('views.getUserInfo') }}"  aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">Manage User Account</a>
-                        <a class="nav-link" href="{{ url_for('views.viewPredictionReports') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">View Prediction Report</a>
-                        <a class="nav-link" href="{{ url_for('views.getUserFeedback') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;">View Feedback</a>
+                        <a class="nav-link custom-nav-link active" href="#" aria-selected="true" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-solid fa-chart-pie"></i> Charts & Statistics</a>
+                        <a class="nav-link" href="{{ url_for('views.getUserInfo') }}"  aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-solid fa-users"></i> Manage User Account</a>
+                        <a class="nav-link" href="{{ url_for('views.viewPredictionReports') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-solid fa-table"></i> View Prediction Report</a>
+                        <a class="nav-link" href="{{ url_for('views.getUserFeedback') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-sharp fa-solid fa-comments"></i> View Feedback</a>
                     </div>
                 </div>
                 <div class="col-sm-10"><br>
@@ -259,15 +261,15 @@
                         <form method="POST" action="/change-password/{{ admin.a_id }}">
                             <div class="form-group">
                                 <label for="a_password">Current Password</label>
-                                <input type="text" class="form-control" name="a_password" id="a_password" placeholder="Enter your current password" required>
+                                <input type="text" class="form-control" name="a_password" id="a_password" placeholder="Enter your current password" onchange="this.value = this.value.trim();" required>
                             </div>
                             <div class="form-group">
                                 <label for="a_newPW">New Password</label>
-                                <input type="text" class="form-control" name="a_newPW" id="a_newPW" placeholder="Enter your new password" required>
+                                <input type="text" class="form-control" name="a_newPW" id="a_newPW" placeholder="Enter your new password" onchange="this.value = this.value.trim();" required pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s:])([^\s]){8,}$">
                             </div>
                             <div class="form-group">
                                 <label for="a_newPWconfirmed">Confirm New Password</label>
-                                <input type="text" class="form-control" name="a_newPWconfirmed" id="a_newPWconfirmed" placeholder="Enter your new password again" required>
+                                <input type="text" class="form-control" name="a_newPWconfirmed" id="a_newPWconfirmed" placeholder="Enter your new password again" onchange="this.value = this.value.trim();" required>
                             </div>
                             <div class="form-group">
                                 <p><input type="submit" class="btn btn-primary" value="Change Password"></p>
@@ -292,15 +294,15 @@
                         <form method="POST" action="/edit-aprofile/{{ admin.a_id }}">
                             <div class="form-group">
                                 <label for="a_fname">First Name</label>
-                                <input type="text" class="form-control" name="a_fname" id="a_fname" value="{{ admin.a_fname }}" required>
+                                <input type="text" class="form-control" name="a_fname" id="a_fname" value="{{ admin.a_fname }}" onchange="this.value = this.value.trim();" required pattern="[A-Za-z ]+">
                             </div>
                             <div class="form-group">
                                 <label for="a_lname">Last Name</label>
-                                <input type="text" class="form-control" name="a_lname" id="a_lname" value="{{ admin.a_lname }}" required>
+                                <input type="text" class="form-control" name="a_lname" id="a_lname" value="{{ admin.a_lname }}" onchange="this.value = this.value.trim();" required pattern="[A-Za-z ]+">
                             </div>
                             <div class="form-group">
                                 <label for="a_hpnumber">Phone Number</label>
-                                <input type="tel" class="form-control" name="a_hpnumber" id="a_hpnumber" value="{{ admin.a_hpnumber }}" required>
+                                <input type="tel" class="form-control" name="a_hpnumber" id="a_hpnumber" value="{{ admin.a_hpnumber }}" onchange="this.value = this.value.trim();" required pattern="^(\+?6?01)[0-46-9]-*[0-9]{7,8}$">
                             </div>
                             <div class="form-group">
                                 <p><input type="submit" class="btn btn-primary" value="Update Profile"></p>

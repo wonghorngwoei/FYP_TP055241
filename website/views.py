@@ -512,13 +512,18 @@ def getUserInfo():
     user = User.query.all()
     print(user)
 
+    # Assuming you have models for Asthma, Diabetes, and Stroke predictions
+    asthma_predictions = [prediction.am_userID for prediction in Asthma.query.all()]
+    diabetes_predictions = [prediction.d_userID for prediction in Diabetes.query.all()]
+    stroke_predictions = [prediction.s_userID for prediction in Stroke.query.all()]
+
     # Fetch the user's data from the database
     admin = Admin.query.get(adminID)
 
     # Get the flash message from the session
     messages = session.pop('flash_messages', [])
 
-    return render_template('manageUserAccount.html', admin = admin, user=user, messages=messages)
+    return render_template('manageUserAccount.html', admin = admin, user=user, asthma_predictions=asthma_predictions, diabetes_predictions=diabetes_predictions, stroke_predictions=stroke_predictions, messages=messages)
 
 @views.route('/delete_user/<int:u_id>', methods=['GET', 'POST'])
 def deleteUser(u_id):
