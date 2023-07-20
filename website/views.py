@@ -1,9 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, request, session, flash, Response
+from flask import Blueprint, render_template, redirect, url_for, request, session, flash, Response, jsonify
 from .models import User, Feedback, Admin, Asthma, Diabetes, Stroke
 from werkzeug.security import check_password_hash, generate_password_hash
 from . import db
 from io import StringIO
 from sqlalchemy import func
+from datetime import datetime
 import requests
 import pickle
 import csv
@@ -69,9 +70,83 @@ def userdashboard():
     stroke_diagnosed_count = Stroke.query.filter(Stroke.s_predtarget == "myself", Stroke.s_stroke == 1, Stroke.s_userID == user.u_id).count()
     stroke_not_diagnosed_count = Stroke.query.filter(Stroke.s_predtarget == "myself", Stroke.s_stroke == 0, Stroke.s_userID == user.u_id).count()
 
-    
+    # Fetch BMI data for the current user only
+    bmi_data = Stroke.query.with_entities(Stroke.s_date, Stroke.s_BMI).filter(Stroke.s_userID == userID).order_by(Stroke.s_date).all()
+    # Convert Python datetime objects to ISO 8601 format
+    bmi_data = [{'date': entry.s_date.strftime('%Y-%m-%dT%H:%M:%S'), 'bmi': entry.s_BMI} for entry in bmi_data]
+
+    # Fetch the user's Average Glucose Level data from the database
+    glucose_data = Stroke.query.with_entities(Stroke.s_date, Stroke.s_avgglucose).order_by(Stroke.s_date).all()
+    # Convert Python datetime objects to ISO 8601 format
+    glucose_data = [{'date': entry.s_date.strftime('%Y-%m-%dT%H:%M:%S'), 'glucoseLevel': entry.s_avgglucose} for entry in glucose_data]
+
+    # Fetch BMI data for the current user only
+    d_bmi_data = Diabetes.query.with_entities(Diabetes.d_date, Diabetes.d_BMI).filter(Diabetes.d_userID == userID).order_by(Diabetes.d_date).all()
+    # Convert Python datetime objects to ISO 8601 format
+    d_bmi_data = [{'d_date': entry.d_date.strftime('%Y-%m-%dT%H:%M:%S'), 'd_bmi': entry.d_BMI} for entry in d_bmi_data]   
+
+    print(d_bmi_data)
+
+    # Fetch the user's latest BMI data from the database for stroke prediction
+    latest_stroke_bmi_data = Stroke.query.filter(Stroke.s_userID == user.u_id).order_by(Stroke.s_date.desc()).first()
+
+    # Fetch the user's latest BMI data from the database for diabetes prediction
+    latest_diabetes_bmi_data = Diabetes.query.filter(Diabetes.d_userID == user.u_id).order_by(Diabetes.d_date.desc()).first()
+
+    # Determine the latest BMI data based on the prediction date and time
+    latest_bmi_data = None
+    if latest_stroke_bmi_data and latest_diabetes_bmi_data:
+        if latest_stroke_bmi_data.s_date >= latest_diabetes_bmi_data.d_date:
+            latest_bmi_data = latest_stroke_bmi_data
+        else:
+            latest_bmi_data = latest_diabetes_bmi_data
+    elif latest_stroke_bmi_data:
+        latest_bmi_data = latest_stroke_bmi_data
+    elif latest_diabetes_bmi_data:
+        latest_bmi_data = latest_diabetes_bmi_data
+
+    # Calculate the user's BMI health profile for the latest prediction
+    if latest_bmi_data:
+        latest_bmi = latest_bmi_data.s_BMI if hasattr(latest_bmi_data, 's_BMI') else latest_bmi_data.d_BMI
+        bmi_message = ""
+        if latest_bmi < 18.5:
+            bmi_message = "Underweight: You may need to gain weight."
+        elif 18.5 <= latest_bmi < 24.9:
+            bmi_message = "Normal weight: Your weight is healthy."
+        elif 25 <= latest_bmi < 29.9:
+            bmi_message = "Overweight: You may need to lose weight."
+        else:
+            bmi_message = "Obese: You may need to lose weight to improve your health."
+    else:
+        latest_bmi = None
+        bmi_message = "No BMI data available for prediction. Please add your BMI data to get a health profile."
+
+    # Retrieve the latest Average Glucose value from the Stroke model
+    latest_stroke_data = Stroke.query.filter_by(s_userID=userID).order_by(Stroke.s_date.desc()).first()
+    latest_glucose_data = latest_stroke_data.s_avgglucose if latest_stroke_data else None
+
+    if latest_glucose_data is not None:
+        latest_glucose = latest_glucose_data
+        glucose_message = ""
+        if 80 <= latest_glucose <= 100:
+            glucose_message = "Your fasting glucose level is within the normal range. Keep up the good work!"
+        elif 101 <= latest_glucose <= 125:
+            glucose_message = "Your fasting glucose level indicates impaired glucose tolerance. Consider making lifestyle changes to manage it."
+        elif latest_glucose >= 126:
+            glucose_message = "Your fasting glucose level suggests diabetes. It's essential to work with your healthcare provider to manage your condition."
+        else:
+            glucose_message = "No glucose health information available for the latest glucose value."
+    else:
+        latest_glucose = None
+        glucose_message = "No glucose data available."
+
+
+
+
     return render_template('userDashboard.html', user=user, asthma_diagnosed_count=asthma_diagnosed_count, asthma_not_diagnosed_count=asthma_not_diagnosed_count, diabetes_diagnosed_count=diabetes_diagnosed_count, 
-                            diabetes_not_diagnosed_count=diabetes_not_diagnosed_count, stroke_diagnosed_count=stroke_diagnosed_count, stroke_not_diagnosed_count=stroke_not_diagnosed_count)
+                            diabetes_not_diagnosed_count=diabetes_not_diagnosed_count, stroke_diagnosed_count=stroke_diagnosed_count, stroke_not_diagnosed_count=stroke_not_diagnosed_count, bmi_data=json.dumps(bmi_data), glucose_data=json.dumps(glucose_data),
+                            d_bmi_data=json.dumps(d_bmi_data), latest_bmi=latest_bmi, bmi_message=bmi_message, latest_glucose=latest_glucose, glucose_message=glucose_message)
+
 def index():
     active_tab = request.args.get('active_tab', 'home')
     return render_template('userDashboard.html', active_tab=active_tab)
@@ -405,7 +480,23 @@ def admindashboard():
     time_periods_json = json.dumps(time_periods)
     average_glucose_levels_json = json.dumps(average_glucose_levels)
 
+    # Assuming you have an 'Asthma' model
+    asthma_data = Asthma.query.with_entities(Asthma.am_date, Asthma.am_asthma).order_by(Asthma.am_date).all()
+    # Convert Python datetime objects to ISO 8601 format
+    asthma_data = [{'date': entry.am_date.strftime('%Y-%m-%dT%H:%M:%S'), 'asthma': entry.am_asthma} for entry in asthma_data]
 
+    # Assuming you have an 'Diabetes' model
+    diabetes_data = Diabetes.query.with_entities(Diabetes.d_date, Diabetes.d_diabetes).order_by(Diabetes.d_date).all()
+    # Convert Python datetime objects to ISO 8601 format
+    diabetes_data = [{'date': entry.d_date.strftime('%Y-%m-%dT%H:%M:%S'), 'diabetes': entry.d_diabetes} for entry in diabetes_data]
+
+    # Assuming you have an 'Stroke' model
+    stroke_data = Stroke.query.with_entities(Stroke.s_date, Stroke.s_stroke).order_by(Stroke.s_date).all()
+    # Convert Python datetime objects to ISO 8601 format
+    stroke_data = [{'date': entry.s_date.strftime('%Y-%m-%dT%H:%M:%S'), 'stroke': entry.s_stroke} for entry in stroke_data]
+
+
+    print(asthma_data)
 
     # Fetch the user's data from the database
     admin = Admin.query.get(adminID)
@@ -420,7 +511,8 @@ def admindashboard():
                            am_female_cases_no=am_female_cases_no, work_type_percentages=work_type_percentages_json, stroke_cases_yes=stroke_cases_yes, stroke_cases_no=stroke_cases_no,
                            s_underweight_cases_t=s_underweight_cases_t, s_normal_weight_cases_t=s_normal_weight_cases_t, s_overweight_cases_t=s_overweight_cases_t, s_obese_cases_t=s_obese_cases_t,
                            s_underweight_cases_f=s_underweight_cases_f, s_normal_weight_cases_f=s_normal_weight_cases_f, s_overweight_cases_f=s_overweight_cases_f, s_obese_cases_f=s_obese_cases_f,
-                           time_periods_json=time_periods_json, average_glucose_levels_json=average_glucose_levels_json)
+                           time_periods_json=time_periods_json, average_glucose_levels_json=average_glucose_levels_json, asthma_data=json.dumps(asthma_data), diabetes_data=json.dumps(diabetes_data), stroke_data=json.dumps(stroke_data))
+
 
 def filter_asthma_cases_by_age_group(age_group, asthma=True):
     if age_group == '0-17':

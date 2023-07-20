@@ -16,8 +16,11 @@
         <!-- Cascading Style Sheet -->
         <link rel="stylesheet" type="text/css" href="static/css/style.css">
         <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-        <!-- Chart.js library -->
+        <!-- Moment.js library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        <!-- Chart.js-->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
         <!-- Font Awesome Icons -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         {% with messages = get_flashed_messages() %}
@@ -130,6 +133,10 @@
                                     <div class="tab-content">
                                         <div class="tab-pane fade" id="diabetes" role="tabpanel" aria-labelledby="diabetes-tab">
                                             <div class="row">
+                                                <canvas id="diabetesLineChart"></canvas>
+                                            </div>
+                                            <br><br>
+                                            <div class="row">
                                                 <div class="col-md-6">
                                                     <canvas id="diabetesPieChart"></canvas>
                                                 </div>
@@ -149,6 +156,10 @@
                                         </div>
                                         <div class="tab-pane fade show active" id="asthma" role="tabpanel" aria-labelledby="asthma-tab">
                                             <div class="row">
+                                                <canvas id="asthmaLineChart"></canvas>
+                                            </div>
+                                            <br><br>
+                                            <div class="row">
                                                 <div class="col-md-6">
                                                     <canvas id="commonSymptomsChart"></canvas>
                                                 </div>
@@ -167,6 +178,10 @@
                                             </div>
                                         </div>
                                         <div class="tab-pane fade" id="stroke" role="tabpanel" aria-labelledby="stroke-tab">
+                                            <div class="row">
+                                                <canvas id="strokeLineChart"></canvas>
+                                            </div>
+                                            <br><br>
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <canvas id="workTypeChart"></canvas>
@@ -312,7 +327,6 @@
                 </div>
             </div>
         </div>
-
         <script>
             // Get the data for the chart from Flask
             const ageGroups = [
@@ -499,7 +513,7 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Asthma Common Habits Distribution',
+                            text: 'Asthma Common Symptoms Distribution',
                             font: {
                                 size: 16,
                                 weight: 'bold'
@@ -613,7 +627,12 @@
                     }
                 ]
             };
-
+        
+            // Function to format data labels with count values
+            const dataLabelFormatter = (value) => {
+                return value.toLocaleString(); // Format the value using locale-specific formatting
+            };
+        
             // Configure the chart options
             const asthmaOptions = {
                 responsive: true,
@@ -626,6 +645,14 @@
                             size: 16,
                             weight: 'bold'
                         }
+                    },
+                    datalabels: {
+                        anchor: 'center',   // Show the data labels in the center of the bar
+                        align: 'center',    // Align the data labels in the center of the bar
+                        font: {
+                            size: 12        // Adjust the font size of the data labels
+                        },
+                        formatter: dataLabelFormatter // Use the custom formatter function for data labels
                     }
                 },
                 scales: {
@@ -637,7 +664,7 @@
                     }
                 }
             };
-
+        
             // Create the bivariate bar chart
             const asthmaSexChart = new Chart(document.getElementById('asthmaSexChart'), {
                 type: 'bar',
@@ -756,7 +783,7 @@
                 plugins: {
                     title: {
                         display: true,
-                        text: 'Diagnosed Stroke Cases by BMI Categories',
+                        text: 'Predicted Stroke Cases by BMI Categories',
                         font: {
                             size: 16,
                             weight: 'bold'
@@ -798,7 +825,7 @@
                 plugins: {
                     title: {
                         display: true,
-                        text: 'No Diagnosed Stroke Cases by BMI Categories',
+                        text: 'Predicted Non-Stroke Cases by BMI Categories',
                         font: {
                             size: 16,
                             weight: 'bold'
@@ -819,6 +846,201 @@
                 type: 'doughnut',
                 data: s_bmiData_f,
                 options: s_bmiOptions_f
+            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Parse the JSON data passed from Flask
+                const asthmaDataLine = JSON.parse('{{ asthma_data | safe }}');
+
+                // Function to parse the date using Moment.js
+                function parseDate(dateString) {
+                    return moment(dateString, 'YYYY-MM-DD').format('YYYY-MM-DD');
+                }
+
+                // Function to create the Asthma Prediction Trend Chart
+                function createAsthmaPredictionTrendChart() {
+                    // Convert date strings to Moment.js objects and aggregate data by date
+                    const aggregatedData = {};
+                    asthmaDataLine.forEach(entry => {
+                        const date = parseDate(entry.date);
+                        if (!aggregatedData[date]) {
+                            aggregatedData[date] = {
+                                date: date,
+                                asthma0: 0,
+                                asthma1: 0,
+                            };
+                        }
+                        if (entry.asthma === 0) {
+                            aggregatedData[date].asthma0 += 1;
+                        } else if (entry.asthma === 1) {
+                            aggregatedData[date].asthma1 += 1;
+                        }
+                    });
+
+                    // Create an array of aggregated data objects
+                    const processedData = Object.values(aggregatedData);
+
+                    const ctx = document.getElementById('asthmaLineChart').getContext('2d');
+                    const asthmaLineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: processedData.map(entry => entry.date),
+                            datasets: [{
+                                label: 'Not Predicted Asthma',
+                                data: processedData.map(entry => entry.asthma0),
+                                fill: false,
+                                lineTension: 0.1,
+                            }, {
+                                label: 'Predicted Asthma',
+                                data: processedData.map(entry => entry.asthma1),
+                                fill: false,
+                                lineTension: 0.1,
+                            }],
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                    },
+                                }],
+                            },
+                        },
+                    });
+                }
+
+                createAsthmaPredictionTrendChart();
+            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Parse the JSON data passed from Flask
+                const diabetesDataLine = JSON.parse('{{ diabetes_data | safe }}');
+
+                // Function to parse the date using Moment.js
+                function parseDate(dateString) {
+                    return moment(dateString, 'YYYY-MM-DD').format('YYYY-MM-DD');
+                }
+
+                // Function to create the Diabetes Prediction Trend Chart
+                function createDiabetesPredictionTrendChart() {
+                    // Convert date strings to Moment.js objects and aggregate data by date
+                    const aggregatedData = {};
+                    diabetesDataLine.forEach(entry => {
+                        const date = parseDate(entry.date);
+                        if (!aggregatedData[date]) {
+                            aggregatedData[date] = {
+                                date: date,
+                                diabetes0: 0,
+                                diabetes1: 0,
+                            };
+                        }
+                        if (entry.diabetes === 0) {
+                            aggregatedData[date].diabetes0 += 1;
+                        } else if (entry.diabetes === 1) {
+                            aggregatedData[date].diabetes1 += 1;
+                        }
+                    });
+
+                    // Create an array of aggregated data objects
+                    const processedData = Object.values(aggregatedData);
+
+                    const ctx = document.getElementById('diabetesLineChart').getContext('2d');
+                    const diabetesLineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: processedData.map(entry => entry.date),
+                            datasets: [{
+                                label: 'Not Predicted Diabetes',
+                                data: processedData.map(entry => entry.diabetes0),
+                                fill: false,
+                                lineTension: 0.1,
+                            }, {
+                                label: 'Predicted Diabetes',
+                                data: processedData.map(entry => entry.diabetes1),
+                                fill: false,
+                                lineTension: 0.1,
+                            }],
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                    },
+                                }],
+                            },
+                        },
+                    });
+                }
+
+                createDiabetesPredictionTrendChart();
+            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Parse the JSON data passed from Flask
+                const strokeDataLine = JSON.parse('{{ stroke_data | safe }}');
+
+                // Function to parse the date using Moment.js
+                function parseDate(dateString) {
+                    return moment(dateString, 'YYYY-MM-DD').format('YYYY-MM-DD');
+                }
+
+                // Function to create the Stroke Prediction Trend Chart
+                function createStrokePredictionTrendChart() {
+                    // Convert date strings to Moment.js objects and aggregate data by date
+                    const aggregatedData = {};
+                    strokeDataLine.forEach(entry => {
+                        const date = parseDate(entry.date);
+                        if (!aggregatedData[date]) {
+                            aggregatedData[date] = {
+                                date: date,
+                                stroke0: 0,
+                                stroke1: 0,
+                            };
+                        }
+                        if (entry.stroke === 0) {
+                            aggregatedData[date].stroke0 += 1;
+                        } else if (entry.stroke === 1) {
+                            aggregatedData[date].stroke1 += 1;
+                        }
+                    });
+
+                    // Create an array of aggregated data objects
+                    const processedData = Object.values(aggregatedData);
+
+                    const ctx = document.getElementById('strokeLineChart').getContext('2d');
+                    const strokeLineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: processedData.map(entry => entry.date),
+                            datasets: [{
+                                label: 'Not Predicted Stroke',
+                                data: processedData.map(entry => entry.stroke0),
+                                fill: false,
+                                lineTension: 0.1,
+                            }, {
+                                label: 'Predicted Stroke',
+                                data: processedData.map(entry => entry.stroke1),
+                                fill: false,
+                                lineTension: 0.1,
+                            }],
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                    },
+                                }],
+                            },
+                        },
+                    });
+                }
+
+                createStrokePredictionTrendChart();
             });
         </script>
     </body>

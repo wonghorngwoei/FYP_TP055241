@@ -16,6 +16,8 @@
         <!-- Cascading Style Sheet -->
         <link rel="stylesheet" type="text/css" href="static/css/style.css">
         <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+        <!-- Moment.js library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
         <!-- Chart.js-->
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
@@ -77,96 +79,148 @@
                         <a class="nav-link" href="{{ url_for('views.feedbackForm') }}" aria-selected="false" style="margin-bottom: 15px; color:#6a6b6b; font-weight:bold;"><i class="fa-solid fa-comment"></i> Feedback</a>
                     </div>
                 </div>
-                <div class="col-sm-10"><br>
-                    <div class="container-fluid">
-                      {% if asthma_not_diagnosed_count == asthma_diagnosed_count and diabetes_not_diagnosed_count == diabetes_diagnosed_count and stroke_not_diagnosed_count == stroke_diagnosed_count %}
-                        <div class="alert alert-success mt-4" role="alert">
-                          <h2 class="alert-heading">You currently have no prediction record.</h2>
-                          <p class="mb-0">Please proceed to Diabetes Prediction, Stroke Prediction, Asthma Prediction to predict lifestyle diseases.</p>
-                          <p class="mb-0">Thank you for using Lifestyle Disease and Prediction Management System!</p>
-                        </div>
-                      {% endif %}
-                      {% if asthma_not_diagnosed_count > asthma_diagnosed_count and diabetes_not_diagnosed_count > diabetes_diagnosed_count and asthma_not_diagnosed_count > asthma_diagnosed_count %}
-                        <div class="alert alert-success mt-4" role="alert">
-                          <h2 class="alert-heading">You are healthy!</h2>
-                          <p class="mb-0">Here are some recommendations that can help you to stay healthy and reduce your risk of developing lifestyle diseases:</p>
-                          <ul>
-                              <li><b>Maintain a healthy diet.</b> A healthy diet includes plenty of fruits, vegetables, and whole grains. It also limits processed foods, sugary drinks, and unhealthy fats.</li>
-                              <li><b>Engage in regular exercise.</b> Exercise is important for overall health and can help to prevent chronic diseases. Aim for at least 30 minutes of moderate-intensity exercise most days of the week.</li>
-                              <li><b>Get enough sleep.</b> When you're well-rested, your body is better able to fight off infections and other health problems. Aim for 7-8 hours of sleep each night.</li>
-                              <li><b>Maintain a Healthy Weight.</b> Aim for a body mass index (BMI) within the normal range. Regular exercise and a balanced diet can help achieve and maintain a healthy weight.</li>
-                              <li><b>Get regular checkups.</b> Even if you're feeling healthy, it's important to see your doctor for regular checkups. This will help to catch any health problems early on, when they're easier to treat.</li>
-                              <!-- Add more recommendations as needed -->
-                          </ul>
-                        </div>
-                      {% endif %}
-                      {% if asthma_diagnosed_count > asthma_not_diagnosed_count %}
-                        <div class="alert alert-warning mt-4" role="alert">
-                          <h4 class="alert-heading">Your prediction records show that you have a higher chance of having asthma than not. This is because you have been diagnosed with asthma more often than not in the past.</h4>
-                          <p class="mb-0">Health Recommendation: Take the following steps to manage your asthma and reduce symptoms:</p>
-                          <ul>
-                              <li><b>Get regular exercise.</b> Exercise can help to strengthen your lungs and airways, making it less likely that you will develop asthma. Aim for at least 30 minutes of moderate-intensity exercise most days of the week.</li>
-                              <li><b>Manage allergies.</b> If you have allergies, managing them can help to reduce your risk of developing asthma. This may involve avoiding allergens, taking allergy medication, or getting allergy shots.</li>
-                              <li><b>Avoid secondhand smoke.</b> Secondhand smoke is a major trigger for asthma, so it's important to avoid it as much as possible. If you live with someone who smokes, ask them to smoke outside or in another room.</li>
-                              <li><b>Be aware of your triggers.</b> Different people have different triggers for asthma. Common triggers include dust mites, pollen, pet dander, cold air, exercise, and certain medications. Once you know your triggers, you can take steps to avoid them.</li>
-                              <li><b>See your doctor regularly.</b> If you have asthma, it's important to see your doctor regularly to monitor your condition and make sure that your treatment is working.</li>
-                              <!-- Add more recommendations as needed -->
-                          </ul>
-                          <p>For more personalized recommendation information, please use asthma prediction once again.</p>
-                        </div>
-                      {% endif %}
-                      {% if diabetes_diagnosed_count > diabetes_not_diagnosed_count %}
-                        <div class="alert alert-warning mt-4" role="alert">
-                          <h4 class="alert-heading">Your prediction records show that you have a higher chance of having diabetes than not. This is because you have been diagnosed with diabetes more often than not in the past.</h4>
-                          <p class="mb-0">Health Recommendation: Take the following steps to manage your diabetes:</p>
-                          <ul>
-                              <li><b>Control cholesterol levels.</b> Control your cholesterol levels through a balanced diet and medication, if prescribed by your healthcare provider.</li>
-                              <li><b>Maintain healthy weight.</b> Maintain a healthy weight through a balanced diet and regular physical activity.</li>
-                              <li><b>Engage in regular exercise.</b> Exercise helps to maintain good health and prevent the onset of diabetes. Aim for at least 30 minutes of moderate-intensity exercise most days of the week.</li>
-                              <li><b>Limit alcohol consumption.</b> Limit alcohol consumption to a moderate level or avoid it altogether to reduce the risk of developing diabetes.</li>
-                              <li><b>Avoid smoking.</b> Smoking is a major risk factor for diabetes. If you smoke, quitting is one of the best things you can do for your health.</li>
-                              <li><b>Adopt a healthy diet.</b> Follow a balanced diet rich in fruits, vegetables, whole grains, lean proteins, and healthy fats. Limit the consumption of saturated and trans fats, cholesterol, and sodium. Incorporate foods that are heart-healthy and support cardiovascular health.</li>
-                              <!-- Add more recommendations as needed -->
-                          </ul>
-                          <p>For more personalized recommendation information, please use diabetes prediction once again.</p>
-                        </div>
-                      {% endif %}
-                      {% if stroke_diagnosed_count > stroke_not_diagnosed_count %}
-                        <div class="alert alert-warning mt-4" role="alert">
-                          <h4 class="alert-heading">Your prediction records show that you have a higher chance of having stroke than not. This is because you have been diagnosed with stroke more often than not in the past.</h4>
-                          <p class="mb-0">Health Recommendation: Take the following steps to manage your stroke:</p>
-                          <ul>
-                              <li><b>Maintain a Healthy Weight.</b> Achieve and maintain a healthy weight for your body type. Excess weight, especially around the waist, increases the risk of high blood pressure, diabetes, and cardiovascular diseases, including stroke. Maintain a balanced diet and engage in regular physical activity to achieve a healthy weight.</li>
-                              <li><b>Smoking.</b> Smoking is a significant risk factor for stroke. Quitting smoking reduces the risk and improves overall health. Seek support from healthcare professionals, support groups, or smoking cessation programs to quit smoking successfully.</li>
-                              <li><b>Maintain glucose levels</b> Maintain a healthy lifestyle to continue maintaining normal glucose levels, as they contribute to overall cardiovascular health and reduce the risk of stroke.</li>
-                              <!-- Add more recommendations as needed -->
-                          </ul>
-                          <p>For more personalized recommendation information, please use stroke prediction once again.</p>
-                        </div>
-                      {% endif %}
-                      {% if asthma_not_diagnosed_count != 0 or asthma_diagnosed_count != 0 or diabetes_not_diagnosed_count != 0 or diabetes_diagnosed_count != 0 or stroke_not_diagnosed_count != 0 or stroke_diagnosed_count != 0 %}
-                        <div class="row">
-                          {% if asthma_not_diagnosed_count != 0 or asthma_diagnosed_count != 0 %}
-                            <div class="col-md-4">
-                              <canvas id="asthmaPredictionChart"></canvas>
+                <div class="col-sm-10 mt-5">
+                  <div class="container-fluid">
+                      <div class="row">
+                          <div class="col-md-6">
+                              {% if asthma_not_diagnosed_count == asthma_diagnosed_count and diabetes_not_diagnosed_count == diabetes_diagnosed_count and stroke_not_diagnosed_count == stroke_diagnosed_count %}
+                              <div class="alert alert-success mt-4" role="alert">
+                                  <h2 class="alert-heading">You currently have no prediction record.</h2>
+                                  <p class="mb-0">Please proceed to Diabetes Prediction, Stroke Prediction, Asthma Prediction to predict lifestyle diseases.</p>
+                                  <p class="mb-0">Thank you for using Lifestyle Disease and Prediction Management System!</p>
+                              </div>
+                              {% endif %}
+              
+                              {% if asthma_not_diagnosed_count > asthma_diagnosed_count and diabetes_not_diagnosed_count > diabetes_diagnosed_count and asthma_not_diagnosed_count > asthma_diagnosed_count %}
+                              <div class="alert alert-success mt-4" role="alert">
+                                  <h2 class="alert-heading">You are healthy!</h2>
+                                  <p class="mb-0">Here are some recommendations that can help you to stay healthy and reduce your risk of developing lifestyle diseases:</p>
+                                  <ul>
+                                      <li><b>Maintain a healthy diet.</b> A healthy diet includes plenty of fruits, vegetables, and whole grains. It also limits processed foods, sugary drinks, and unhealthy fats.</li>
+                                      <li><b>Engage in regular exercise.</b> Exercise is important for overall health and can help to prevent chronic diseases. Aim for at least 30 minutes of moderate-intensity exercise most days of the week.</li>
+                                      <li><b>Get enough sleep.</b> When you're well-rested, your body is better able to fight off infections and other health problems. Aim for 7-8 hours of sleep each night.</li>
+                                      <li><b>Maintain a Healthy Weight.</b> Aim for a body mass index (BMI) within the normal range. Regular exercise and a balanced diet can help achieve and maintain a healthy weight.</li>
+                                      <li><b>Get regular checkups.</b> Even if you're feeling healthy, it's important to see your doctor for regular checkups. This will help to catch any health problems early on, when they're easier to treat.</li>
+                                      <!-- Add more recommendations as needed -->
+                                  </ul>
+                              </div>
+                              {% endif %}
+              
+                              {% if asthma_diagnosed_count > asthma_not_diagnosed_count %}
+                              <div class="alert alert-warning mt-4" role="alert">
+                                  <h4 class="alert-heading">Your prediction records show that you have a higher chance of having asthma than not. This is because you have been diagnosed with asthma more often than not in the past.</h4>
+                                  <p class="mb-0">Health Recommendation: Take the following steps to manage your asthma and reduce symptoms:</p>
+                                  <ul>
+                                      <li><b>Get regular exercise.</b> Exercise can help to strengthen your lungs and airways, making it less likely that you will develop asthma. Aim for at least 30 minutes of moderate-intensity exercise most days of the week.</li>
+                                      <li><b>Manage allergies.</b> If you have allergies, managing them can help to reduce your risk of developing asthma. This may involve avoiding allergens, taking allergy medication, or getting allergy shots.</li>
+                                      <li><b>Avoid secondhand smoke.</b> Secondhand smoke is a major trigger for asthma, so it's important to avoid it as much as possible. If you live with someone who smokes, ask them to smoke outside or in another room.</li>
+                                      <li><b>Be aware of your triggers.</b> Different people have different triggers for asthma. Common triggers include dust mites, pollen, pet dander, cold air, exercise, and certain medications. Once you know your triggers, you can take steps to avoid them.</li>
+                                      <li><b>See your doctor regularly.</b> If you have asthma, it's important to see your doctor regularly to monitor your condition and make sure that your treatment is working.</li>
+                                      <!-- Add more recommendations as needed -->
+                                  </ul>
+                                  <p>*For more personalized recommendation information, please use asthma prediction once again.*</p>
+                              </div>
+                              {% endif %}
+                          </div>
+              
+                          <div class="col-md-6">
+                              {% if diabetes_diagnosed_count > diabetes_not_diagnosed_count %}
+                              <div class="alert alert-warning mt-4" role="alert">
+                                  <h4 class="alert-heading">Your prediction records show that you have a higher chance of having diabetes than not. This is because you have been diagnosed with diabetes more often than not in the past.</h4>
+                                  <p class="mb-0">Health Recommendation: Take the following steps to manage your diabetes:</p>
+                                  <ul>
+                                      <li><b>Control cholesterol levels.</b> Control your cholesterol levels through a balanced diet and medication, if prescribed by your healthcare provider.</li>
+                                      <li><b>Maintain healthy weight.</b> Maintain a healthy weight through a balanced diet and regular physical activity.</li>
+                                      <li><b>Engage in regular exercise.</b> Exercise helps to maintain good health and prevent the onset of diabetes. Aim for at least 30 minutes of moderate-intensity exercise most days of the week.</li>
+                                      <li><b>Limit alcohol consumption.</b> Limit alcohol consumption to a moderate level or avoid it altogether to reduce the risk of developing diabetes.</li>
+                                      <li><b>Avoid smoking.</b> Smoking is a major risk factor for diabetes. If you smoke, quitting is one of the best things you can do for your health.</li>
+                                      <li><b>Adopt a healthy diet.</b> Follow a balanced diet rich in fruits, vegetables, whole grains, lean proteins, and healthy fats. Limit the consumption of saturated and trans fats, cholesterol, and sodium. Incorporate foods that are heart-healthy and support cardiovascular health.</li>
+                                      <!-- Add more recommendations as needed -->
+                                  </ul>
+                                  <p>*For more personalized recommendation information, please use diabetes prediction once again.*</p>
+                              </div>
+                              {% endif %}
+              
+                              {% if stroke_diagnosed_count > stroke_not_diagnosed_count %}
+                              <div class="alert alert-warning mt-4" role="alert">
+                                  <h4 class="alert-heading">Your prediction records show that you have a higher chance of having a stroke than not. This is because you have been diagnosed with a stroke more often than not in the past.</h4>
+                                  <p class="mb-0">Health Recommendation: Take the following steps to manage your stroke:</p>
+                                  <ul>
+                                      <li><b>Maintain a Healthy Weight.</b> Achieve and maintain a healthy weight for your body type. Excess weight, especially around the waist, increases the risk of high blood pressure, diabetes, and cardiovascular diseases, including a stroke. Maintain a balanced diet and engage in regular physical activity to achieve a healthy weight.</li>
+                                      <li><b>Smoking.</b> Smoking is a significant risk factor for a stroke. Quitting smoking reduces the risk and improves overall health. Seek support from healthcare professionals, support groups, or smoking cessation programs to quit smoking successfully.</li>
+                                      <li><b>Maintain glucose levels</b> Maintain a healthy lifestyle to continue maintaining normal glucose levels, as they contribute to overall cardiovascular health and reduce the risk of a stroke.</li>
+                                      <!-- Add more recommendations as needed -->
+                                  </ul>
+                                  <p>*For more personalized recommendation information, please use stroke prediction once again.*</p>
+                              </div>
+                              {% endif %}
+                          </div>
+                      </div>
+              
+                      <div class="row mt-5">
+                          <div class="col-md-12">
+                              <div class="card shadow-sm" style="background-color: {% if latest_bmi < 18.5 %} #ffcccc; {% elif latest_bmi >= 18.5 and latest_bmi < 25 %} #ccffcc; {% elif latest_bmi >= 25 and latest_bmi < 30 %} #ffffcc; {% else %} #ff9999; {% endif %}">
+                                  <div class="card-body">
+                                      <h3 class="card-title">BMI Health Profile</h3>
+                                      <p class="card-text">Your Recent Prediction Shows Your BMI is {{ latest_bmi }}</p>
+                                      <p class="card-text" id="bmiMessage">{{ bmi_message }}</p>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+              
+                      <div class="row mt-5">
+                          <div class="col-md-12">
+                              <div class="card shadow-sm" style="background-color: {% if latest_glucose >= 70 and latest_glucose <= 130 %} #ccffcc; {% elif latest_glucose > 130 and latest_glucose <= 180 %} #ffffcc; {% else %} #ff9999; {% endif %}">
+                                  <div class="card-body">
+                                      <h3 class="card-title">Average Glucose Health Profile</h3>
+                                      <p class="card-text">Your Recent Prediction Shows Your Average Glucose Level is {{ latest_glucose }} mg/dL</p>
+                                      <p class="card-text" id="glucoseMessage">{{ glucose_message }}</p>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+              
+                      {% if stroke_not_diagnosed_count != 0 or stroke_diagnosed_count != 0 %}
+                        <div class="row mt-5">
+                          <div class="col-md-6 mb-4">
+                            <div class="card shadow-sm">
+                              <div class="card-body">
+                                <h5 class="card-title">Stroke BMI Chart</h5>
+                                <div class="chart-container" style="height: 400px;">
+                                  <canvas id="bmiChart" width="800" height="400"></canvas>
+                                </div>
+                              </div>
                             </div>
-                          {% endif %}
-                          {% if diabetes_not_diagnosed_count != 0 or diabetes_diagnosed_count != 0 %}
-                            <div class="col-md-4">
-                              <canvas id="diabetesPredictionChart"></canvas>
+                          </div>
+
+                          <div class="col-md-6 mb-4">
+                            <div class="card shadow-sm">
+                              <div class="card-body">
+                                <h5 class="card-title">Stroke Glucose Chart</h5>
+                                <div class="chart-container" style="height: 400px;">
+                                  <canvas id="glucoseChart" width="800" height="400"></canvas>
+                                </div>
+                              </div>
                             </div>
-                          {% endif %}
-                          {% if stroke_not_diagnosed_count != 0 or stroke_diagnosed_count != 0 %}
-                            <div class="col-md-4">
-                              <canvas id="strokePredictionChart"></canvas>
+                          </div>
+                        {% endif %}
+                        {% if diabetes_not_diagnosed_count != 0 or diabetes_diagnosed_count != 0 %}
+                          <div class="col-md-6 mb-4">
+                            <div class="card shadow-sm">
+                              <div class="card-body">
+                                <h5 class="card-title">Diabetes BMI Chart</h5>
+                                <div class="chart-container" style="height: 400px;">
+                                  <canvas id="d_bmiChart" width="800" height="400"></canvas>
+                                </div>
+                              </div>
                             </div>
-                          {% endif %}
+                          </div>
                         </div>
-                      {% endif %}
-                    </div>
+                        {% endif %}
+                      
+                  </div>
                 </div>
-            </div>
-        </div>
 
         <!-- My Profile Modal -->
         <div class="modal fade" id="myProfileModal" tabindex="-1" role="dialog" aria-labelledby="myProfileModalLabel" aria-hidden="true">
@@ -253,226 +307,367 @@
                   </div>
               </div>
           </div>
-      </div>
+        </div>
 
-      <!-- Edit Profile Modal -->
-      <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                  <div class="modal-header">
-                      <h5 class="modal-title" id="editProfileModalLabel">Edit My Profile</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                      </button>
-                  </div>
-                  <div class="modal-body">
-                      <form method="POST" action="/edit-profile/{{ user.u_id }}">
-                          <div class="form-group">
-                              <label for="u_fname">First Name</label>
-                              <input type="text" class="form-control" name="u_fname" id="u_fname" value="{{ user.u_fname }}" onchange="this.value = this.value.trim();" required pattern="[A-Za-z ]+">
-                          </div>
-                          <div class="form-group">
-                              <label for="u_lname">Last Name</label>
-                              <input type="text" class="form-control" name="u_lname" id="u_lname" value="{{ user.u_lname }}" onchange="this.value = this.value.trim();" required pattern="[A-Za-z ]+">
-                          </div>
-                          <div class="form-group">
-                              <label for="u_age">Age</label>
-                              <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}" onchange="this.value = this.value.trim();" required>
-                          </div>
-                          <div class="form-group">
-                              <label for="u_gender" class="col-form-label">Gender:</label>
-                              <select id="u_gender" name="u_gender" class="form-control" required>
-                                  <option value="" disabled>Select gender</option>
-                                  <option value="Male" {% if user.u_gender == 'Male' %}selected{% endif %}>Male</option>
-                                  <option value="Female" {% if user.u_gender == 'Female' %}selected{% endif %}>Female</option>
-                              </select>
-                          </div>
-                          <div class="form-group">
-                              <label for="u_hpnumber">Phone Number</label>
-                              <input type="tel" class="form-control" name="u_hpnumber" id="u_hpnumber" value="{{ user.u_hpnumber }}" onchange="this.value = this.value.trim();" required pattern="^(\+?6?01)[0-46-9]-*[0-9]{7,8}$">
-                          </div>
-                          <div class="form-group">
-                              <label for="u_address">Address</label>
-                              <textarea class="form-control" name="u_address" id="u_address" rows="3" onchange="this.value = this.value.trim();" required>{{ user.u_address }}</textarea>
-                          </div>
-                          <div class="form-group">
-                              <p><input type="submit" class="btn btn-primary" value="Update Profile"></p>
-                          </div>
-                      </form>
-                  </div>
-              </div>
-          </div>
-      </div>
-      <script>
-          // Get the data for the chart from Flask
-          const asthmaPredictionData = {
-            labels: ['Diagnosed Asthma', 'Not Diagnosed Asthma'],
-            datasets: [{
-              data: [{{ asthma_diagnosed_count }}, {{ asthma_not_diagnosed_count }}],
-              backgroundColor: ['#FF6384', '#36A2EB'],
-              borderWidth: 1
-            }]
-          };
-        
-          // Configure the chart options
-          const asthmaPredictionOptions = {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-              title: {
-                display: true,
-                text: 'Personal Asthma Prediction Results',
-                font: {
-                  size: 16,
-                  weight: 'bold'
-                }
-              },
-              legend: {
-                display: true,
-                position: 'bottom',
-                labels: {
-                  usePointStyle: true
-                }
-              },
-              datalabels: {
-                formatter: (value, context) => {
-                  let sum = 0;
-                  let dataArr = context.dataset.data;
-                  dataArr.map(data => {
-                    sum += data;
-                  });
-                  let percentage = ((value * 100) / sum).toFixed(2) + "%";
-                  return percentage;
+        <!-- Edit Profile Modal -->
+        <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editProfileModalLabel">Edit My Profile</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="/edit-profile/{{ user.u_id }}">
+                            <div class="form-group">
+                                <label for="u_fname">First Name</label>
+                                <input type="text" class="form-control" name="u_fname" id="u_fname" value="{{ user.u_fname }}" onchange="this.value = this.value.trim();" required pattern="[A-Za-z ]+">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_lname">Last Name</label>
+                                <input type="text" class="form-control" name="u_lname" id="u_lname" value="{{ user.u_lname }}" onchange="this.value = this.value.trim();" required pattern="[A-Za-z ]+">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_age">Age</label>
+                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}" onchange="this.value = this.value.trim();" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="u_gender" class="col-form-label">Gender:</label>
+                                <select id="u_gender" name="u_gender" class="form-control" required>
+                                    <option value="" disabled>Select gender</option>
+                                    <option value="Male" {% if user.u_gender == 'Male' %}selected{% endif %}>Male</option>
+                                    <option value="Female" {% if user.u_gender == 'Female' %}selected{% endif %}>Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="u_hpnumber">Phone Number</label>
+                                <input type="tel" class="form-control" name="u_hpnumber" id="u_hpnumber" value="{{ user.u_hpnumber }}" onchange="this.value = this.value.trim();" required pattern="^(\+?6?01)[0-46-9]-*[0-9]{7,8}$">
+                            </div>
+                            <div class="form-group">
+                                <label for="u_address">Address</label>
+                                <textarea class="form-control" name="u_address" id="u_address" rows="3" onchange="this.value = this.value.trim();" required>{{ user.u_address }}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <p><input type="submit" class="btn btn-primary" value="Update Profile"></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <script>
+            // Get the data for the chart from Flask
+            const asthmaPredictionData = {
+              labels: ['Diagnosed Asthma', 'Not Diagnosed Asthma'],
+              datasets: [{
+                data: [{{ asthma_diagnosed_count }}, {{ asthma_not_diagnosed_count }}],
+                backgroundColor: ['#FF6384', '#36A2EB'],
+                borderWidth: 1
+              }]
+            };
+          
+            // Configure the chart options
+            const asthmaPredictionOptions = {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'Personal Asthma Prediction Results',
+                  font: {
+                    size: 16,
+                    weight: 'bold'
+                  }
                 },
-                color: '#fff',
-                font: {
-                  weight: 'bold'
+                legend: {
+                  display: true,
+                  position: 'bottom',
+                  labels: {
+                    usePointStyle: true
+                  }
+                },
+                datalabels: {
+                  formatter: (value, context) => {
+                    let sum = 0;
+                    let dataArr = context.dataset.data;
+                    dataArr.map(data => {
+                      sum += data;
+                    });
+                    let percentage = ((value * 100) / sum).toFixed(2) + "%";
+                    return percentage;
+                  },
+                  color: '#fff',
+                  font: {
+                    weight: 'bold'
+                  }
                 }
               }
+            };
+          
+            // Create the pie chart
+            const asthmaPredictionChart = new Chart(document.getElementById('asthmaPredictionChart'), {
+              type: 'pie',
+              data: asthmaPredictionData,
+              options: asthmaPredictionOptions,
+              plugins: [ChartDataLabels]
+            });
+        </script>
+        <script>
+            // Get the data for the chart from Flask
+            const diabetesPredictionData = {
+              labels: ['Diagnosed Diabetes', 'Not Diagnosed Diabetes'],
+              datasets: [{
+                data: [{{ diabetes_diagnosed_count }}, {{ diabetes_not_diagnosed_count }}],
+                backgroundColor: ['#FF6384', '#36A2EB'],
+                borderWidth: 1
+              }]
+            };
+          
+            // Configure the chart options
+            const diabetesPredictionOptions = {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'Personal Diabetes Prediction Results',
+                  font: {
+                    size: 16,
+                    weight: 'bold'
+                  }
+                },
+                legend: {
+                  display: true,
+                  position: 'bottom',
+                  labels: {
+                    usePointStyle: true
+                  }
+                },
+                datalabels: {
+                  formatter: (value, context) => {
+                    let sum = 0;
+                    let dataArr = context.dataset.data;
+                    dataArr.map(data => {
+                      sum += data;
+                    });
+                    let percentage = ((value * 100) / sum).toFixed(2) + "%";
+                    return percentage;
+                  },
+                  color: '#fff',
+                  font: {
+                    weight: 'bold'
+                  }
+                }
+              }
+            };
+          
+            // Create the pie chart
+            const diabetesPredictionChart = new Chart(document.getElementById('diabetesPredictionChart'), {
+              type: 'pie',
+              data: diabetesPredictionData,
+              options: diabetesPredictionOptions,
+              plugins: [ChartDataLabels]
+            });
+        </script>
+        <script>
+            // Get the data for the chart from Flask
+            const strokePredictionData = {
+              labels: ['Diagnosed Stroke', 'Not Diagnosed Stroke'],
+              datasets: [{
+                data: [{{ stroke_diagnosed_count }}, {{ stroke_not_diagnosed_count }}],
+                backgroundColor: ['#FF6384', '#36A2EB'],
+                borderWidth: 1
+              }]
+            };
+          
+            // Configure the chart options
+            const strokePredictionOptions = {
+              responsive: true,
+              maintainAspectRatio: true,
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'Personal Stroke Prediction Results',
+                  font: {
+                    size: 16,
+                    weight: 'bold'
+                  }
+                },
+                legend: {
+                  display: true,
+                  position: 'bottom',
+                  labels: {
+                    usePointStyle: true
+                  }
+                },
+                datalabels: {
+                  formatter: (value, context) => {
+                    let sum = 0;
+                    let dataArr = context.dataset.data;
+                    dataArr.map(data => {
+                      sum += data;
+                    });
+                    let percentage = ((value * 100) / sum).toFixed(2) + "%";
+                    return percentage;
+                  },
+                  color: '#fff',
+                  font: {
+                    weight: 'bold'
+                  }
+                }
+              }
+            };
+          
+            // Create the pie chart
+            const strokePredictionChart = new Chart(document.getElementById('strokePredictionChart'), {
+              type: 'pie',
+              data: strokePredictionData,
+              options: strokePredictionOptions,
+              plugins: [ChartDataLabels]
+            });
+        </script> -->
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            // Parse the JSON data passed from Flask
+            const bmiData = JSON.parse('{{ bmi_data | safe }}');
+          
+            // Function to parse the date using Moment.js
+            function parseDate(dateString) {
+                return moment(dateString, 'YYYY-MM-DD').format('YYYY-MM-DD');
             }
-          };
-        
-          // Create the pie chart
-          const asthmaPredictionChart = new Chart(document.getElementById('asthmaPredictionChart'), {
-            type: 'pie',
-            data: asthmaPredictionData,
-            options: asthmaPredictionOptions,
-            plugins: [ChartDataLabels]
+          
+            // Function to create the BMI Trend Chart
+            function createBMITrendChart() {
+              // Convert date strings to Moment.js objects
+              const processedData = bmiData.map(entry => {
+                return {
+                  date: parseDate(entry.date),
+                  bmi: entry.bmi
+                };
+              });
+          
+              const ctx = document.getElementById('bmiChart').getContext('2d');
+              const bmiChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                  labels: processedData.map(entry => entry.date),
+                  datasets: [{
+                    label: 'BMI',
+                    data: processedData.map(entry => entry.bmi),
+                    fill: false,
+                    lineTension: 0.1
+                  }]
+                },
+                options: {
+                  scales: {
+                    yAxes: [{
+                      ticks: {
+                        beginAtZero: true
+                      }
+                    }]
+                  }
+                }
+              });
+            }
+          
+            createBMITrendChart();
+          });
+        </script>
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+              // Parse the JSON data passed from Flask
+              const glucoseData = JSON.parse('{{ glucose_data | safe }}');
+      
+              // Function to parse the date using Moment.js
+              function parseDate(dateString) {
+                  return moment(dateString, 'YYYY-MM-DD').format('YYYY-MM-DD');
+              }
+      
+              // Function to create the Glucose Level Trend Chart
+              function createGlucoseLevelChart() {
+                  // Convert date strings to Moment.js objects
+                  const processedData = glucoseData.map(entry => {
+                      return {
+                          date: parseDate(entry.date),
+                          glucoseLevel: entry.glucoseLevel
+                      };
+                  });
+      
+                  const ctx = document.getElementById('glucoseChart').getContext('2d');
+                  const glucoseChart = new Chart(ctx, {
+                      type: 'line',
+                      data: {
+                          labels: processedData.map(entry => entry.date),
+                          datasets: [{
+                              label: 'Average Glucose Level',
+                              data: processedData.map(entry => entry.glucoseLevel),
+                              fill: false,
+                              lineTension: 0.1
+                          }]
+                      },
+                      options: {
+                          scales: {
+                              yAxes: [{
+                                  ticks: {
+                                      beginAtZero: true
+                                  }
+                              }]
+                          }
+                      }
+                  });
+              }
+      
+              createGlucoseLevelChart();
           });
       </script>
       <script>
-          // Get the data for the chart from Flask
-          const diabetesPredictionData = {
-            labels: ['Diagnosed Diabetes', 'Not Diagnosed Diabetes'],
-            datasets: [{
-              data: [{{ diabetes_diagnosed_count }}, {{ diabetes_not_diagnosed_count }}],
-              backgroundColor: ['#FF6384', '#36A2EB'],
-              borderWidth: 1
-            }]
-          };
+        document.addEventListener('DOMContentLoaded', function () {
+          // Parse the JSON data passed from Flask
+          const d_bmiData = JSON.parse('{{ d_bmi_data | safe }}');
         
-          // Configure the chart options
-          const diabetesPredictionOptions = {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-              title: {
-                display: true,
-                text: 'Personal Diabetes Prediction Results',
-                font: {
-                  size: 16,
-                  weight: 'bold'
-                }
+          // Function to parse the date using Moment.js
+          function parseDate(dateString) {
+              return moment(dateString, 'YYYY-MM-DD').format('YYYY-MM-DD');
+          }
+        
+          // Function to create the BMI Trend Chart
+          function d_createBMITrendChart() {
+            // Convert date strings to Moment.js objects
+            const processedData = d_bmiData.map(entry => {
+              return {
+                date: parseDate(entry.d_date),
+                bmi: entry.d_bmi
+              };
+            });
+        
+            const ctx = document.getElementById('d_bmiChart').getContext('2d');
+            const d_bmiChart = new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels: processedData.map(entry => entry.date),
+                datasets: [{
+                  label: 'BMI',
+                  data: processedData.map(entry => entry.bmi),
+                  fill: false,
+                  lineTension: 0.1
+                }]
               },
-              legend: {
-                display: true,
-                position: 'bottom',
-                labels: {
-                  usePointStyle: true
-                }
-              },
-              datalabels: {
-                formatter: (value, context) => {
-                  let sum = 0;
-                  let dataArr = context.dataset.data;
-                  dataArr.map(data => {
-                    sum += data;
-                  });
-                  let percentage = ((value * 100) / sum).toFixed(2) + "%";
-                  return percentage;
-                },
-                color: '#fff',
-                font: {
-                  weight: 'bold'
+              options: {
+                scales: {
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }]
                 }
               }
-            }
-          };
+            });
+          }
         
-          // Create the pie chart
-          const diabetesPredictionChart = new Chart(document.getElementById('diabetesPredictionChart'), {
-            type: 'pie',
-            data: diabetesPredictionData,
-            options: diabetesPredictionOptions,
-            plugins: [ChartDataLabels]
-          });
-      </script>
-      <script>
-          // Get the data for the chart from Flask
-          const strokePredictionData = {
-            labels: ['Diagnosed Stroke', 'Not Diagnosed Stroke'],
-            datasets: [{
-              data: [{{ stroke_diagnosed_count }}, {{ stroke_not_diagnosed_count }}],
-              backgroundColor: ['#FF6384', '#36A2EB'],
-              borderWidth: 1
-            }]
-          };
-        
-          // Configure the chart options
-          const strokePredictionOptions = {
-            responsive: true,
-            maintainAspectRatio: true,
-            plugins: {
-              title: {
-                display: true,
-                text: 'Personal Stroke Prediction Results',
-                font: {
-                  size: 16,
-                  weight: 'bold'
-                }
-              },
-              legend: {
-                display: true,
-                position: 'bottom',
-                labels: {
-                  usePointStyle: true
-                }
-              },
-              datalabels: {
-                formatter: (value, context) => {
-                  let sum = 0;
-                  let dataArr = context.dataset.data;
-                  dataArr.map(data => {
-                    sum += data;
-                  });
-                  let percentage = ((value * 100) / sum).toFixed(2) + "%";
-                  return percentage;
-                },
-                color: '#fff',
-                font: {
-                  weight: 'bold'
-                }
-              }
-            }
-          };
-        
-          // Create the pie chart
-          const strokePredictionChart = new Chart(document.getElementById('strokePredictionChart'), {
-            type: 'pie',
-            data: strokePredictionData,
-            options: strokePredictionOptions,
-            plugins: [ChartDataLabels]
-          });
+          d_createBMITrendChart();
+        });
       </script>
     </body>
 </html>
