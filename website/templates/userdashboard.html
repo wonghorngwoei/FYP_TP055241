@@ -82,15 +82,14 @@
                 <div class="col-sm-10 mt-5">
                   <div class="container-fluid">
                       <div class="row">
-                          <div class="col-md-6">
-                              {% if asthma_not_diagnosed_count == asthma_diagnosed_count and diabetes_not_diagnosed_count == diabetes_diagnosed_count and stroke_not_diagnosed_count == stroke_diagnosed_count %}
-                              <div class="alert alert-success mt-4" role="alert">
+                            {% if asthma_not_diagnosed_count == asthma_diagnosed_count and diabetes_not_diagnosed_count == diabetes_diagnosed_count and stroke_not_diagnosed_count == stroke_diagnosed_count %}
+                              <div class="alert alert-success col-md-12" role="alert">
                                   <h2 class="alert-heading">You currently have no prediction record.</h2>
                                   <p class="mb-0">Please proceed to Diabetes Prediction, Stroke Prediction, Asthma Prediction to predict lifestyle diseases.</p>
                                   <p class="mb-0">Thank you for using Lifestyle Disease and Prediction Management System!</p>
                               </div>
-                              {% endif %}
-              
+                            {% endif %}
+                          <div class="col-md-6">
                               {% if asthma_not_diagnosed_count > asthma_diagnosed_count and diabetes_not_diagnosed_count > diabetes_diagnosed_count and asthma_not_diagnosed_count > asthma_diagnosed_count %}
                               <div class="alert alert-success mt-4" role="alert">
                                   <h2 class="alert-heading">You are healthy!</h2>
@@ -156,19 +155,30 @@
                               {% endif %}
                           </div>
                       </div>
-              
-                      <div class="row mt-5">
-                          <div class="col-md-12">
-                              <div class="card shadow-sm" style="background-color: {% if latest_bmi < 18.5 %} #ffcccc; {% elif latest_bmi >= 18.5 and latest_bmi < 25 %} #ccffcc; {% elif latest_bmi >= 25 and latest_bmi < 30 %} #ffffcc; {% else %} #ff9999; {% endif %}">
-                                  <div class="card-body">
-                                      <h3 class="card-title">BMI Health Profile</h3>
-                                      <p class="card-text">Your Recent Prediction Shows Your BMI is {{ latest_bmi }}</p>
-                                      <p class="card-text" id="bmiMessage">{{ bmi_message }}</p>
+                      {% if latest_bmi %}
+                        <div class="row mt-5">
+                            <div class="col-md-12">
+                                <div class="card shadow-sm" style="background-color: {% if latest_bmi < 18.5 %} #ffcccc; {% elif latest_bmi >= 18.5 and latest_bmi < 25 %} #ccffcc; {% elif latest_bmi >= 25 and latest_bmi < 30 %} #ffffcc; {% else %} #ff9999; {% endif %}">
+                                    <div class="card-body">
+                                        <h3 class="card-title">BMI Health Profile</h3>
+                                        <p class="card-text">Your Recent Prediction Shows Your BMI is {{ latest_bmi }}</p>
+                                        <p class="card-text" id="bmiMessage">{{ bmi_message }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                          <div class="row mt-5">
+                              <div class="col-md-12">
+                                  <div class="alert alert-warning mt-4" role="alert">
+                                      <h2 class="alert-heading">No BMI Data Available</h2>
+                                      <p class="mb-0">You have not provided your BMI data for prediction.</p>
+                                      <p class="mb-0">Please add your BMI data to get a personalized health profile.</p>
                                   </div>
                               </div>
                           </div>
-                      </div>
-              
+                        {% endif %}
+                      {% if latest_glucose %}
                       <div class="row mt-5">
                           <div class="col-md-12">
                               <div class="card shadow-sm" style="background-color: {% if latest_glucose >= 70 and latest_glucose <= 130 %} #ccffcc; {% elif latest_glucose > 130 and latest_glucose <= 180 %} #ffffcc; {% else %} #ff9999; {% endif %}">
@@ -180,7 +190,17 @@
                               </div>
                           </div>
                       </div>
-              
+                      {% else %}
+                          <div class="row mt-5">
+                              <div class="col-md-12">
+                                  <div class="alert alert-warning mt-4" role="alert">
+                                      <h2 class="alert-heading">No Glucose Health Data Available</h2>
+                                      <p class="mb-0">You have not provided your Average Glucose Health data for Stroke prediction.</p>
+                                      <p class="mb-0">Please add your Average Glucose Health data in Stroke prediction to get a personalized health profile.</p>
+                                  </div>
+                              </div>
+                          </div>
+                      {% endif %}
                       {% if stroke_not_diagnosed_count != 0 or stroke_diagnosed_count != 0 %}
                         <div class="row mt-5">
                           <div class="col-md-6 mb-4">
