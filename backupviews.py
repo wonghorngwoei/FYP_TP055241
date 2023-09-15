@@ -76,14 +76,16 @@ def userdashboard():
     bmi_data = [{'date': entry.s_date.strftime('%Y-%m-%dT%H:%M:%S'), 'bmi': entry.s_BMI} for entry in bmi_data]
 
     # Fetch the user's Average Glucose Level data from the database
-    glucose_data = Stroke.query.with_entities(Stroke.s_date, Stroke.s_avgglucose).filter(Stroke.s_userID == userID).order_by(Stroke.s_date).all()
+    glucose_data = Stroke.query.with_entities(Stroke.s_date, Stroke.s_avgglucose).order_by(Stroke.s_date).all()
     # Convert Python datetime objects to ISO 8601 format
     glucose_data = [{'date': entry.s_date.strftime('%Y-%m-%dT%H:%M:%S'), 'glucoseLevel': entry.s_avgglucose} for entry in glucose_data]
 
     # Fetch BMI data for the current user only
     d_bmi_data = Diabetes.query.with_entities(Diabetes.d_date, Diabetes.d_BMI).filter(Diabetes.d_userID == userID).order_by(Diabetes.d_date).all()
     # Convert Python datetime objects to ISO 8601 format
-    d_bmi_data = [{'d_date': entry.d_date.strftime('%Y-%m-%dT%H:%M:%S'), 'd_bmi': entry.d_BMI} for entry in d_bmi_data]  
+    d_bmi_data = [{'d_date': entry.d_date.strftime('%Y-%m-%dT%H:%M:%S'), 'd_bmi': entry.d_BMI} for entry in d_bmi_data]   
+
+    print(d_bmi_data)
 
     # Fetch the user's latest BMI data from the database for stroke prediction
     latest_stroke_bmi_data = Stroke.query.filter(Stroke.s_userID == user.u_id).order_by(Stroke.s_date.desc()).first()
@@ -107,11 +109,11 @@ def userdashboard():
     if latest_bmi_data:
         latest_bmi = latest_bmi_data.s_BMI if hasattr(latest_bmi_data, 's_BMI') else latest_bmi_data.d_BMI
         bmi_message = ""
-        if latest_bmi == 0:
+        if latest_bmi < 18.5:
             bmi_message = "Underweight: You may need to gain weight."
-        elif latest_bmi == 1:
+        elif 18.5 <= latest_bmi < 24.9:
             bmi_message = "Normal weight: Your weight is healthy."
-        elif latest_bmi == 2:
+        elif 25 <= latest_bmi < 29.9:
             bmi_message = "Overweight: You may need to lose weight."
         else:
             bmi_message = "Obese: You may need to lose weight to improve your health."
@@ -140,9 +142,10 @@ def userdashboard():
 
 
 
+
     return render_template('userDashboard.html', user=user, asthma_diagnosed_count=asthma_diagnosed_count, asthma_not_diagnosed_count=asthma_not_diagnosed_count, diabetes_diagnosed_count=diabetes_diagnosed_count, 
-                            diabetes_not_diagnosed_count=diabetes_not_diagnosed_count, stroke_diagnosed_count=stroke_diagnosed_count, stroke_not_diagnosed_count=stroke_not_diagnosed_count, bmi_data=json.dumps(bmi_data), 
-                            glucose_data=json.dumps(glucose_data), d_bmi_data=json.dumps(d_bmi_data), latest_bmi=latest_bmi, bmi_message=bmi_message, latest_glucose=latest_glucose, glucose_message=glucose_message)
+                            diabetes_not_diagnosed_count=diabetes_not_diagnosed_count, stroke_diagnosed_count=stroke_diagnosed_count, stroke_not_diagnosed_count=stroke_not_diagnosed_count, bmi_data=json.dumps(bmi_data), glucose_data=json.dumps(glucose_data),
+                            d_bmi_data=json.dumps(d_bmi_data), latest_bmi=latest_bmi, bmi_message=bmi_message, latest_glucose=latest_glucose, glucose_message=glucose_message)
 
 def index():
     active_tab = request.args.get('active_tab', 'home')
@@ -932,17 +935,8 @@ def predictDiabetes():
         else:
             age = 13
 
-        bmi = float(request.form['bmi'])
-        if bmi < 18.5:
-            bmiCategory = 0
-        elif bmi >= 18.6 and bmi <= 24.9:
-            bmiCategory = 1
-        elif bmi >= 25.0 and bmi <= 29.9:
-            bmiCategory = 2
-        else:
-            bmiCategory = 3
-        
         highChol = request.form['highChol']  
+        bmi = request.form['bmi']
         smoker = request.form['smoker']
         heartdisease = request.form['heartdisease']
         physactivity = request.form['physactivity']
@@ -958,7 +952,7 @@ def predictDiabetes():
 
 
         form_array = np.array([[age, highChol, bmi, smoker, heartdisease, physactivity, fruits, veggies, 
-                                hvyalcoholconsump, generalHealth, physicalHealth, stroke, highBP]]).astype(float)
+                                hvyalcoholconsump, generalHealth, physicalHealth, stroke, highBP]]).astype(int)
         print(form_array)
         sc_d = scDiabetes.transform(form_array)
 
@@ -978,7 +972,7 @@ def predictDiabetes():
             d_userID = userID,
             d_age = int(age),
             d_highchol = int(highChol),
-            d_BMI = float(bmi),
+            d_BMI = int(bmi),
             d_smoker = int(smoker),
             d_heartdisease = int(heartdisease),
             d_physactivity = int(physactivity),
@@ -1030,7 +1024,7 @@ def diabetesResult():
     # Fetch the user's data from the database
     user = User.query.get(userID)
 
-    return render_template('diabetesResult.html', user=user, highChol=int(highChol), bmi=float(bmi), smoker=int(smoker), heartdisease=int(heartdisease), physactivity=int(physactivity), prediction=int(prediction), fruits=int(fruits), veggies=int(veggies), 
+    return render_template('diabetesResult.html', user=user, highChol=int(highChol), bmi=int(bmi), smoker=int(smoker), heartdisease=int(heartdisease), physactivity=int(physactivity), prediction=int(prediction), fruits=int(fruits), veggies=int(veggies), 
                            hvyalcoholconsump=int(hvyalcoholconsump), generalHealth=int(generalHealth), physicalHealth=int(physicalHealth), stroke=int(stroke), highBP=int(highBP), prediction_percentage_true=prediction_percentage_true)
 
 @views.route('/DiabetesResultFeedback' , methods=['GET','POST'])
@@ -1114,16 +1108,6 @@ def strokePredictionForm():
 def predictStroke():
     if request.method == 'POST':
         # Retrieve input from the request
-        getBMI = float(request.form['bmi'])
-        if getBMI < 18.5:
-            bmiCategory = 0
-        elif getBMI >= 18.6 and getBMI <= 24.9:
-            bmiCategory = 1
-        elif getBMI >= 25.0 and getBMI <= 29.9:
-            bmiCategory = 2
-        else:
-            bmiCategory = 3
-
         sex = request.form['sex']
         age = request.form['age']
         hypertension = request.form['hypertension']  
@@ -1131,20 +1115,17 @@ def predictStroke():
         married = request.form['evermarried']       
         worktype = request.form['worktype']
         avgglucose = request.form['avgglucose']
+        bmi = request.form['bmi']
         smoking = request.form['smoking']
         predTarget = request.form['predictionTarget']
         refName = request.form['referenceName'] if predTarget == 'Others' else None
 
 
-        form_array = np.array([[sex, age, hypertension, heartdisease, married, worktype, avgglucose, getBMI, smoking]]).astype(float)
-        
+        form_array = np.array([[sex, age, hypertension, heartdisease, married, worktype, avgglucose, bmi, smoking]]).astype(float)
         sc_s = scStroke.transform(form_array)
 
         sc_s[0][6] = qtStroke[0].transform(sc_s[0][6].reshape(-1,1))
         sc_s[0][7] = qtStroke[1].transform(sc_s[0][7].reshape(-1,1))
-
-
-        print(sc_s)
         prediction = strokeModel.predict(sc_s)[0]
         prediction_percentage_true = strokeModel.predict_proba(sc_s)[0,1]
          # Retrieve the user ID from the session or wherever it's stored
@@ -1163,7 +1144,7 @@ def predictStroke():
             s_married=int(married),
             s_worktype=int(worktype),
             s_avgglucose=float(avgglucose),
-            s_BMI=float(getBMI),
+            s_BMI=float(bmi),
             s_smoking=int(smoking),
             s_stroke=int(prediction),
             s_feedback=None,  # Initialize feedback as None
@@ -1177,7 +1158,7 @@ def predictStroke():
         db.session.commit()
 
         return redirect(url_for('views.strokeResult', user=user, sex=sex, age=age, hypertension=hypertension, heartdisease=heartdisease, married=married, worktype=worktype, 
-                                avgglucose=avgglucose, bmi=getBMI, smoking=smoking, prediction=prediction, prediction_percentage_true=prediction_percentage_true))
+                                avgglucose=avgglucose, bmi=bmi, smoking=smoking, prediction=prediction, prediction_percentage_true=prediction_percentage_true))
         
     return redirect(url_for('views.userdashboard'))
 
@@ -1202,7 +1183,7 @@ def strokeResult():
     user = User.query.get(userID)
 
     return render_template('strokeResult.html', user=user, sex=int(sex), age=int(age), hypertension=int(hypertension), heartdisease=int(heartdisease), married=int(married), worktype=int(worktype),
-                            avgglucose=float(avgglucose), bmi=float(bmi), smoking=int(smoking), prediction=int(prediction), prediction_percentage_true=prediction_percentage_true)
+                            avgglucose=int(avgglucose), bmi=int(bmi), smoking=int(smoking), prediction=int(prediction), prediction_percentage_true=prediction_percentage_true)
 
 @views.route('/StrokeResultFeedback' , methods=['GET','POST'])
 def strokeResultFeedback():

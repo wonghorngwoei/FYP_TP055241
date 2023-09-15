@@ -207,7 +207,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="u_age">Age</label>
-                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}" onchange="this.value = this.value.trim();" required>
+                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}" min="18" max="100" onchange="this.value = this.value.trim();" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_gender" class="col-form-label">Gender:</label>

@@ -852,12 +852,12 @@
             document.addEventListener('DOMContentLoaded', function () {
                 // Parse the JSON data passed from Flask
                 const asthmaDataLine = JSON.parse('{{ asthma_data | safe }}');
-
+        
                 // Function to parse the date using Moment.js
                 function parseDate(dateString) {
                     return moment(dateString, 'YYYY-MM-DD').format('YYYY-MM-DD');
                 }
-
+        
                 // Function to create the Asthma Prediction Trend Chart
                 function createAsthmaPredictionTrendChart() {
                     // Convert date strings to Moment.js objects and aggregate data by date
@@ -877,10 +877,10 @@
                             aggregatedData[date].asthma1 += 1;
                         }
                     });
-
+        
                     // Create an array of aggregated data objects
                     const processedData = Object.values(aggregatedData);
-
+        
                     const ctx = document.getElementById('asthmaLineChart').getContext('2d');
                     const asthmaLineChart = new Chart(ctx, {
                         type: 'line',
@@ -899,17 +899,28 @@
                             }],
                         },
                         options: {
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true,
-                                    },
-                                }],
-                            },
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Asthma Prediction Trend',
+                                    font: {
+                                        size: 16,
+                                        weight: 'bold'
+                                    }
+                                },
+                                legend: {
+                                    display: true,
+                                    position: 'top',
+                                    labels: {
+                                        usePointStyle: true
+                                    }
+                                }
+                            }
                         },
                     });
                 }
-
                 createAsthmaPredictionTrendChart();
             });
         </script>
@@ -964,13 +975,25 @@
                             }],
                         },
                         options: {
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true,
-                                    },
-                                }],
-                            },
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Diabetes Prediction Trend',
+                                    font: {
+                                        size: 16,
+                                        weight: 'bold'
+                                    }
+                                },
+                                legend: {
+                                    display: true,
+                                    position: 'top',
+                                    labels: {
+                                        usePointStyle: true
+                                    }
+                                }
+                            }
                         },
                     });
                 }
@@ -1029,13 +1052,25 @@
                             }],
                         },
                         options: {
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true,
-                                    },
-                                }],
-                            },
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Stroke Prediction Trend',
+                                    font: {
+                                        size: 16,
+                                        weight: 'bold'
+                                    }
+                                },
+                                legend: {
+                                    display: true,
+                                    position: 'top',
+                                    labels: {
+                                        usePointStyle: true
+                                    }
+                                }
+                            }
                         },
                     });
                 }

@@ -117,8 +117,6 @@
                                         <li>Maintain healthy blood pressure levels by adopting a low-sodium diet, regular exercise, and stress management techniques.</li>
                                         <li>Avoid processed foods high in sodium and opt for fresh, whole foods to support blood pressure regulation.</li>
                                     {% endif %}
-                                    
-                                    <!-- Add more recommendations as needed -->
                                 </ul>
                                 <a class="btn btn-primary mt-3" href="{{ url_for('views.findNearbyHospital') }}" role="button">Find Nearby Hospital</a>
                             </div>
@@ -130,7 +128,13 @@
                                     <li>Maintain a balanced diet rich in fruits and vegetables.</li>
                                     <li>Engage in regular physical activity.</li>
                                     <li>Maintain a healthy weight.</li>
-                                    <!-- Add more recommendations as needed -->
+                                    {% if bmi < 18.5 %}
+                                        <li>Consider working with a healthcare professional or a registered dietitian to develop a personalized nutrition plan.</li>
+                                    {% elif bmi >= 18.5 and bmi <= 24.9 %}
+                                        <li>Maintain a healthy BMI within the normal range by prioritizing a balanced diet and regular physical activity.</li>
+                                    {% elif bmi >= 25 %}
+                                        <li>If your BMI is in the overweight or obese range, take steps to achieve a healthier weight.</li>
+                                    {% endif %}
                                 </ul>
                             </div>
                         {% endif %}
@@ -257,7 +261,7 @@
                         </div>
                         <div class="form-group">
                             <label for="u_age">Age</label>
-                            <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}" onchange="this.value = this.value.trim();" required>
+                            <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}" min="18" max="100" onchange="this.value = this.value.trim();" required>
                         </div>
                         <div class="form-group">
                             <label for="u_gender" class="col-form-label">Gender:</label>

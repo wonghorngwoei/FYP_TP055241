@@ -68,19 +68,16 @@
                                 <p class="mb-0">Health Recommendation: Take the following steps to reduce the risk of stroke:</p>
                                 <ul>
                                     {% if hypertension == 1 %}
-                                        <li>Monitor and control your blood pressure regularly.</li>
                                         <li>Follow a low-sodium diet and limit your salt intake.</li>
                                         <li>Take prescribed medications for hypertension as directed by your doctor.</li>
                                     {% endif %}
                                     {% if heartdisease == 1 %}
                                         <li>Adopt a heart-healthy diet rich in fruits, vegetables, whole grains, and lean proteins.</li>
                                         <li>Engage in regular aerobic exercise to strengthen your heart and improve cardiovascular health.</li>
-                                        <li>Strictly follow your prescribed medication regimen to manage heart disease.</li>
                                     {% endif %}
                                     {% if married == 1 %}
                                         <li>Communicate openly with your partner to maintain a supportive and healthy relationship.</li>
                                         <li>Participate in activities together that promote emotional well-being.</li>
-                                        <li>Consider couples counseling or therapy to strengthen your bond.</li>
                                     {% endif %}
                                     {% if worktype == 0 %}
                                         <li>Engage in regular physical activity and exercise, even if you are not working, to maintain cardiovascular health.</li>
@@ -95,7 +92,6 @@
                                     {% elif worktype == 3 %}
                                         <li>Manage workload effectively and establish boundaries to reduce stress levels, as high levels of stress can increase the risk of stroke.</li>
                                         <li>Create a structured work schedule and prioritize breaks to maintain a healthy work-life balance and prevent excessive stress.</li>
-                                        <li>Stay physically active during self-employment by incorporating regular exercise into your routine to promote cardiovascular health.</li>
                                     {% elif worktype == 4 %}
                                         <li>Adopt a healthy lifestyle outside of work hours by engaging in regular physical activity and exercise to counterbalance sedentary behavior at work.</li>
                                         <li>Take regular breaks during work hours to stretch and move around, reducing the negative impact of prolonged sitting on cardiovascular health.</li>
@@ -103,22 +99,18 @@
                                     {% endif %}
                                     {% if avgglucose < 101 %}
                                         <li>Maintain a healthy lifestyle to continue maintaining normal glucose levels, as they contribute to overall cardiovascular health and reduce the risk of stroke.</li>
-                                        <li>Continue to monitor your glucose levels regularly and make healthy dietary choices to prevent fluctuations and maintain stable glucose levels.</li>
                                     {% elif avgglucose >= 101 and avgglucose <= 125 %}
                                         <li>Be mindful of your glucose levels and consider implementing lifestyle changes to manage and prevent further increase in glucose levels, as elevated levels can increase the risk of stroke.</li>
                                         <li>Consult with a healthcare professional for personalized guidance on diet, exercise, and potentially medication, to manage your glucose levels effectively and reduce the associated risk of stroke.</li>
                                     {% elif avgglucose >= 126 %}
                                         <li>Take immediate action to manage your glucose levels and reduce the risk of complications, including stroke.</li>
                                         <li>Work closely with a healthcare professional to develop a comprehensive diabetes management plan that includes regular monitoring, medication, a healthy diet, and physical activity to keep your glucose levels within a target range and minimize the risk of stroke.</li>
-                                        <li>Attend diabetes education programs to gain a better understanding of diabetes management strategies and lifestyle modifications that can reduce the risk of stroke and other complications.</li>
                                     {% endif %}
                                     {% if bmi < 18.5 %}
                                         <li>Consider working with a healthcare professional or a registered dietitian to develop a personalized nutrition plan that focuses on healthy weight gain and achieving a balanced BMI. This can help reduce the risk of stroke associated with being underweight.</li>
                                         <li>Incorporate strength-building exercises into your routine to build muscle mass and promote overall health and well-being.</li>
                                     {% elif bmi >= 18.5 and bmi <= 24.9 %}
                                         <li>Maintain a healthy BMI within the normal range, as it is associated with a lower risk of stroke. Continue to prioritize a balanced diet and regular physical activity to support a healthy weight.</li>
-                                        <li>Focus on consuming nutrient-dense foods, such as fruits, vegetables, whole grains, lean proteins, and healthy fats, while limiting processed foods, sugary beverages, and excessive calorie intake.</li>
-                                        <li>Engage in regular aerobic exercises, such as brisk walking, swimming, or cycling, to support cardiovascular health and maintain a healthy weight.</li>
                                     {% elif bmi >= 25 %}
                                         <li>If your BMI is in the overweight or obese range, take steps to achieve a healthier weight. Losing weight can reduce the risk of stroke and improve overall health.</li>
                                         <li>Consult with a healthcare professional or a registered dietitian to develop a personalized weight loss plan that includes a balanced diet, portion control, regular physical activity, and behavior modifications.</li>
@@ -127,13 +119,8 @@
                                     {% if smoking == 1 %}
                                         <li>Quit smoking to significantly reduce your risk of stroke.</li>
                                         <li>Avoid exposure to secondhand smoke.</li>
-                                        <li>Join a smoking cessation program for support and guidance.</li>
                                     {% endif %}
-                                    <!-- <li>Monitor and control your blood pressure regularly.</li>
-                                    <li>Avoid exposure to secondhand smoke.</li>
-                                    <li>Engage in regular physical activity.</li>
-                                    <li>Maintain a healthy diet low in sodium, saturated fats, and cholesterol.</li> -->
-                                    <!-- Add more recommendations as needed -->
+
                                 </ul>
                                 <a class="btn btn-primary mt-3" href="{{ url_for('views.findNearbyHospital') }}" role="button">Find Nearby Hospital</a>
                             </div>
@@ -146,26 +133,6 @@
                                     <li>Exercise regularly to keep your heart and blood vessels healthy.</li>
                                     <li>Avoid excessive alcohol consumption.</li>
                                     <li>Manage stress through relaxation techniques.</li>
-                                    {% if hypertension == 1 %}
-                                        <li>Monitor and control your blood pressure regularly.</li>
-                                    {% endif %}
-                                    {% if heartdisease == 1 %}
-                                        <li>Adopt a heart-healthy diet rich in fruits, vegetables, whole grains, and lean proteins.</li>
-                                    {% endif %}
-                                    {% if married == 1 %}
-                                        <li>Communicate openly with your partner to maintain a supportive and healthy relationship.</li>
-                                    {% endif %}
-                                    {% if worktype == 0 %}
-                                        <li>Engage in regular physical activity and exercise to maintain cardiovascular health.</li>
-                                    {% elif worktype == 1 %}
-                                        <li>Ensure a balanced routine that includes sufficient playtime, rest, and physical activity to promote healthy development.</li>
-                                    {% elif worktype == 2 %}
-                                        <li>Take regular breaks and practice stress-management techniques to prevent work-related stress.</li>
-                                    {% elif worktype == 3 %}
-                                        <li>Manage workload effectively and establish boundaries to reduce stress levels.</li>
-                                    {% elif worktype == 4 %}
-                                        <li>Adopt a healthy lifestyle outside of work hours by engaging in regular physical activity and exercise.</li>
-                                    {% endif %}
                                     {% if avgglucose < 101 %}
                                         <li>Maintain a healthy lifestyle to continue maintaining normal glucose levels.</li>
                                     {% elif avgglucose >= 101 and avgglucose <= 125 %}
@@ -180,10 +147,6 @@
                                     {% elif bmi >= 25 %}
                                         <li>If your BMI is in the overweight or obese range, take steps to achieve a healthier weight.</li>
                                     {% endif %}
-                                    {% if smoking == 1 %}
-                                        <li>Quit smoking to significantly reduce your risk of stroke.</li>
-                                    {% endif %}
-                                    <!-- Add more recommendations as needed -->
                                 </ul>
                             </div>
                         {% endif %}
@@ -309,7 +272,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="u_age">Age</label>
-                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}" onchange="this.value = this.value.trim();" required>
+                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}" min="18" max="100" onchange="this.value = this.value.trim();" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_gender" class="col-form-label">Gender:</label>

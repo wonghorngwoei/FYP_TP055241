@@ -92,7 +92,7 @@ class Diabetes(db.Model):
     d_userID = db.Column(db.Integer, db.ForeignKey('User.u_id'), nullable=False)
     d_age = db.Column(db.Integer)
     d_highchol = db.Column(db.Integer)
-    d_BMI = db.Column(db.Integer)
+    d_BMI = db.Column(db.Float)
     d_smoker = db.Column(db.Integer)
     d_heartdisease = db.Column(db.Integer)
     d_physactivity = db.Column(db.Integer)

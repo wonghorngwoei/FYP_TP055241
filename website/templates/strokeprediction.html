@@ -115,7 +115,8 @@
                     <div class="container"><br>
                         <h1 class="text-center">Stroke Prediction</h1><br>
                         <div class="alert alert-info" role="alert">
-                            This prediction model is by Extreme Gradient Boosting (XGBoost), and it has an accuracy of 100%. However, it should be treated as a prediction and not a substitute for professional medical advice. It is important to consult a healthcare professional for a definitive diagnosis and medical advice.
+                            This prediction model is by Extreme Gradient Boosting (XGBoost), and it has an accuracy of 100%. However, it should be treated as a prediction and not a substitute for professional medical advice. 
+                            It is important to consult a healthcare professional for a definitive diagnosis and medical advice.
                         </div>
                         <table class="table table-bordered">
                             <thead>
@@ -148,7 +149,8 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="4" class="text-center">Sources: <a href="https://www.credihealth.com/blog/normal-blood-glucose-levels-in-adults/">Credihealth</a>, <a href="https://www.cdc.gov/diabetes/basics/getting-tested.html">CDC</a></td>
+                                    <td colspan="4" class="text-center">Sources: <a href="https://www.credihealth.com/blog/normal-blood-glucose-levels-in-adults/">Credihealth</a>, 
+                                        <a href="https://www.cdc.gov/diabetes/basics/getting-tested.html">CDC</a></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -217,7 +219,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="avgglucose">Average Glucose Level:</label>
-                                <input type="number" step="0.01" class="form-control" id="avgglucose" name="avgglucose" min="54.00" max="280.00" placeholder="Enter average glucose level. If not sure, please refer the table above and fill in the estimated value." required>
+                                <input type="number" step="0.01" class="form-control" id="avgglucose" name="avgglucose" min="54.00" max="280.00" 
+                                placeholder="Enter average glucose level. If not sure, please refer the table above and fill in the estimated value." required>
                             </div>
                             <div class="form-group">
                                 <label for="bmi">BMI:</label>
@@ -356,7 +359,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="u_age">Age</label>
-                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}" onchange="this.value = this.value.trim();" required>
+                                <input type="number" class="form-control" name="u_age" id="u_age" value="{{ user.u_age }}" min="18" max="100" onchange="this.value = this.value.trim();" required>
                             </div>
                             <div class="form-group">
                                 <label for="u_gender" class="col-form-label">Gender:</label>
