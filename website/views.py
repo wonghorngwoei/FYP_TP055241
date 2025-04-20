@@ -355,8 +355,12 @@ def admindashboard():
 
     # Calculate the percentages
     total_cases = with_highbp_count + without_highbp_count
-    with_highbp_percentage = round((with_highbp_count / total_cases) * 100, 2)
-    without_highbp_percentage = round((without_highbp_count / total_cases) * 100, 2)
+    if total_cases == 0:
+        with_highbp_percentage = 0
+        without_highbp_percentage = 0
+    else:
+        with_highbp_percentage = round((with_highbp_count / total_cases) * 100, 2)
+        without_highbp_percentage = round((without_highbp_count / total_cases) * 100, 2)
 
     # Fetch the data for common symptoms from the Asthma table
     asthma_records = Asthma.query.all()
@@ -418,9 +422,12 @@ def admindashboard():
 
     # Calculate the percentage of stroke cases for each work type
     total_cases = len(stroke_records)
-    work_type_percentages = {
-        work_type: (count / total_cases) * 100 for work_type, count in work_type_counts.items()
-    }
+    if total_cases > 0:
+        work_type_percentages = {
+            work_type: (count / total_cases) * 100 for work_type, count in work_type_counts.items()
+        }
+    else:
+        work_type_percentages = {work_type: 0 for work_type in work_type_counts}
 
     # Convert the percentages to a JSON format
     work_type_percentages_json = json.dumps(list(work_type_percentages.values()))
